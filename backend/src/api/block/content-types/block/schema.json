@@ -1,0 +1,70 @@
+{
+  "kind": "collectionType",
+  "collectionName": "blocks",
+  "info": {
+    "singularName": "block",
+    "pluralName": "blocks",
+    "displayName": "Block",
+    "description": "原子内容块：任何生活心得、图片、链接。不属于任何固定分类，仅通过 Connection 挂载到 Channel。"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "content": {
+      "type": "json",
+      "required": true
+    },
+    "blockType": {
+      "type": "enumeration",
+      "enum": ["text", "image", "link", "file"],
+      "default": "text",
+      "required": true
+    },
+    "excerpt": {
+      "type": "text",
+      "maxLength": 240
+    },
+    "coverImageUrl": {
+      "type": "string"
+    },
+    "searchText": {
+      "type": "text"
+    },
+    "description": {
+      "type": "text",
+      "maxLength": 2000
+    },
+    "connectionCount": {
+      "type": "integer",
+      "default": 0,
+      "min": 0
+    },
+    "commentCount": {
+      "type": "integer",
+      "default": 0,
+      "min": 0
+    },
+    "comments": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::comment.comment",
+      "mappedBy": "block"
+    },
+    "creator": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "blocks"
+    },
+    "creatorName": {
+      "type": "string"
+    },
+    "connections": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::connection.connection",
+      "mappedBy": "block"
+    }
+  }
+}

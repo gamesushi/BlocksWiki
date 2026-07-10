@@ -1,0 +1,49 @@
+{
+  "kind": "collectionType",
+  "collectionName": "notifications",
+  "info": {
+    "singularName": "notification",
+    "pluralName": "notifications",
+    "displayName": "Notification",
+    "description": "站内通知。全反规范化（recipientName/actorName + 目标的展示与链接字段），避免 user 关系 sanitize 与 populate。"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "recipientName": {
+      "type": "string",
+      "required": true
+    },
+    "actorName": {
+      "type": "string",
+      "required": true
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "connect_block",
+        "connect_to_channel",
+        "connect_channel_to_channel",
+        "follow_user",
+        "follow_channel",
+        "add_collaborator",
+        "comment_on_block"
+      ],
+      "required": true
+    },
+    "read": {
+      "type": "boolean",
+      "default": false
+    },
+    "targetBlockId": {
+      "type": "string"
+    },
+    "targetChannelSlug": {
+      "type": "string"
+    },
+    "targetChannelTitle": {
+      "type": "string"
+    }
+  }
+}

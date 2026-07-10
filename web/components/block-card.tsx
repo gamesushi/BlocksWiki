@@ -1,0 +1,45 @@
+'use client';
+
+import Link from 'next/link';
+import { ConnectButton } from '@/components/connect-button';
+import type { Block, Channel } from '@/lib/types';
+
+export type MyChannel = Pick<Channel, 'documentId' | 'title' | 'slug'>;
+
+export function BlockCard({
+  block,
+  myChannels,
+  showConnect,
+}: {
+  block: Block;
+  myChannels: MyChannel[];
+  showConnect: boolean;
+}) {
+  return (
+    <li className="flex flex-col">
+      <Link
+        href={`/block/${block.documentId}`}
+        className="flex aspect-square flex-col rounded-lg border border-neutral-200 bg-white p-4 transition-colors hover:border-neutral-400"
+      >
+        {block.coverImageUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={block.coverImageUrl} alt="" className="h-full w-full rounded object-cover" />
+        ) : (
+          <p className="line-clamp-6 text-sm leading-relaxed text-neutral-700">
+            {block.excerpt || '(空白 Block)'}
+          </p>
+        )}
+      </Link>
+      <div className="mt-2 flex items-center justify-between">
+        <span className="text-[11px] text-neutral-400">
+          <Link href={`/user/${block.creatorName}`} className="hover:text-neutral-900">
+            {block.creatorName}
+          </Link>{' '}
+          · {block.connectionCount} 处引用
+          {block.commentCount > 0 && <> · {block.commentCount} 评论</>}
+        </span>
+        {showConnect && <ConnectButton blockId={block.documentId} myChannels={myChannels} />}
+      </div>
+    </li>
+  );
+}

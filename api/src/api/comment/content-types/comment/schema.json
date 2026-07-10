@@ -1,0 +1,29 @@
+{
+  "kind": "collectionType",
+  "collectionName": "comments",
+  "info": {
+    "singularName": "comment",
+    "pluralName": "comments",
+    "displayName": "Comment",
+    "description": "Block 下的评论。authorName 反规范化（user 关系 API 会被 sanitize）。"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "body": {
+      "type": "text",
+      "required": true,
+      "maxLength": 2000
+    },
+    "authorName": {
+      "type": "string"
+    },
+    "block": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::block.block",
+      "inversedBy": "comments"
+    }
+  }
+}

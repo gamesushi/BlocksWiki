@@ -1,0 +1,54 @@
+{
+  "kind": "collectionType",
+  "collectionName": "wiki_pages",
+  "info": {
+    "singularName": "wiki-page",
+    "pluralName": "wiki-pages",
+    "displayName": "WikiPage",
+    "description": "管理员编排的 Wiki 页：树状层级 + 有序 items（引用 Block/Channel 或编辑性文字）。"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "maxLength": 160
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "order": {
+      "type": "integer",
+      "default": 0
+    },
+    "intro": {
+      "type": "json"
+    },
+    "items": {
+      "type": "json"
+    },
+    "published": {
+      "type": "boolean",
+      "default": false
+    },
+    "curatorName": {
+      "type": "string"
+    },
+    "parent": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::wiki-page.wiki-page",
+      "inversedBy": "children"
+    },
+    "children": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::wiki-page.wiki-page",
+      "mappedBy": "parent"
+    }
+  }
+}

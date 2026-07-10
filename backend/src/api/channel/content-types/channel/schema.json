@@ -1,0 +1,81 @@
+{
+  "kind": "collectionType",
+  "collectionName": "channels",
+  "info": {
+    "singularName": "channel",
+    "pluralName": "channels",
+    "displayName": "Channel",
+    "description": "策展容器。与 Block 的多对多关系不使用裸 manyToMany，而是通过 Connection（关联对象模式）物化，以携带 who/when 元数据。"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true,
+      "maxLength": 120
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "description": {
+      "type": "text",
+      "maxLength": 500
+    },
+    "visibility": {
+      "type": "enumeration",
+      "enum": ["public", "closed", "private"],
+      "default": "public",
+      "required": true
+    },
+    "owner": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "channels"
+    },
+    "ownerName": {
+      "type": "string"
+    },
+    "collaborators": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "collaboratingChannels"
+    },
+    "collaboratorNames": {
+      "type": "json"
+    },
+    "connectionCount": {
+      "type": "integer",
+      "default": 0,
+      "min": 0
+    },
+    "connections": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::connection.connection",
+      "mappedBy": "channel"
+    },
+    "appearances": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::connection.connection",
+      "mappedBy": "contentChannel"
+    },
+    "channelFollowers": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "plugin::users-permissions.user",
+      "mappedBy": "followedChannels"
+    },
+    "followerCount": {
+      "type": "integer",
+      "default": 0,
+      "min": 0
+    }
+  }
+}

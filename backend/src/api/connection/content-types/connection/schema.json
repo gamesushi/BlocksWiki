@@ -1,0 +1,51 @@
+{
+  "kind": "collectionType",
+  "collectionName": "connections",
+  "info": {
+    "singularName": "connection",
+    "pluralName": "connections",
+    "displayName": "Connection",
+    "description": "图的边：记录 [connector 用户] 在 [createdAt 时间] 把 [block] 连结到 [channel]。Block↔Channel 多对多关系的唯一事实来源。"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "block": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::block.block",
+      "inversedBy": "connections"
+    },
+    "channel": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::channel.channel",
+      "inversedBy": "connections"
+    },
+    "contentChannel": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::channel.channel",
+      "inversedBy": "appearances"
+    },
+    "connector": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "connectorName": {
+      "type": "string"
+    },
+    "position": {
+      "type": "integer",
+      "default": 0
+    },
+    "pairKey": {
+      "type": "string",
+      "unique": true,
+      "required": true,
+      "private": true
+    }
+  }
+}
