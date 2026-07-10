@@ -1,0 +1,43 @@
+# LifeWiki backend (Strapi) — production compose
+# Run from repo root on the Oracle VM:
+#   docker compose up -d --build
+# Secrets are read from a sibling `.env` file (gitignored). Copy `.env.example` -> `.env`
+# and fill the values (the setup script generates them for you).
+
+services:
+  strapi:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: lifewiki-strapi
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 1338
+      APP_KEYS: ${APP_KEYS}
+      API_TOKEN_SALT: ${API_TOKEN_SALT}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET}
+      JWT_SECRET: ${JWT_SECRET}
+      TRANSFER_TOKEN_SALT: ${TRANSFER_TOKEN_SALT}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      DATABASE_CLIENT: sqlite
+      DATABASE_FILENAME: .tmp/data.db
+      CORS_ORIGINS: ${CORS_ORIGINS}
+    volumes:
+      # SQLite DB + uploaded media persist here, independent of container lifecycle
+      - strapi-data:/opt/app/.tmp
+      - strapi-uploads:/opt/app/public/uploads
+    # Only bound to localhost; the public internet reaches it via nginx (443 -> 1338)
+    ports:
+      - "127.0.0.1:1338:1338"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:1338/admin').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+
+volumes:
+  strapi-data:
+  strapi-uploads:

@@ -1,0 +1,11 @@
+node_modules
+.tmp
+dist
+.env
+.env.*
+.git
+.gitignore
+**/.DS_Store
+public/uploads
+coverage
+*.log
