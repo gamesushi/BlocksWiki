@@ -9,7 +9,7 @@ import type EditorJS from '@editorjs/editorjs';
 import { createBlock } from '@/app/actions/blocks';
 import type { EditorJsOutput } from '@/lib/types';
 
-const HOLDER_ID = 'lifewiki-editor';
+const HOLDER_ID = 'blockwiki-editor';
 
 export type BlockEditorSubmit = (
   output: EditorJsOutput

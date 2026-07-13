@@ -53,6 +53,7 @@ export async function resolveWikiItems(items: WikiItem[]): Promise<ResolvedItem[
     qs.append('fields[3]', 'connectionCount');
     // content 是 JSON 标量字段，用 fields 选取（不是关系，不能 populate）
     qs.append('fields[4]', 'content');
+    qs.append('fields[5]', 'sourceUrl');
     try {
       const res = await strapiFetch<StrapiResponse<Block[]>>(`/blocks?${qs}`, { tags: ['wiki'] });
       for (const b of res.data) blockMap.set(b.documentId, b);

@@ -16,7 +16,7 @@ export default function LoginPage() {
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-sm flex-col justify-center px-6">
-      <h1 className="mb-1 text-xl font-medium tracking-tight">LifeWiki</h1>
+      <h1 className="mb-1 text-xl font-medium tracking-tight">BlockWiki</h1>
       <p className="mb-8 text-sm text-neutral-400">基于 Block 的生活 Wiki</p>
 
       <div className="mb-6 flex gap-4 text-sm">

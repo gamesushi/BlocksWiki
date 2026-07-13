@@ -19,18 +19,37 @@ function isEditorJsOutput(value: unknown): value is EditorJsOutput {
   );
 }
 
+/**
+ * 来源溯源：把任意前端传入的 sourceUrl 收敛成安全的 http(s) URL（或 null）。
+ * 过滤 javascript: 等危险协议、超长与非法串——即便前端被绕过也不会落脏数据。
+ */
+function sanitizeSourceUrl(value: unknown): string | null {
+  if (typeof value !== 'string') return null;
+  const trimmed = value.trim();
+  if (!trimmed || trimmed.length > 2048) return null;
+  try {
+    const u = new URL(trimmed);
+    if (u.protocol !== 'http:' && u.protocol !== 'https:') return null;
+    return u.toString();
+  } catch {
+    return null;
+  }
+}
+
 export default factories.createCoreController('api::block.block', ({ strapi }) => ({
   async create(ctx) {
     const user = ctx.state.user;
     if (!user) return ctx.unauthorized('登录后才能发布 Block。');
 
-    const { content, blockType } = ctx.request.body?.data ?? {};
+    const { content, blockType, sourceUrl } = ctx.request.body?.data ?? {};
     if (!isEditorJsOutput(content)) {
       return ctx.badRequest('content 必须是 Editor.js OutputData JSON（{ blocks: [...] }）。');
     }
     if (content.blocks.length === 0) {
       return ctx.badRequest('不能发布空 Block。');
     }
+    // 来源溯源：仅接受 http(s) 的 sourceUrl，非法则丢弃（不报错，保持创建成功）
+    const safeSourceUrl = sanitizeSourceUrl(sourceUrl);
 
     const created = await strapi.documents('api::block.block').create({
       data: {
@@ -39,6 +58,7 @@ export default factories.createCoreController('api::block.block', ({ strapi }) =
         creator: user.id, // excerpt / coverImageUrl 由 lifecycle 反规范化生成
         // 反规范化：匿名访客读详情页时 user 关系会被 sanitize 掉
         creatorName: user.username,
+        ...(safeSourceUrl ? { sourceUrl: safeSourceUrl } : {}),
       },
       populate: { creator: { fields: ['id', 'username'] } },
     });

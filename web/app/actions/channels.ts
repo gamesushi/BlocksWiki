@@ -71,3 +71,38 @@ export async function deleteChannel(
     return { ok: false, error: '删除失败，请重试。' };
   }
 }
+
+export type UpdateChannelState = { ok?: boolean; error?: string } | null;
+
+export async function updateChannel(
+  documentId: string,
+  slug: string,
+  _prev: UpdateChannelState,
+  formData: FormData
+): Promise<UpdateChannelState> {
+  const title = String(formData.get('title') ?? '').trim();
+  const description = String(formData.get('description') ?? '').trim();
+  const raw = String(formData.get('visibility') ?? 'public');
+  const visibility = ['public', 'closed', 'private'].includes(raw) ? raw : 'public';
+
+  try {
+    await strapiFetch(`/channels/${documentId}`, {
+      method: 'PUT',
+      body: { data: { title, description, visibility } },
+    });
+  } catch (err) {
+    if (err instanceof StrapiError && err.status === 403) {
+      return { error: '只能编辑自己的 Channel。' };
+    }
+    if (err instanceof StrapiError && err.status === 401) {
+      return { error: '请先登录。' };
+    }
+    return { error: '保存失败，请重试。' };
+  }
+
+  updateTag(`channel:${slug}`);
+  revalidatePath(`/channel/${slug}`);
+  revalidatePath('/');
+  revalidatePath('/explore');
+  return { ok: true };
+}

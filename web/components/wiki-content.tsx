@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { RenderBlocks } from '@/lib/render-blocks';
+import { sourceHost } from '@/lib/markdown';
 import type { ResolvedItem } from '@/app/actions/wiki';
 
 /**
@@ -41,6 +42,23 @@ export function WikiContent({ items }: { items: ResolvedItem[] }) {
               >
                 {item.block.creatorName} 的 Block · {item.block.connectionCount} 处引用 →
               </Link>
+              {item.block.sourceUrl &&
+                (() => {
+                  const h = sourceHost(item.block.sourceUrl);
+                  return h ? (
+                    <span className="ml-2 text-xs text-neutral-400">
+                      · 来源{' '}
+                      <a
+                        href={item.block.sourceUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-neutral-900"
+                      >
+                        {h}
+                      </a>
+                    </span>
+                  ) : null;
+                })()}
             </figure>
           );
         }

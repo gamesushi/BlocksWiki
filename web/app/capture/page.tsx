@@ -1,12 +1,13 @@
 import type { Metadata, Viewport } from 'next';
+import Link from 'next/link';
 import { QuickCapture } from '@/components/quick-capture';
 
 export const metadata: Metadata = {
-  title: '快速采集 · LifeWiki',
+  title: '快速采集 · BlockWiki',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'LifeWiki',
+    title: 'BlockWiki',
   },
 };
 
@@ -21,6 +22,11 @@ export const viewport: Viewport = {
 export default function CapturePage() {
   return (
     <main className="min-h-dvh bg-neutral-50">
+      <header className="mx-auto flex max-w-md items-center px-5 pt-6">
+        <Link href="/" className="text-sm text-neutral-400 hover:text-neutral-900">
+          ← 返回
+        </Link>
+      </header>
       <QuickCapture />
     </main>
   );

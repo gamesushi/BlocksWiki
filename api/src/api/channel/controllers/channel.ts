@@ -183,6 +183,43 @@ export default factories.createCoreController('api::channel.channel', ({ strapi 
     };
   },
 
+  /**
+   * PUT /channels/:id —— 编辑频道元信息（title/description/visibility）。
+   * 仅属主可改；slug 保持不变以避免破坏已有连结与分享链接。
+   * RBAC 的 channel.update 已对 Authenticated 角色开放，此处额外做属主校验。
+   */
+  async update(ctx) {
+    const user = ctx.state.user;
+    if (!user) return ctx.unauthorized('登录后才能编辑 Channel。');
+
+    const documentId = ctx.params.id;
+    const channel = await strapi.documents('api::channel.channel').findOne({
+      documentId,
+      populate: { owner: { fields: ['id'] } },
+    });
+    if (!channel) return ctx.notFound('Channel 不存在。');
+    if (channel.owner?.id !== user.id) {
+      return ctx.forbidden('只能编辑自己的 Channel。');
+    }
+
+    const { title, description, visibility } = ctx.request.body?.data ?? {};
+    const data: Record<string, unknown> = {};
+    if (typeof title === 'string' && title.trim()) data.title = title.trim();
+    if (typeof description === 'string') data.description = description;
+    if (['public', 'closed', 'private'].includes(visibility)) data.visibility = visibility;
+
+    if (Object.keys(data).length === 0) {
+      return ctx.badRequest('没有可更新的字段。');
+    }
+
+    const updated = await strapi.documents('api::channel.channel').update({
+      documentId,
+      data,
+      populate: { owner: { fields: ['id', 'username'] } },
+    });
+    return { data: updated };
+  },
+
   async create(ctx) {
     const user = ctx.state.user;
     if (!user) return ctx.unauthorized('登录后才能创建 Channel。');

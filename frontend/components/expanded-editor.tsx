@@ -8,7 +8,7 @@
  */
 import { useEffect, useRef, useState, useTransition } from 'react';
 import { addBlockToChannel } from '@/app/actions/channel';
-import { markdownToEditorJs, editorJsToHtml } from '@/lib/markdown';
+import { markdownToEditorJs, editorJsToHtml, isUrl } from '@/lib/markdown';
 import type { EditorJsOutput } from '@/lib/types';
 
 const PREVIEW_CLS =
@@ -19,6 +19,7 @@ export function ExpandedEditor({
   channelSlug,
   initialTitle = '',
   initialBody = '',
+  sourceUrl,
   onClose,
   onAdded,
 }: {
@@ -26,6 +27,7 @@ export function ExpandedEditor({
   channelSlug: string;
   initialTitle?: string;
   initialBody?: string;
+  sourceUrl?: string;
   onClose: () => void;
   onAdded: () => void;
 }) {
@@ -55,13 +57,21 @@ export function ExpandedEditor({
 
   const submit = () => {
     setError(null);
+    const bodyTrimmed = body.trim();
+    // 来源溯源：优先用传入 sourceUrl；否则若整段就是一个 URL，则记为来源
+    const src = sourceUrl || (isUrl(bodyTrimmed) ? bodyTrimmed : undefined);
     const { content, blockType } = buildContent();
+    const finalBlockType = content.blocks.some((b) => b.type === 'image')
+      ? 'image'
+      : src && isUrl(bodyTrimmed)
+        ? 'link'
+        : blockType;
     if (!content.blocks.length) {
       setError('内容为空。');
       return;
     }
     startTransition(async () => {
-      const result = await addBlockToChannel(channelId, channelSlug, content, blockType);
+      const result = await addBlockToChannel(channelId, channelSlug, content, finalBlockType, src);
       if (result.ok) onAdded();
       else setError(result.error ?? '添加失败。');
     });

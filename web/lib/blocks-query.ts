@@ -6,6 +6,7 @@ export const BLOCK_GRID_FIELDS = [
   'connectionCount',
   'commentCount',
   'creatorName',
+  'sourceUrl',
 ] as const;
 
 export const FEED_PAGE_SIZE = 24;

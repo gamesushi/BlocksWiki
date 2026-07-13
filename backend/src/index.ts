@@ -39,6 +39,7 @@ const GRANTS: Record<string, string[]> = {
     'api::connection.connection.connect',
     'api::connection.connection.connectChannel',
     'api::connection.connection.disconnect',
+    'api::connection.connection.reorder',
     'api::follow.follow.followUser',
     'api::follow.follow.followChannel',
     'api::notification.notification.find',
@@ -53,7 +54,7 @@ const GRANTS: Record<string, string[]> = {
 };
 
 /** 管理员用户名（逗号分隔）；bootstrap 时提升为 isAdmin。演示实例默认 midori。 */
-const ADMIN_USERNAMES = (process.env.LIFEWIKI_ADMINS ?? 'midori')
+const ADMIN_USERNAMES = (process.env.BLOCKWIKI_ADMINS ?? 'midori')
   .split(',')
   .map((s) => s.trim())
   .filter(Boolean);

@@ -283,6 +283,59 @@ export default factories.createCoreController('api::connection.connection', ({ s
   },
 
   /**
+   * POST /connections/reorder
+   * body: { channelId: string, orderedConnectionIds: string[] }
+   * 频道内拖拽排序（仅属主/协作者）。只在 orderedConnectionIds 这批边已有的
+   * position 数值池内重新分配（第一个拿最高值，position desc 排序不受影响）——
+   * 不触碰未在这批里的边，跨分页拖拽同样安全。
+   */
+  async reorder(ctx) {
+    const user = ctx.state.user;
+    if (!user) return ctx.unauthorized();
+
+    const { channelId, orderedConnectionIds } = ctx.request.body ?? {};
+    if (typeof channelId !== 'string' || !Array.isArray(orderedConnectionIds) || orderedConnectionIds.length === 0) {
+      return ctx.badRequest('channelId 与 orderedConnectionIds（非空数组）均为必填。');
+    }
+    if (orderedConnectionIds.some((id: unknown) => typeof id !== 'string')) {
+      return ctx.badRequest('orderedConnectionIds 必须是字符串数组。');
+    }
+
+    const channel = await strapi.documents('api::channel.channel').findOne({
+      documentId: channelId,
+      fields: ['id'],
+      populate: { owner: { fields: ['id'] }, collaborators: { fields: ['id'] } },
+    });
+    if (!channel) return ctx.notFound('Channel 不存在。');
+    const isOwner = channel.owner?.id === user.id;
+    const isCollaborator = (channel.collaborators ?? []).some((c: any) => c.id === user.id);
+    if (!isOwner && !isCollaborator) {
+      return ctx.forbidden('只有属主或协作者可以调整频道内排序。');
+    }
+
+    const connections = await strapi.documents('api::connection.connection').findMany({
+      filters: { documentId: { $in: orderedConnectionIds }, channel: { documentId: channelId } },
+      fields: ['documentId', 'position'],
+      limit: -1,
+    });
+    if (connections.length !== orderedConnectionIds.length) {
+      return ctx.badRequest('部分连结不存在或不属于该频道。');
+    }
+
+    const positionById = new Map(connections.map((c) => [c.documentId, c.position ?? 0]));
+    const pool = orderedConnectionIds.map((id) => positionById.get(id) ?? 0).sort((a, b) => b - a);
+
+    for (let i = 0; i < orderedConnectionIds.length; i++) {
+      await strapi.documents('api::connection.connection').update({
+        documentId: orderedConnectionIds[i],
+        data: { position: pool[i] },
+      });
+    }
+
+    return { data: { channelId, reordered: orderedConnectionIds.length } };
+  },
+
+  /**
    * DELETE /api/connections/disconnect
    * body: { connectionId: string (documentId) }
    * 只解除边，Block 本体永远不动。

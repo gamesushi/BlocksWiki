@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 # ============================================================================
-# LifeWiki — Oracle Always-Free VM one-shot provisioning
+# BlockWiki — Oracle Always-Free VM one-shot provisioning
 # Run on a FRESH Ubuntu 22.04/24.04 Oracle Cloud instance (as a sudo user):
 #   bash scripts/setup-oracle-vm.sh \
 #       --domain api.yourdomain.com \
-#       --cors https://lifewiki.yourdomain.com \
+#       --cors https://blockwiki.yourdomain.com \
 #       --email you@yourdomain.com
 #
 # What it does:
 #   1. Install Docker (+compose plugin) and add current user to the docker group
 #   2. Install nginx + certbot
-#   3. Clone the repo (HTTPS, public) to /opt/lifewiki
+#   3. Clone the repo (HTTPS, public) to /opt/blockwiki
 #   4. Generate a production .env with random Strapi secrets
 #   5. Build & start the Strapi container (docker compose, persisted volumes)
 #   6. Configure nginx reverse proxy + Let's Encrypt SSL (HTTPS redirect)
@@ -27,8 +27,8 @@ set -euo pipefail
 API_DOMAIN=""
 CORS_ORIGINS=""
 EMAIL=""
-REPO="https://github.com/gamesushi/lifewiki.git"
-INSTALL_DIR="/opt/lifewiki"
+REPO="https://github.com/gamesushi/blockwiki.git"
+INSTALL_DIR="/opt/blockwiki"
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -41,14 +41,14 @@ while [ $# -gt 0 ]; do
 done
 
 [ -z "$API_DOMAIN" ] && read -rp "API domain (e.g. api.yourdomain.com): " API_DOMAIN
-[ -z "$CORS_ORIGINS" ] && read -rp "Frontend CORS origin (e.g. https://lifewiki.yourdomain.com): " CORS_ORIGINS
+[ -z "$CORS_ORIGINS" ] && read -rp "Frontend CORS origin (e.g. https://blockwiki.yourdomain.com): " CORS_ORIGINS
 [ -z "$EMAIL" ] && read -rp "Email for Let's Encrypt cert: " EMAIL
 
 [ -z "$API_DOMAIN" ] && { echo "API_DOMAIN required" >&2; exit 1; }
 [ -z "$EMAIL" ] && { echo "EMAIL required" >&2; exit 1; }
 CORS_ORIGINS="${CORS_ORIGINS:-https://$API_DOMAIN}"
 
-echo "==> Provisioning LifeWiki on $API_DOMAIN (CORS: $CORS_ORIGINS)"
+echo "==> Provisioning BlockWiki on $API_DOMAIN (CORS: $CORS_ORIGINS)"
 
 # ---- 1. Docker ----
 echo "==> Installing Docker"
@@ -92,7 +92,7 @@ sudo docker compose up -d --build
 
 # ---- 6. nginx reverse proxy ----
 echo "==> Writing nginx site for $API_DOMAIN"
-sudo tee /etc/nginx/sites-available/lifewiki-api.conf >/dev/null <<NGINX
+sudo tee /etc/nginx/sites-available/blockwiki-api.conf >/dev/null <<NGINX
 server {
     listen 80;
     server_name ${API_DOMAIN};
@@ -110,7 +110,7 @@ server {
     }
 }
 NGINX
-sudo ln -sf /etc/nginx/sites-available/lifewiki-api.conf /etc/nginx/sites-enabled/lifewiki-api.conf
+sudo ln -sf /etc/nginx/sites-available/blockwiki-api.conf /etc/nginx/sites-enabled/blockwiki-api.conf
 sudo rm -f /etc/nginx/sites-enabled/default
 sudo nginx -t
 sudo systemctl enable --now nginx

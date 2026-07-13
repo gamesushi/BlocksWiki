@@ -21,6 +21,7 @@ export type Block = StrapiDoc<{
   excerpt: string;
   coverImageUrl: string;
   description?: string | null;
+  sourceUrl?: string | null;
   connectionCount: number;
   commentCount: number;
   creatorName: string;

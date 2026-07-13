@@ -1,4 +1,4 @@
-# LifeWiki 部署手册（免费线上方案）
+# BlockWiki 部署手册（免费线上方案）
 
 **架构**
 ```
@@ -22,7 +22,7 @@
 | 域名 | 任意域名，把一条 A 记录（如 `api.yourdomain.com`）指向 VM 公网 IP |
 | OCI 安全列表 | 在 VCN 的 Security List / NSG 放行入站 **22 / 80 / 443**（0.0.0.0/0） |
 | Vercel 账号 | 免费 Hobby，用 GitHub 登录 |
-| GitHub 仓库 | 已推送：`github.com/gamesushi/lifewiki`（本仓库） |
+| GitHub 仓库 | 已推送：`github.com/gamesushi/blockwiki`（本仓库） |
 
 > Oracle 控制台里的「安全列表」不放行 80/443，外界就访问不到——这是最常见的卡点。
 
@@ -34,18 +34,18 @@ SSH 进 VM 后，一条命令完成全部安装（Docker / nginx / certbot / 克
 
 ```bash
 sudo apt-get update -y && sudo apt-get install -y git curl
-git clone https://github.com/gamesushi/lifewiki.git /tmp/lw && \
+git clone https://github.com/gamesushi/blockwiki.git /tmp/lw && \
   bash /tmp/lw/scripts/setup-oracle-vm.sh \
     --domain api.yourdomain.com \
-    --cors https://lifewiki.yourdomain.com \
+    --cors https://blockwiki.yourdomain.com \
     --email you@yourdomain.com
 ```
 
 脚本会自动：
 1. 装 Docker（含 compose 插件）并把当前用户加入 docker 组；
 2. 装 nginx + certbot；
-3. `git clone` 仓库到 `/opt/lifewiki`；
-4. 用 `openssl rand` 生成**随机密钥**写入 `/opt/lifewiki/.env`（gitignored，不在仓库里）；
+3. `git clone` 仓库到 `/opt/blockwiki`；
+4. 用 `openssl rand` 生成**随机密钥**写入 `/opt/blockwiki/.env`（gitignored，不在仓库里）；
 5. `docker compose up -d --build` 构建并启动 Strapi（首次构建约 2–5 分钟）；
 6. 写 nginx 反代、申请 Let's Encrypt 证书并强制 HTTPS。
 
@@ -53,7 +53,7 @@ git clone https://github.com/gamesushi/lifewiki.git /tmp/lw && \
 
 验证：
 ```bash
-cd /opt/lifewiki && sudo docker compose ps
+cd /opt/blockwiki && sudo docker compose ps
 curl -sI https://api.yourdomain.com/api/channels | head -1   # 期望 200
 ```
 
@@ -62,7 +62,7 @@ curl -sI https://api.yourdomain.com/api/channels | head -1   # 期望 200
 ```bash
 # 在 VM 上，停容器后把文件塞进命名卷
 sudo docker compose stop strapi
-sudo docker run --rm -v lifewiki_strapi-data:/data -v $PWD/api/.tmp:/src \
+sudo docker run --rm -v blockwiki_strapi-data:/data -v $PWD/api/.tmp:/src \
   busybox cp /src/data.db /data/data.db
 sudo docker compose start strapi
 ```
@@ -72,7 +72,7 @@ sudo docker compose start strapi
 
 ## 2. 前端：Vercel 部署
 
-1. Vercel 控制台 **Add New > Project**，导入 `gamesushi/lifewiki`。
+1. Vercel 控制台 **Add New > Project**，导入 `gamesushi/blockwiki`。
 2. **Root Directory** 设为 **`web`**（仓库是 monorepo，前后端分目录）。
 3. Framework 会自动识别 Next.js（`web/vercel.json` 已声明）。
 4. **Environment Variables** 添加：
@@ -89,15 +89,15 @@ sudo docker compose start strapi
 
 ## 3. 打通前后端
 - 前端 `STRAPI_URL` = 你的 API 公网地址（步骤 2 已设）。
-- 后端 `CORS_ORIGINS` = 前端域名（setup 脚本的 `--cors` 已设，如 `https://lifewiki.yourdomain.com`）。
-- 改 CORS 后重启：`cd /opt/lifewiki && sudo docker compose restart strapi`。
+- 后端 `CORS_ORIGINS` = 前端域名（setup 脚本的 `--cors` 已设，如 `https://blockwiki.yourdomain.com`）。
+- 改 CORS 后重启：`cd /opt/blockwiki && sudo docker compose restart strapi`。
 
 ---
 
 ## 4. 环境变量速查
 | 变量 | 在哪设 | 作用 |
 |---|---|---|
-| `APP_KEYS` 等 6 个密钥 | VM 的 `/opt/lifewiki/.env` | Strapi 运行必需，脚本随机生成 |
+| `APP_KEYS` 等 6 个密钥 | VM 的 `/opt/blockwiki/.env` | Strapi 运行必需，脚本随机生成 |
 | `DATABASE_CLIENT` / `DATABASE_FILENAME` | VM `.env` | SQLite 文件位置（卷内 `.tmp/data.db`） |
 | `CORS_ORIGINS` | VM `.env` | 允许跨域的前端域名，逗号分隔 |
 | `STRAPI_URL` | Vercel 环境变量 | 前端指向的后端地址 |
@@ -109,7 +109,7 @@ sudo docker compose start strapi
 代码 push 到 GitHub 后：
 ```bash
 # 后端（VM 上）
-cd /opt/lifewiki && sudo git pull && sudo docker compose up -d --build
+cd /opt/blockwiki && sudo git pull && sudo docker compose up -d --build
 # 前端：Vercel 自动从 GitHub 重新部署（或在控制台 Redeploy）
 ```
 

@@ -8,7 +8,7 @@
  */
 import type { EditorJsOutput } from './types';
 
-const DB_NAME = 'lifewiki';
+const DB_NAME = 'blockwiki';
 const STORE = 'pending-blocks';
 
 export type PendingBlock = {

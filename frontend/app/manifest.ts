@@ -7,8 +7,8 @@ import type { MetadataRoute } from 'next';
  */
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'LifeWiki',
-    short_name: 'LifeWiki',
+    name: 'BlockWiki',
+    short_name: 'BlockWiki',
     description: '基于 Block 的生活 Wiki',
     start_url: '/capture',
     display: 'standalone',

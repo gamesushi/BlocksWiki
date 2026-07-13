@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { ConnectButton } from '@/components/connect-button';
+import { sourceHost } from '@/lib/markdown';
 import type { Block, Channel } from '@/lib/types';
 
 export type MyChannel = Pick<Channel, 'documentId' | 'title' | 'slug'>;
@@ -15,6 +16,7 @@ export function BlockCard({
   myChannels: MyChannel[];
   showConnect: boolean;
 }) {
+  const srcHost = block.sourceUrl ? sourceHost(block.sourceUrl) : null;
   return (
     <li className="flex flex-col">
       <Link
@@ -37,6 +39,19 @@ export function BlockCard({
           </Link>{' '}
           · {block.connectionCount} 处引用
           {block.commentCount > 0 && <> · {block.commentCount} 评论</>}
+          {srcHost && (
+            <>
+              {' · '}来源{' '}
+              <a
+                href={block.sourceUrl ?? undefined}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-neutral-900"
+              >
+                ↗ {srcHost}
+              </a>
+            </>
+          )}
         </span>
         {showConnect && <ConnectButton blockId={block.documentId} myChannels={myChannels} />}
       </div>

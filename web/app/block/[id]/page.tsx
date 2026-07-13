@@ -9,6 +9,7 @@ import { deleteBlock } from '@/app/actions/blocks';
 import { getComments } from '@/app/actions/comments';
 import { strapiFetch, type StrapiResponse } from '@/lib/strapi';
 import { RenderBlocks } from '@/lib/render-blocks';
+import { sourceHost } from '@/lib/markdown';
 import { ConnectButton } from '@/components/connect-button';
 import { DeleteButton } from '@/components/delete-button';
 import { BlockDescription } from '@/components/block-description';
@@ -55,7 +56,7 @@ export default async function BlockPage({ params }: { params: Promise<{ id: stri
   return (
     <main className="mx-auto max-w-4xl px-6 py-12">
       <header className="mb-10 flex items-center justify-between">
-        <Link href="/" className="text-sm text-neutral-400 hover:text-neutral-900">← LifeWiki</Link>
+        <Link href="/" className="text-sm text-neutral-400 hover:text-neutral-900">← BlockWiki</Link>
         <span className="flex items-center gap-2">
           {isAuthor && (
             <>
@@ -85,6 +86,23 @@ export default async function BlockPage({ params }: { params: Promise<{ id: stri
               {block.creatorName}
             </Link>{' '}
             发布于 {new Date(block.createdAt).toLocaleDateString('zh-CN')}
+            {block.sourceUrl &&
+              (() => {
+                const h = sourceHost(block.sourceUrl);
+                return h ? (
+                  <>
+                    {' · '}来源{' '}
+                    <a
+                      href={block.sourceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-neutral-900"
+                    >
+                      {h}
+                    </a>
+                  </>
+                ) : null;
+              })()}
           </p>
 
           <BlockDescription

@@ -78,7 +78,8 @@ export async function deleteBlock(
 
 export async function createBlock(
   content: EditorJsOutput,
-  blockType: Block['blockType'] = 'text'
+  blockType: Block['blockType'] = 'text',
+  sourceUrl?: string
 ): Promise<CreateBlockResult> {
   if (!content?.blocks?.length) {
     return { ok: false, error: '内容为空，无法发布。' };
@@ -87,7 +88,8 @@ export async function createBlock(
   try {
     const res = await strapiFetch<StrapiResponse<Block>>('/blocks', {
       method: 'POST',
-      body: { data: { content, blockType } }, // creator 由后端从 JWT 注入
+      // creator 由后端从 JWT 注入；sourceUrl（来源溯源）一并透传，后端校验 http(s)
+      body: { data: { content, blockType, ...(sourceUrl ? { sourceUrl } : {}) } },
     });
     // updateTag（Next 16）：立即过期并等新数据 —— 发布后回到 Feed 必须看到自己的 Block
     updateTag('feed');

@@ -41,9 +41,13 @@ export function AddBlockTile({ channelId, channelSlug }: { channelId: string; ch
     router.refresh();
   };
 
-  const submitContent = (content: EditorJsOutput, blockType: 'text' | 'image' | 'link') => {
+  const submitContent = (
+    content: EditorJsOutput,
+    blockType: 'text' | 'image' | 'link',
+    sourceUrl?: string
+  ) => {
     startTransition(async () => {
-      const result = await addBlockToChannel(channelId, channelSlug, content, blockType);
+      const result = await addBlockToChannel(channelId, channelSlug, content, blockType, sourceUrl);
       if (result.ok) done();
       else setError(result.error ?? '添加失败。');
     });
@@ -54,7 +58,7 @@ export function AddBlockTile({ channelId, channelSlug }: { channelId: string; ch
     if (!value) return;
     if (isUrl(value)) {
       const { block, blockType } = urlToBlock(value);
-      submitContent({ time: Date.now(), version: 'tile-1', blocks: [block] }, blockType);
+      submitContent({ time: Date.now(), version: 'tile-1', blocks: [block] }, blockType, value.trim());
       return;
     }
     startTransition(async () => {
@@ -170,6 +174,7 @@ export function AddBlockTile({ channelId, channelSlug }: { channelId: string; ch
           channelId={channelId}
           channelSlug={channelSlug}
           initialBody={text}
+          sourceUrl={isUrl(text) ? text.trim() : undefined}
           onClose={() => setExpanded(false)}
           onAdded={() => { setExpanded(false); done(); }}
         />

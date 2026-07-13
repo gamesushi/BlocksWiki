@@ -1,4 +1,4 @@
-# LifeWiki backend (Strapi) — production compose
+# BlockWiki backend (Strapi) — production compose
 # Run from repo root on the Oracle VM:
 #   docker compose up -d --build
 # Secrets are read from a sibling `.env` file (gitignored). Copy `.env.example` -> `.env`
@@ -9,7 +9,7 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile
-    container_name: lifewiki-strapi
+    container_name: blockwiki-strapi
     restart: unless-stopped
     environment:
       NODE_ENV: production

@@ -25,7 +25,7 @@ export default async function HomePage() {
   return (
     <main className="mx-auto max-w-6xl px-6 py-10">
       <header className="mb-10 flex flex-wrap items-center gap-4">
-        <h1 className="text-lg font-medium tracking-tight">LifeWiki</h1>
+        <h1 className="text-lg font-medium tracking-tight">BlockWiki</h1>
         <nav className="flex items-center gap-3 text-sm text-neutral-500">
           {me && <Link href="/feed" className="hover:text-neutral-900">动态</Link>}
           {me && (

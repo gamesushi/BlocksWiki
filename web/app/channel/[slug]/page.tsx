@@ -8,10 +8,11 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getSession } from '@/app/actions/auth';
 import { deleteChannel } from '@/app/actions/channels';
-import { loadChannelConnections, getChannelAppearances } from '@/app/actions/channel';
+import { loadChannelConnections, getChannelAppearances, reorderChannelConnections } from '@/app/actions/channel';
 import { strapiFetch, type StrapiResponse } from '@/lib/strapi';
 import { DeleteButton } from '@/components/delete-button';
-import { PaginatedConnections } from '@/components/paginated-connections';
+import { EditChannelForm } from '@/components/edit-channel-form';
+import { ChannelGrid } from '@/components/channel-grid';
 import { CollaboratorsPanel } from '@/components/collaborators-panel';
 import { AddBlockTile } from '@/components/add-block-tile';
 import { ViewToggle } from '@/components/view-toggle';
@@ -60,16 +61,22 @@ export default async function ChannelPage({
   const me = session?.me;
   const myChannels = session?.channels ?? [];
   const isOwner = !!me && me.username === channel.ownerName;
+  const isCollaborator = !!me && (channel.collaboratorNames ?? []).includes(me.username);
   // 连结权：public 任何登录用户；closed/private 属主或协作者
-  const canConnect =
-    !!me &&
-    (channel.visibility === 'public' ||
-      isOwner ||
-      (channel.collaboratorNames ?? []).includes(me.username));
+  const canConnect = !!me && (channel.visibility === 'public' || isOwner || isCollaborator);
+  // 排序权：只有属主/协作者可调整全频道展示顺序（不对任意 public 连结者开放，避免误改他人策展的顺序）
+  const canReorder = isOwner || isCollaborator;
 
   return (
     <main className="mx-auto max-w-6xl px-6 py-16">
       <header className="mb-12">
+        {/* 面包屑 —— 对齐 Are.na: BlockWiki / channel */}
+        <nav className="mb-3 text-sm text-neutral-400">
+          <Link href="/" className="hover:text-neutral-600">BlockWiki</Link>
+          <span className="mx-2">/</span>
+          <span className="text-neutral-600">{channel.title}</span>
+        </nav>
+
         <div className="flex items-center justify-between gap-4">
           <h1 className="text-2xl font-medium tracking-tight">{channel.title}</h1>
           <span className="flex shrink-0 items-center gap-2">
@@ -92,6 +99,17 @@ export default async function ChannelPage({
             )}
           </span>
         </div>
+        {isOwner && (
+          <div className="mt-4">
+            <EditChannelForm
+              documentId={channel.documentId}
+              slug={slug}
+              title={channel.title}
+              description={channel.description}
+              visibility={channel.visibility}
+            />
+          </div>
+        )}
         <p className="mt-2 text-sm text-neutral-400">
           <Link href={`/user/${channel.ownerName}`} className="hover:text-neutral-900">
             {channel.ownerName}
@@ -142,13 +160,18 @@ export default async function ChannelPage({
       {firstPage.connections.length === 0 && !canConnect ? (
         <p className="text-sm text-neutral-400">这个频道还没有连结任何 Block。</p>
       ) : (
-        <PaginatedConnections
-          initialConnections={firstPage.connections}
-          initialHasMore={firstPage.hasMore}
+        <ChannelGrid
+          channelDocumentId={channel.documentId}
           channelSlug={slug}
           isOwner={isOwner}
+          canSelect={!!me}
           variant={view}
+          initialConnections={firstPage.connections}
+          initialHasMore={firstPage.hasMore}
           loadMore={loadChannelConnections.bind(null, channel.documentId, slug)}
+          reorderable={canReorder}
+          onReorder={reorderChannelConnections.bind(null, channel.documentId, slug)}
+          myChannels={myChannels}
           leading={
             canConnect ? (
               <AddBlockTile channelId={channel.documentId} channelSlug={slug} />

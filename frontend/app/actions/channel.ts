@@ -4,6 +4,7 @@ import { updateTag } from 'next/cache';
 import { strapiFetch, StrapiError, type StrapiResponse } from '@/lib/strapi';
 import { FEED_PAGE_SIZE } from '@/lib/blocks-query';
 import { textToContent } from '@/lib/editorjs-text';
+import { connectBlock, disconnectBlock } from '@/app/actions/connections';
 import type { Block, Connection, EditorJsOutput } from '@/lib/types';
 
 /**
@@ -15,14 +16,16 @@ export async function addBlockToChannel(
   channelId: string,
   slug: string,
   content: EditorJsOutput,
-  blockType: 'text' | 'image' | 'link' = 'text'
+  blockType: 'text' | 'image' | 'link' = 'text',
+  sourceUrl?: string
 ): Promise<{ ok: boolean; error?: string }> {
   if (!content?.blocks?.length) return { ok: false, error: '内容为空。' };
 
   try {
     const blockRes = await strapiFetch<StrapiResponse<Block>>('/blocks', {
       method: 'POST',
-      body: { data: { content, blockType } },
+      // sourceUrl（来源溯源）透传；后端校验 http(s) 后落库
+      body: { data: { content, blockType, ...(sourceUrl ? { sourceUrl } : {}) } },
     });
     await strapiFetch('/connections/connect', {
       method: 'POST',
@@ -92,6 +95,74 @@ export async function getChannelAppearances(
   }
 }
 
+/**
+ * 拖拽排序落地：仅属主/协作者。只重排 orderedConnectionIds 这批边
+ * （当前已加载的可见集合），服务端在它们已有的 position 数值池内重新分配。
+ */
+export async function reorderChannelConnections(
+  channelId: string,
+  slug: string,
+  orderedConnectionIds: string[]
+): Promise<boolean> {
+  try {
+    await strapiFetch('/connections/reorder', {
+      method: 'POST',
+      body: { channelId, orderedConnectionIds },
+    });
+    updateTag(`channel:${slug}`);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export type BatchResult = { succeeded: number; failed: number };
+
+/** 选中项的最小描述：block 边给 blockId，频道套频道边给 contentChannelId（二者互斥）。 */
+export type SelectedItem = { connectionId: string; blockId?: string; contentChannelId?: string };
+
+/**
+ * 批量"连结到某频道"：对选中的每一项各自调用已审计过的单项 connect 逻辑
+ * （block → connectBlock，频道块 → connectChannelToChannel），不重复实现权限判断。
+ * 目标频道的连结权由每次调用各自校验（和单个 Connect 按钮完全一致的权限模型）。
+ */
+export async function batchConnectToChannel(
+  items: SelectedItem[],
+  targetChannelId: string,
+  targetSlug: string
+): Promise<BatchResult> {
+  let succeeded = 0;
+  let failed = 0;
+  for (const item of items) {
+    const result = item.blockId
+      ? await connectBlock(item.blockId, targetChannelId)
+      : item.contentChannelId
+        ? await connectChannelToChannel(item.contentChannelId, targetChannelId, targetSlug)
+        : { ok: false as const };
+    if (result.ok) succeeded++;
+    else failed++;
+  }
+  return { succeeded, failed };
+}
+
+/**
+ * 批量"从本频道移除"：仅频道属主调用（前端已限定入口），逐条复用已审计的 disconnect 逻辑。
+ * 非属主/非连结者的条目服务端仍会各自 403，此处按次计入失败数而非整体拒绝。
+ */
+export async function batchRemoveFromChannel(
+  connectionIds: string[],
+  slug: string
+): Promise<BatchResult> {
+  let succeeded = 0;
+  let failed = 0;
+  for (const id of connectionIds) {
+    const { ok } = await disconnectBlock(id, slug);
+    if (ok) succeeded++;
+    else failed++;
+  }
+  return { succeeded, failed };
+}
+
 export type ConnectionPage = { connections: Connection[]; hasMore: boolean; page: number };
 
 /** 频道页某一页的边。position desc = Are.na 式新连结排最前 */
@@ -112,6 +183,7 @@ export async function loadChannelConnections(
     'populate[block][fields][1]': 'coverImageUrl',
     'populate[block][fields][2]': 'blockType',
     'populate[block][fields][3]': 'connectionCount',
+    'populate[block][fields][4]': 'sourceUrl',
     'populate[contentChannel][fields][0]': 'title',
     'populate[contentChannel][fields][1]': 'slug',
     'populate[contentChannel][fields][2]': 'ownerName',

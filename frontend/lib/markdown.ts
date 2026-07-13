@@ -124,6 +124,16 @@ export function isUrl(text: string): boolean {
   return /^https?:\/\/\S+$/i.test(text.trim());
 }
 
+/** 取 URL 的主机名用于「来源」展示（"来自 example.com"）；非法 URL 返回 null。 */
+export function sourceHost(url: string | null | undefined): string | null {
+  if (!url) return null;
+  try {
+    return new URL(url).host || null;
+  } catch {
+    return null;
+  }
+}
+
 /** 粘贴/输入的 URL → 对应类型的 Editor.js 块。图片内嵌，视频/普通链接存为可点链接。 */
 export function urlToBlock(url: string): { block: EditorJsBlockNode; blockType: 'image' | 'link' } {
   const u = url.trim();

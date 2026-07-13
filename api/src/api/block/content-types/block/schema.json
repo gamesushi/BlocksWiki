@@ -35,6 +35,9 @@
       "type": "text",
       "maxLength": 2000
     },
+    "sourceUrl": {
+      "type": "string"
+    },
     "connectionCount": {
       "type": "integer",
       "default": 0,

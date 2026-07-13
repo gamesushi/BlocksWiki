@@ -61,6 +61,8 @@ export async function POST(req: NextRequest) {
 
   const content: EditorJsOutput = { time: Date.now(), version: 'capture-1', blocks };
   const blockType = imageBase64 ? 'image' : url && !text ? 'link' : 'text';
+  // 来源溯源：来自分享链接的采集，记录 sourceUrl（后端再次校验 http(s)，非法则丢弃）
+  const safeSourceUrl = typeof url === 'string' && /^https?:\/\//i.test(url.trim()) ? url.trim() : undefined;
 
   const res = await fetch(`${STRAPI_URL}/api/blocks`, {
     method: 'POST',
@@ -68,7 +70,9 @@ export async function POST(req: NextRequest) {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${jwt}`,
     },
-    body: JSON.stringify({ data: { content, blockType } }),
+    body: JSON.stringify({
+      data: { content, blockType, ...(safeSourceUrl ? { sourceUrl: safeSourceUrl } : {}) },
+    }),
   });
 
   if (!res.ok) {

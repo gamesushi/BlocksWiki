@@ -25,7 +25,6 @@ export default async function HomePage() {
   return (
     <main className="mx-auto max-w-6xl px-6 py-10">
       <header className="mb-10 flex flex-wrap items-center gap-4">
-        <h1 className="text-lg font-medium tracking-tight">LifeWiki</h1>
         <nav className="flex items-center gap-3 text-sm text-neutral-500">
           {me && <Link href="/feed" className="hover:text-neutral-900">动态</Link>}
           {me && (
@@ -44,18 +43,6 @@ export default async function HomePage() {
           <Link href="/publish" className="hover:text-neutral-900">发布</Link>
           <Link href="/capture" className="hover:text-neutral-900">快速采集</Link>
         </nav>
-        <div className="ml-auto flex items-center gap-3 text-sm">
-          {me ? (
-            <>
-              <span className="text-neutral-400">{me.username}</span>
-              <form action={logout}>
-                <button type="submit" className="text-neutral-500 hover:text-neutral-900">退出</button>
-              </form>
-            </>
-          ) : (
-            <Link href="/login" className="text-neutral-500 hover:text-neutral-900">登录</Link>
-          )}
-        </div>
       </header>
 
       <div className="mb-10">

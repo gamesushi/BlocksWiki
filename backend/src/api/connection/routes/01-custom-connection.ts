@@ -24,5 +24,11 @@ export default {
       handler: 'connection.disconnect',
       config: { policies: [] },
     },
+    {
+      method: 'POST',
+      path: '/connections/reorder',
+      handler: 'connection.reorder',
+      config: { policies: [] },
+    },
   ],
 };

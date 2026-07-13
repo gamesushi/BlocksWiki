@@ -2,11 +2,11 @@ import type { Metadata, Viewport } from 'next';
 import { QuickCapture } from '@/components/quick-capture';
 
 export const metadata: Metadata = {
-  title: '快速采集 · LifeWiki',
+  title: '快速采集 · BlockWiki',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'LifeWiki',
+    title: 'BlockWiki',
   },
 };
 
