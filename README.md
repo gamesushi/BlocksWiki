@@ -1,8 +1,8 @@
-# BlockWiki
+# BlocksWiki
 
 > A block-based personal knowledge wiki. Capture anything, connect it, and grow a network of ideas.
 
-BlockWiki is a personal knowledge-management app built around the idea of **blocks** — small, atomic pieces of content (a note, a quote, an image, a link). Instead of organizing content into folders, you connect blocks into **channels** to form a navigable graph, Are.na-style. It is designed for fast capture (including a PWA "quick capture" mode) and for curating what you collect.
+BlocksWiki is a personal knowledge-management app built around the idea of **blocks** — small, atomic pieces of content (a note, a quote, an image, a link). Instead of organizing content into folders, you connect blocks into **channels** to form a navigable graph, Are.na-style. It is designed for fast capture (including a PWA "quick capture" mode) and for curating what you collect.
 
 ## Features
 
@@ -29,7 +29,7 @@ BlockWiki is a personal knowledge-management app built around the idea of **bloc
 ## Project Structure
 
 ```
-blockwiki/
+blockswiki/
 ├── api/          # Strapi v5 backend (the live application backend)
 │   ├── src/      # content-types, controllers, bootstrap seed/permissions
 │   └── .tmp/     # SQLite DB + uploads (gitignored, created at runtime)
@@ -103,7 +103,7 @@ Backend (`.env`, copied from `.env.example`):
 | `ENCRYPTION_KEY`     | Data encryption key                                         |
 | `DATABASE_CLIENT`    | `sqlite` (default)                                          |
 | `DATABASE_FILENAME`  | `".tmp/data.db"`                                            |
-| `CORS_ORIGINS`       | Comma-separated frontend origin(s), e.g. `https://blockwiki.yourdomain.com` |
+| `CORS_ORIGINS`       | Comma-separated frontend origin(s), e.g. `https://blockswiki.yourdomain.com` |
 | `BLOCKWIKI_ADMINS`   | Comma-separated usernames promoted to admin on boot (default `midori`) |
 
 Frontend (`.env.local`):
@@ -134,7 +134,7 @@ High-level steps:
 
 ## License
 
-BlockWiki is licensed under the **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)** license.
+BlocksWiki is licensed under the **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)** license.
 
 - You may **share** and **adapt** the material for **non-commercial** purposes only, provided appropriate credit is given.
 - For the full legal text, see the [LICENSE](./LICENSE) file.
@@ -143,4 +143,4 @@ Copyright © 2026 gamesushi.
 
 ---
 
-*BlockWiki is a rebrand of the earlier "LifeWiki" project.*
+*BlocksWiki is a rebrand of the earlier "LifeWiki" project.*

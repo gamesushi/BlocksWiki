@@ -8,8 +8,8 @@ export default function PublishPage() {
   const router = useRouter();
 
   return (
-    <main className="mx-auto max-w-2xl px-6 py-12">
-      <header className="mb-8 flex items-baseline justify-between">
+    <main className="mx-auto max-w-3xl px-6 py-8">
+      <header className="mb-6 flex items-baseline justify-between">
         <h1 className="text-lg font-medium tracking-tight">发布 Block</h1>
         <Link href="/" className="text-sm text-neutral-400 hover:text-neutral-900">← 返回</Link>
       </header>

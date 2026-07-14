@@ -17,15 +17,18 @@ export async function addBlockToChannel(
   slug: string,
   content: EditorJsOutput,
   blockType: 'text' | 'image' | 'link' = 'text',
-  sourceUrl?: string
+  sourceUrl?: string,
+  description?: string
 ): Promise<{ ok: boolean; error?: string }> {
   if (!content?.blocks?.length) return { ok: false, error: '内容为空。' };
 
   try {
     const blockRes = await strapiFetch<StrapiResponse<Block>>('/blocks', {
       method: 'POST',
-      // sourceUrl（来源溯源）透传；后端校验 http(s) 后落库
-      body: { data: { content, blockType, ...(sourceUrl ? { sourceUrl } : {}) } },
+      // sourceUrl（来源溯源）+ description 透传；后端校验后落库
+      body: {
+        data: { content, blockType, ...(sourceUrl ? { sourceUrl } : {}), ...(description ? { description } : {}) },
+      },
     });
     await strapiFetch('/connections/connect', {
       method: 'POST',

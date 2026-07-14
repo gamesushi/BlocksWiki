@@ -61,9 +61,9 @@ export default async function UserPage({
   const iFollow = !!session?.following.includes(username);
 
   return (
-    <main className="mx-auto max-w-6xl px-6 py-10">
+    <main className="px-6 py-10">
       <header className="mb-10">
-        <Link href="/" className="text-sm text-neutral-400 hover:text-neutral-900">← BlockWiki</Link>
+        <Link href="/" className="text-sm text-neutral-400 hover:text-neutral-900">← BlocksWiki</Link>
         <div className="mt-4 flex items-center gap-3">
           <h1 className="text-2xl font-medium tracking-tight">{username}</h1>
           {me && !isSelf && (

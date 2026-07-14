@@ -25,5 +25,12 @@ export default async function EditBlockPage({ params }: { params: Promise<{ id: 
     redirect(`/block/${id}`);
   }
 
-  return <EditBlockForm documentId={id} initialData={block.content} />;
+  return (
+    <EditBlockForm
+      documentId={id}
+      initialData={block.content}
+      initialTitle={block.title}
+      initialDescription={block.description ?? ''}
+    />
+  );
 }

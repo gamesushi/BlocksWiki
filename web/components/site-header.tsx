@@ -11,10 +11,10 @@ export async function SiteHeader() {
 
   return (
     <header className="border-b border-neutral-100 bg-white/80 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-2.5 text-sm">
+      <div className="mx-auto flex max-w-screen-2xl items-center justify-between px-6 py-2.5 text-sm">
         {/* 左侧：品牌 + 首页 */}
         <Link href="/" className="font-medium tracking-tight text-neutral-900 hover:text-neutral-600">
-          BlockWiki
+          BlocksWiki
         </Link>
 
         {/* 右侧：认证 */}

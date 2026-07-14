@@ -1,4 +1,4 @@
-# BlockWiki backend (Strapi) — production compose
+# BlocksWiki backend (Strapi) — production compose
 # Run from repo root on the Oracle VM:
 #   docker compose up -d --build
 # Secrets are read from a sibling `.env` file (gitignored). Copy `.env.example` -> `.env`
@@ -9,7 +9,7 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile
-    container_name: blockwiki-strapi
+    container_name: blockswiki-strapi
     restart: unless-stopped
     environment:
       NODE_ENV: production
@@ -24,6 +24,14 @@ services:
       DATABASE_CLIENT: sqlite
       DATABASE_FILENAME: .tmp/data.db
       CORS_ORIGINS: ${CORS_ORIGINS}
+      # Cloudflare R2 (public image host) — leave empty to keep local disk storage
+      R2_ACCOUNT_ID: ${R2_ACCOUNT_ID}
+      R2_ACCESS_KEY_ID: ${R2_ACCESS_KEY_ID}
+      R2_SECRET_ACCESS_KEY: ${R2_SECRET_ACCESS_KEY}
+      R2_BUCKET: ${R2_BUCKET}
+      R2_REGION: ${R2_REGION}
+      R2_PUBLIC_URL: ${R2_PUBLIC_URL}
+      R2_FOLDER: ${R2_FOLDER}
     volumes:
       # SQLite DB + uploaded media persist here, independent of container lifecycle
       - strapi-data:/opt/app/.tmp

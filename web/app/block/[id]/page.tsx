@@ -1,6 +1,6 @@
 /**
- * Block 详情页：唯一加载完整 content JSON 的地方。
- * 侧栏展示该 Block 被连结到的所有 Channel（图的反向边）。
+ * Block 详情页：are.na 风格双栏布局。
+ * 左侧 = 内容区（正文）；右侧 = 信息栏（元数据 / 描述 / 操作 / 关联频道 / 评论）。
  */
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -54,9 +54,10 @@ export default async function BlockPage({ params }: { params: Promise<{ id: stri
   const isAuthor = me?.username === block.creatorName;
 
   return (
-    <main className="mx-auto max-w-4xl px-6 py-12">
-      <header className="mb-10 flex items-center justify-between">
-        <Link href="/" className="text-sm text-neutral-400 hover:text-neutral-900">← BlockWiki</Link>
+    <main className="px-6 py-10">
+      {/* 顶栏 */}
+      <div className="mx-auto mb-8 flex max-w-screen-xl items-center justify-between">
+        <Link href="/" className="text-sm text-neutral-400 hover:text-neutral-900">← BlocksWiki</Link>
         <span className="flex items-center gap-2">
           {isAuthor && (
             <>
@@ -74,67 +75,80 @@ export default async function BlockPage({ params }: { params: Promise<{ id: stri
               />
             </>
           )}
-          {me && <ConnectButton blockId={block.documentId} myChannels={myChannels} />}
         </span>
-      </header>
+      </div>
 
-      <div className="grid gap-12 md:grid-cols-[1fr_220px]">
+      {/* 双栏主体 */}
+      <div className="mx-auto grid max-w-screen-xl gap-12 lg:grid-cols-[minmax(0,1fr)_340px]">
+        {/* ── 左：内容区 ── */}
         <article className="min-w-0">
           <RenderBlocks content={block.content} />
-          <p className="mb-6 mt-2 text-xs text-neutral-400">
-            <Link href={`/user/${block.creatorName}`} className="hover:text-neutral-900">
-              {block.creatorName}
-            </Link>{' '}
-            发布于 {new Date(block.createdAt).toLocaleDateString('zh-CN')}
-            {block.sourceUrl &&
-              (() => {
-                const h = sourceHost(block.sourceUrl);
-                return h ? (
-                  <>
-                    {' · '}来源{' '}
-                    <a
-                      href={block.sourceUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="hover:text-neutral-900"
-                    >
-                      {h}
-                    </a>
-                  </>
-                ) : null;
-              })()}
-          </p>
+        </article>
 
+        {/* ── 右：信息侧栏 ── */}
+        <aside className="min-w-0 space-y-8">
+          {/* 描述 */}
           <BlockDescription
             blockId={block.documentId}
             initialDescription={block.description ?? ''}
             isAuthor={isAuthor}
           />
 
-          <div className="my-8 border-t border-neutral-100" />
+          {/* 元数据 */}
+          <div className="space-y-1.5 text-xs text-neutral-400">
+            <p>
+              由{' '}
+              <Link href={`/user/${block.creatorName}`} className="text-neutral-500 hover:text-neutral-900">
+                {block.creatorName}
+              </Link>
+            </p>
+            <p>发布于 {new Date(block.createdAt).toLocaleDateString('zh-CN')}</p>
+            {block.sourceUrl &&
+              (() => {
+                const h = sourceHost(block.sourceUrl);
+                return h ? (
+                  <p>
+                    来源{' '}
+                    <a href={block.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-neutral-500 hover:text-neutral-900">
+                      {h}
+                    </a>
+                  </p>
+                ) : null;
+              })()}
+          </div>
 
+          {/* Connect 按钮 */}
+          {me && (
+            <ConnectButton blockId={block.documentId} myChannels={myChannels} />
+          )}
+
+          {/* 分隔线 */}
+          <div className="border-t border-neutral-100" />
+
+          {/* 关联频道 */}
+          <div>
+            <h2 className="mb-3 text-xs font-medium uppercase tracking-wider text-neutral-400">
+              Connected to {connections.length} channel{connections.length !== 1 ? 's' : ''}
+            </h2>
+            <ul className="space-y-2">
+              {connections.map((conn) =>
+                conn.channel ? (
+                  <li key={conn.documentId}>
+                    <Link
+                      href={`/channel/${conn.channel.slug}`}
+                      className="block rounded-lg border border-neutral-200 px-3 py-2 text-sm text-neutral-700 hover:border-neutral-400"
+                    >
+                      {conn.channel.title}
+                      <span className="mt-0.5 block text-[11px] text-neutral-400">由 {conn.connectorName} 连结</span>
+                    </Link>
+                  </li>
+                ) : null
+              )}
+            </ul>
+          </div>
+
+          {/* 评论 */}
           <CommentSection blockId={block.documentId} initialComments={comments} me={me?.username ?? null} />
-        </article>
-
-        <aside>
-          <h2 className="mb-3 text-xs uppercase tracking-widest text-neutral-400">
-            Connected to {connections.length} channels
-          </h2>
-          <ul className="space-y-2">
-            {connections.map((conn) =>
-              conn.channel ? (
-                <li key={conn.documentId}>
-                  <Link
-                    href={`/channel/${conn.channel.slug}`}
-                    className="block rounded-lg border border-neutral-200 px-3 py-2 text-sm text-neutral-700 hover:border-neutral-400"
-                  >
-                    {conn.channel.title}
-                    <span className="mt-0.5 block text-[11px] text-neutral-400">由 {conn.connectorName} 连结</span>
-                  </Link>
-                </li>
-              ) : null
-            )}
-          </ul>
         </aside>
       </div>
     </main>

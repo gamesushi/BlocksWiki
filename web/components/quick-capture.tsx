@@ -111,7 +111,7 @@ export function QuickCapture() {
           disabled={isSaving || !text.trim()}
           className="flex-1 rounded-full bg-neutral-900 px-4 py-2 text-sm text-white disabled:opacity-40"
         >
-          {isSaving ? '存入中…' : '存入 BlockWiki'}
+          {isSaving ? '存入中…' : '存入 BlocksWiki'}
         </button>
       </div>
 

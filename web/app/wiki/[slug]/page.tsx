@@ -21,7 +21,7 @@ export default async function WikiPageView({ params }: { params: Promise<{ slug:
   const resolved = await resolveWikiItems(page.items ?? []);
 
   return (
-    <main className="mx-auto max-w-6xl px-6 py-10">
+    <main className="px-6 py-10">
       <header className="mb-8 flex items-center gap-4">
         <Link href="/wiki" className="text-xs uppercase tracking-widest text-neutral-400 hover:text-neutral-900">
           ← Wiki

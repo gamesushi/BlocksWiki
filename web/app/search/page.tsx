@@ -26,10 +26,10 @@ export default async function SearchPage({
   const myChannels = session?.channels ?? [];
 
   return (
-    <main className="mx-auto max-w-6xl px-6 py-10">
+    <main className="px-6 py-10">
       <header className="mb-8 flex items-baseline gap-4">
         <h1 className="text-lg font-medium tracking-tight">搜索</h1>
-        <Link href="/" className="text-sm text-neutral-400 hover:text-neutral-900">← BlockWiki</Link>
+        <Link href="/" className="text-sm text-neutral-400 hover:text-neutral-900">← BlocksWiki</Link>
       </header>
 
       <div className="mb-10 max-w-xl">

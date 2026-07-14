@@ -21,8 +21,12 @@ export async function createChannel(
       body: { data: { title, visibility } },
     });
   } catch (err) {
-    if (err instanceof StrapiError && err.status === 401) {
-      return { error: '请先登录。' };
+    if (err instanceof StrapiError) {
+      if (err.status === 401) return { error: '请先登录。' };
+      if (err.status === 403)
+        return { error: '权限不足，无法创建频道（账号角色缺少 channel.create 权限）。' };
+      if (err.status === 400) return { error: '提交内容不合法，请检查频道名称。' };
+      if (err.status >= 500) return { error: '服务暂时不可用，请稍后重试。' };
     }
     return { error: '创建失败，请重试。' };
   }

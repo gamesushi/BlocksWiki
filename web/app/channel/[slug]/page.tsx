@@ -68,11 +68,11 @@ export default async function ChannelPage({
   const canReorder = isOwner || isCollaborator;
 
   return (
-    <main className="mx-auto max-w-6xl px-6 py-16">
+    <main className="px-6 py-16">
       <header className="mb-12">
-        {/* 面包屑 —— 对齐 Are.na: BlockWiki / channel */}
+        {/* 面包屑 —— 对齐 Are.na: BlocksWiki / channel */}
         <nav className="mb-3 text-sm text-neutral-400">
-          <Link href="/" className="hover:text-neutral-600">BlockWiki</Link>
+          <Link href="/" className="hover:text-neutral-600">BlocksWiki</Link>
           <span className="mx-2">/</span>
           <span className="text-neutral-600">{channel.title}</span>
         </nav>

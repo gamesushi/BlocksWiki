@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BlockWiki",
-  description: "BlockWiki — 个人知识网络",
+  title: "BlocksWiki",
+  description: "BlocksWiki — 个人知识网络",
 };
 
 export default function RootLayout({

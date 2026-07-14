@@ -32,6 +32,7 @@ export function ExpandedEditor({
   onAdded: () => void;
 }) {
   const [title, setTitle] = useState(initialTitle);
+  const [description, setDescription] = useState('');
   const [body, setBody] = useState(initialBody);
   const [showPreview, setShowPreview] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -71,7 +72,7 @@ export function ExpandedEditor({
       return;
     }
     startTransition(async () => {
-      const result = await addBlockToChannel(channelId, channelSlug, content, finalBlockType, src);
+      const result = await addBlockToChannel(channelId, channelSlug, content, finalBlockType, src, description.trim() || undefined);
       if (result.ok) onAdded();
       else setError(result.error ?? '添加失败。');
     });
@@ -100,8 +101,15 @@ export function ExpandedEditor({
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="标题"
-              className="mb-3 w-full shrink-0 bg-transparent text-2xl font-bold outline-none placeholder:text-neutral-300"
+              placeholder="Title"
+              className="mb-2 w-full shrink-0 bg-transparent text-2xl font-bold outline-none placeholder:text-neutral-300"
+            />
+            <textarea
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Description"
+              rows={2}
+              className="mb-3 w-full shrink-0 resize-none bg-transparent text-sm outline-none placeholder:text-neutral-300"
             />
             <textarea
               ref={bodyRef}

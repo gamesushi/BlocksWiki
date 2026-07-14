@@ -1,15 +1,18 @@
 'use client';
 
-import { useActionState, useEffect, useState } from 'react';
+import { Suspense, useActionState, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { login, register, type AuthState } from '@/app/actions/auth';
 
-export default function LoginPage() {
+function LoginForm() {
   const searchParams = useSearchParams();
   const initialMode = searchParams.get('mode') === 'register' ? 'register' : 'login';
   const [mode, setMode] = useState<'login' | 'register'>(initialMode);
   const [loginState, loginAction, loginPending] = useActionState<AuthState, FormData>(login, null);
-  const [registerState, registerAction, registerPending] = useActionState<AuthState, FormData>(register, null);
+  const [registerState, registerAction, registerPending] = useActionState<AuthState, FormData>(
+    register,
+    null
+  );
 
   const error = mode === 'login' ? loginState?.error : registerState?.error;
   const pending = mode === 'login' ? loginPending : registerPending;
@@ -19,7 +22,7 @@ export default function LoginPage() {
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-sm flex-col justify-center px-6">
-      <h1 className="mb-1 text-xl font-medium tracking-tight">BlockWiki</h1>
+      <h1 className="mb-1 text-xl font-medium tracking-tight">BlocksWiki</h1>
       <p className="mb-8 text-sm text-neutral-400">基于 Block 的生活 Wiki</p>
 
       <div className="mb-6 flex gap-4 text-sm">
@@ -41,8 +44,19 @@ export default function LoginPage() {
 
       {mode === 'login' ? (
         <form action={loginAction} className="flex flex-col gap-3">
-          <input name="identifier" placeholder="用户名或邮箱" autoComplete="username" className={inputCls} />
-          <input name="password" type="password" placeholder="密码" autoComplete="current-password" className={inputCls} />
+          <input
+            name="identifier"
+            placeholder="用户名或邮箱"
+            autoComplete="username"
+            className={inputCls}
+          />
+          <input
+            name="password"
+            type="password"
+            placeholder="密码"
+            autoComplete="current-password"
+            className={inputCls}
+          />
           <button
             type="submit"
             disabled={pending}
@@ -55,7 +69,13 @@ export default function LoginPage() {
         <form action={registerAction} className="flex flex-col gap-3">
           <input name="username" placeholder="用户名" autoComplete="username" className={inputCls} />
           <input name="email" type="email" placeholder="邮箱" autoComplete="email" className={inputCls} />
-          <input name="password" type="password" placeholder="密码（至少 6 位）" autoComplete="new-password" className={inputCls} />
+          <input
+            name="password"
+            type="password"
+            placeholder="密码（至少 6 位）"
+            autoComplete="new-password"
+            className={inputCls}
+          />
           <button
             type="submit"
             disabled={pending}
@@ -68,5 +88,19 @@ export default function LoginPage() {
 
       <p className="mt-3 min-h-5 text-sm text-red-500">{error}</p>
     </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="mx-auto flex min-h-dvh max-w-sm items-center justify-center px-6 text-sm text-neutral-400">
+          加载中…
+        </main>
+      }
+    >
+      <LoginForm />
+    </Suspense>
   );
 }

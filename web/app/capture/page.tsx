@@ -3,11 +3,11 @@ import Link from 'next/link';
 import { QuickCapture } from '@/components/quick-capture';
 
 export const metadata: Metadata = {
-  title: '快速采集 · BlockWiki',
+  title: '快速采集 · BlocksWiki',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'BlockWiki',
+    title: 'BlocksWiki',
   },
 };
 
