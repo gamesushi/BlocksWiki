@@ -120,7 +120,7 @@ High-level steps:
 
 1. **Backend** — on the VM: `cp .env.example .env`, run `scripts/setup-oracle-vm.sh` (generates secrets + nginx config), then `docker compose up -d --build`. The compose file binds Strapi to `127.0.0.1:1338`; nginx terminates TLS and proxies `/` → `1338`.
 2. **Frontend** — deploy `web/` to Vercel. Set the `STRAPI_URL` environment variable to your backend's public URL and `CORS_ORIGINS` on the backend to your Vercel domain.
-3. **Go public** — in the GitHub repo Settings, set the repository to **Public** (license TBD, see below).
+3. **Go public** — in the GitHub repo Settings, set the repository to **Public**.
 
 ## Scripts
 
@@ -134,7 +134,12 @@ High-level steps:
 
 ## License
 
-**TBD** — a license has not been selected yet. All rights reserved until one is added.
+BlockWiki is licensed under the **Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)** license.
+
+- You may **share** and **adapt** the material for **non-commercial** purposes only, provided appropriate credit is given.
+- For the full legal text, see the [LICENSE](./LICENSE) file.
+
+Copyright © 2026 gamesushi.
 
 ---
 
