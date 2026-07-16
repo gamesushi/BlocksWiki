@@ -151,7 +151,9 @@
     "previewTitle": "Show side-by-side rendered Markdown preview (body stays editable)",
     "preview": "Preview",
     "editOnly": "Edit only",
-    "by": "by"
+    "by": "by",
+    "coverUrlLabel": "Cover image URL (optional)",
+    "coverUrlPlaceholder": "https://… leave blank to auto-generate a title cover"
   },
   "Feed": {
     "title": "Feed",

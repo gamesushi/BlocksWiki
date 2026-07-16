@@ -23,6 +23,7 @@ const HOLDER_ID = 'blockwiki-editor';
 
 export type BlockEditorSubmit = (
   output: EditorJsOutput,
+  coverImageUrl?: string,
 ) => Promise<{ ok: boolean; error?: string; documentId?: string }>;
 
 export interface BlockEditorHandle {
@@ -37,6 +38,8 @@ interface BlockEditorProps {
   submitLabel?: string;
   /** 嵌入扩展板等外层容器时隐藏自身边框与提交按钮，由父组件控制 */
   embedded?: boolean;
+  /** 编辑模式下回填已有题图 URL */
+  initialCoverUrl?: string;
 }
 
 /**
@@ -46,11 +49,12 @@ interface BlockEditorProps {
  */
 export const BlockEditor = forwardRef<BlockEditorHandle, BlockEditorProps>(
   function BlockEditor(
-    { onPublished, initialData, onSubmit, submitLabel, embedded = false },
+    { onPublished, initialData, onSubmit, submitLabel, embedded = false, initialCoverUrl },
     ref,
   ) {
     const editorRef = useRef<EditorJS | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [coverUrl, setCoverUrl] = useState<string>(initialCoverUrl ?? '');
     const [isPending, startTransition] = useTransition();
     const t = useTranslations('Block');
     const tc = useTranslations('Common');
@@ -69,14 +73,19 @@ export const BlockEditor = forwardRef<BlockEditorHandle, BlockEditorProps>(
         }
 
         if (onSubmit) {
-          const result = await onSubmit(output);
+          const result = await onSubmit(output, coverUrl.trim() || undefined);
           if (result.ok) onPublished?.(result.documentId ?? '');
           else setError(result.error ?? te('saveFailedShort'));
           return;
         }
 
         const hasImage = output.blocks.some((b) => b.type === 'image');
-        const result = await createBlock(output, hasImage ? 'image' : 'text');
+        const result = await createBlock(
+          output,
+          hasImage ? 'image' : 'text',
+          undefined,
+          coverUrl.trim() || undefined,
+        );
         if (result.ok) {
           await editor.clear();
           onPublished?.(result.block.documentId);
@@ -158,6 +167,20 @@ export const BlockEditor = forwardRef<BlockEditorHandle, BlockEditorProps>(
 
     return (
       <div>
+        {!embedded && (
+          <div className="mb-4">
+            <label className="mb-1 block text-xs font-medium text-base-content/60">
+              {t('coverUrlLabel')}
+            </label>
+            <input
+              type="url"
+              value={coverUrl}
+              onChange={(e) => setCoverUrl(e.target.value)}
+              placeholder={t('coverUrlPlaceholder')}
+              className="bw-input w-full"
+            />
+          </div>
+        )}
         <div
           id={HOLDER_ID}
           className={

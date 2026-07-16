@@ -151,7 +151,9 @@
     "previewTitle": "并排显示渲染后的 Markdown 预览（正文始终可编辑）",
     "preview": "M↓ 预览",
     "editOnly": "✎ 仅编辑",
-    "by": "由"
+    "by": "由",
+    "coverUrlLabel": "题图 URL（可选）",
+    "coverUrlPlaceholder": "https://… 留空则按标题自动生成美术字题图"
   },
   "Feed": {
     "title": "动态",

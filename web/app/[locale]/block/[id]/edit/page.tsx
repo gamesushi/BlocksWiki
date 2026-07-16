@@ -30,6 +30,7 @@ export default async function EditBlockPage({ params }: { params: Promise<{ id: 
       documentId={id}
       initialData={block.content}
       initialDescription={block.description ?? ''}
+      initialCoverUrl={block.coverImageUrl ?? ''}
     />
   );
 }

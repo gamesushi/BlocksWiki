@@ -3,6 +3,7 @@
 import Link from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
 import { ConnectButton } from '@/components/connect-button';
+import { BlockCover } from '@/components/block-cover';
 import { sourceHost } from '@/lib/markdown';
 import type { Block, Channel } from '@/lib/types';
 
@@ -29,20 +30,11 @@ export function BlockCard({
         {/* 卡片顶部装饰线 — hover 时从透明渐入主色 */}
         <span className="block h-0.5 w-full bg-gradient-to-r from-primary/60 via-primary to-primary/40 opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
 
-        {block.coverImageUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={block.coverImageUrl}
-            alt=""
-            className="h-[calc(100%-3px)] w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-          />
-        ) : (
-          <div className="card-body h-[calc(100%-3px)] items-start justify-center overflow-hidden p-5 sm:p-6">
-            <p className="line-clamp-6 text-sm leading-relaxed text-base-content/75">
-              {block.excerpt || t('emptyBlock')}
-            </p>
-          </div>
-        )}
+        {/* 题图：有 coverImageUrl 显示真图，否则按标题自动生成美术字题图 */}
+        <BlockCover
+          block={block}
+          className="h-[calc(100%-3px)] w-full transition-transform duration-300 group-hover:scale-[1.02]"
+        />
       </Link>
 
       {/* 元信息行 */}

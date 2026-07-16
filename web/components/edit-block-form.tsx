@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useRouter } from '@/i18n/navigation';
 import Link from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
@@ -12,14 +12,18 @@ export function EditBlockForm({
   documentId,
   initialData,
   initialDescription = '',
+  initialCoverUrl = '',
 }: {
   documentId: string;
   initialData: EditorJsOutput;
   initialDescription?: string;
+  initialCoverUrl?: string;
 }) {
   const router = useRouter();
   const editorRef = useRef<BlockEditorHandle>(null);
+  const [coverUrl, setCoverUrl] = useState<string>(initialCoverUrl);
   const t = useTranslations('Form');
+  const tBlock = useTranslations('Block');
 
   return (
     <div
@@ -37,8 +41,20 @@ export function EditBlockForm({
           if (e.key === 'Escape') router.push(`/block/${documentId}`);
         }}
       >
-        {/* 描述区 */}
-        <div className="shrink-0 border-b border-base-300 px-6 pb-3 pt-5">
+        {/* 题图 + 描述区 */}
+        <div className="shrink-0 space-y-3 border-b border-base-300 px-6 pb-3 pt-5">
+          <div>
+            <label className="mb-1 block text-xs font-medium text-base-content/60">
+              {tBlock('coverUrlLabel')}
+            </label>
+            <input
+              type="url"
+              value={coverUrl}
+              onChange={(e) => setCoverUrl(e.target.value)}
+              placeholder={tBlock('coverUrlPlaceholder')}
+              className="bw-input w-full"
+            />
+          </div>
           <textarea
             defaultValue={initialDescription}
             placeholder="Description"
@@ -53,8 +69,11 @@ export function EditBlockForm({
             ref={editorRef}
             embedded
             initialData={initialData}
+            initialCoverUrl={initialCoverUrl}
             submitLabel={t('saveChanges')}
-            onSubmit={(output: EditorJsOutput) => updateBlock(documentId, output)}
+            onSubmit={(output: EditorJsOutput) =>
+              updateBlock(documentId, output, coverUrl.trim())
+            }
             onPublished={() => router.push(`/block/${documentId}`)}
           />
         </div>

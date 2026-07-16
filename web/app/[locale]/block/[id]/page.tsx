@@ -17,6 +17,7 @@ import { sourceHost } from '@/lib/markdown';
 import { ConnectButton } from '@/components/connect-button';
 import { DeleteButton } from '@/components/delete-button';
 import { BlockDescription } from '@/components/block-description';
+import { BlockCover } from '@/components/block-cover';
 import { CommentSection } from '@/components/comment-section';
 import type { Block, Connection } from '@/lib/types';
 
@@ -131,6 +132,12 @@ export default async function BlockPage({ params }: { params: Promise<{ id: stri
           )}
         </span>
       </div>
+
+      {/* 题图 hero：有 coverImageUrl 显示真图，否则按标题自动生成美术字题图 */}
+      <BlockCover
+        block={block}
+        className="mb-8 h-52 w-full rounded-xl shadow-sm"
+      />
 
       {/* 双栏主体 */}
       <div className="mx-auto grid max-w-screen-xl gap-12 lg:grid-cols-[minmax(0,1fr)_340px]">

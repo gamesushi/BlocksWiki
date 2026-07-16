@@ -15,7 +15,8 @@ export type CreateBlockResult =
 
 export async function updateBlock(
   documentId: string,
-  content: EditorJsOutput
+  content: EditorJsOutput,
+  coverImageUrl?: string
 ): Promise<{ ok: boolean; error?: string; documentId?: string }> {
   const t = await getTranslations('Errors');
   if (!content?.blocks?.length) {
@@ -25,7 +26,14 @@ export async function updateBlock(
   try {
     await strapiFetch<StrapiResponse<Block>>(`/blocks/${documentId}`, {
       method: 'PUT',
-      body: { data: { content, blockType: hasImage ? 'image' : 'text' } },
+      // coverImageUrl 透传（含空串 = 清空题图）；不传则该字段保持原值
+      body: {
+        data: {
+          content,
+          blockType: hasImage ? 'image' : 'text',
+          ...(coverImageUrl !== undefined ? { coverImageUrl } : {}),
+        },
+      },
     });
     updateTag('feed');
     updateTag(`block:${documentId}`);
@@ -83,7 +91,8 @@ export async function deleteBlock(
 export async function createBlock(
   content: EditorJsOutput,
   blockType: Block['blockType'] = 'text',
-  sourceUrl?: string
+  sourceUrl?: string,
+  coverImageUrl?: string
 ): Promise<CreateBlockResult> {
   const t = await getTranslations('Errors');
   if (!content?.blocks?.length) {
@@ -93,8 +102,15 @@ export async function createBlock(
   try {
     const res = await strapiFetch<StrapiResponse<Block>>('/blocks', {
       method: 'POST',
-      // creator 由后端从 JWT 注入；sourceUrl（来源溯源）一并透传，后端校验 http(s)
-      body: { data: { content, blockType, ...(sourceUrl ? { sourceUrl } : {}) } },
+      // creator 由后端从 JWT 注入；sourceUrl / coverImageUrl 一并透传
+      body: {
+        data: {
+          content,
+          blockType,
+          ...(sourceUrl ? { sourceUrl } : {}),
+          ...(coverImageUrl ? { coverImageUrl } : {}),
+        },
+      },
     });
     // updateTag（Next 16）：立即过期并等新数据 —— 发布后回到 Feed 必须看到自己的 Block
     updateTag('feed');
