@@ -25,14 +25,14 @@ export function LocaleSwitcher() {
     <div className="flex items-center gap-1 text-xs">
       {routing.locales.map((loc, i) => (
         <span key={loc} className="flex items-center gap-1">
-          {i > 0 && <span className="text-neutral-300">/</span>}
+          {i > 0 && <span className="text-base-content/30">/</span>}
           <button
             type="button"
             onClick={() => switchTo(loc)}
             className={
               loc === locale
-                ? 'font-medium text-neutral-900'
-                : 'text-neutral-400 hover:text-neutral-600'
+                ? 'font-medium text-base-content'
+                : 'text-base-content/50 hover:text-base-content/70'
             }
             aria-current={loc === locale ? 'true' : undefined}
           >

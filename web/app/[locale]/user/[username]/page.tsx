@@ -83,29 +83,29 @@ export default async function UserPage({
   return (
     <main className="px-6 py-10">
       <header className="mb-10">
-        <Link href="/" className="text-sm text-neutral-400 hover:text-neutral-900">{t('backHome')}</Link>
+        <Link href="/" className="text-sm bw-muted hover:text-base-content">{t('backHome')}</Link>
         <div className="mt-4 flex items-center gap-3">
           <h1 className="text-2xl font-medium tracking-tight">{username}</h1>
           {me && !isSelf && (
             <FollowButton kind="user" username={username} initialFollowing={iFollow} />
           )}
         </div>
-        <p className="mt-1 text-sm text-neutral-400">
+        <p className="mt-1 text-sm bw-muted">
           {blocks.length} blocks · {channels.length} channels · {profile?.followerCount ?? 0} {t('followers')}
         </p>
       </header>
 
       {channels.length > 0 && (
         <section className="mb-10 flex flex-wrap items-center gap-2">
-          <span className="mr-1 text-xs uppercase tracking-widest text-neutral-400">Channels</span>
+          <span className="bw-sep mr-1">Channels</span>
           {channels.map((ch) => (
             <Link
               key={ch.documentId}
               href={`/channel/${ch.slug}`}
-              className="rounded-full border border-neutral-200 px-3 py-1.5 text-xs text-neutral-600 hover:border-neutral-900 hover:text-neutral-900"
+              className="bw-badge"
             >
               {ch.title}
-              {ch.visibility === 'private' && <span className="ml-1 text-neutral-300">🔒</span>}
+              {ch.visibility === 'private' && <span className="text-base-content/30">🔒</span>}
             </Link>
           ))}
         </section>
@@ -116,18 +116,18 @@ export default async function UserPage({
           <li key={block.documentId} className="flex flex-col">
             <Link
               href={`/block/${block.documentId}`}
-              className="flex aspect-square flex-col rounded-lg border border-neutral-200 bg-white p-4 transition-colors hover:border-neutral-400"
+              className="bw-card bw-card-hover flex aspect-square flex-col p-4"
             >
               {block.coverImageUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={block.coverImageUrl} alt="" className="h-full w-full rounded object-cover" />
               ) : (
-                <p className="line-clamp-6 text-sm leading-relaxed text-neutral-700">
+                <p className="line-clamp-6 text-sm leading-relaxed text-base-content/80">
                   {block.excerpt || t('emptyBlock')}
                 </p>
               )}
             </Link>
-            <p className="mt-2 text-[11px] text-neutral-400">{block.connectionCount} {t('references')}</p>
+            <p className="mt-2 text-[11px] bw-muted">{block.connectionCount} {t('references')}</p>
           </li>
         ))}
       </ul>

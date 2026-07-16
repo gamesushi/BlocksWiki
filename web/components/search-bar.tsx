@@ -54,17 +54,22 @@ export function SearchBar({
 
   return (
     <form onSubmit={onSubmit} className="relative">
+      <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-base-content/35">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-4.3-4.3m1.8-5.2a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" />
+        </svg>
+      </span>
       <input
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onFocus={() => (focused.current = true)}
         onBlur={() => (focused.current = false)}
         placeholder={t('placeholder')}
-        className="w-full rounded-full border border-neutral-200 bg-white px-5 py-2.5 text-sm outline-none focus:border-neutral-400"
+        className="input input-bordered w-full rounded-full bg-base-100 pl-11 pr-5 text-sm shadow-sm transition-all focus:border-primary/50 focus:shadow-md focus:outline-none"
       />
       {instant && isPending && (
-        <span className="absolute right-5 top-1/2 -translate-y-1/2 text-xs text-neutral-300">
-          {t('searching')}
+        <span className="absolute right-5 top-1/2 -translate-y-1/2">
+          <span className="loading loading-spinner loading-xs text-base-content/30" />
         </span>
       )}
     </form>

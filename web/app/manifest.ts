@@ -20,8 +20,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: t.Common.tagline,
     start_url: '/publish',
     display: 'standalone',
-    background_color: '#fafafa',
-    theme_color: '#171717',
+    background_color: '#faf8f4',
+    theme_color: '#e0795a',
     icons: [
       { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
       { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png' },

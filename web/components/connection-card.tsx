@@ -13,8 +13,8 @@ function SelectCheckbox({ selected }: { selected: boolean }) {
     <span
       className={`pointer-events-none absolute left-2 top-2 z-10 flex h-5 w-5 items-center justify-center rounded border text-[11px] ${
         selected
-          ? 'border-blue-600 bg-blue-600 text-white'
-          : 'border-neutral-300 bg-white/90 text-transparent'
+          ? 'border-primary bg-primary text-primary-content'
+          : 'border-base-300 bg-base-100/90 text-transparent'
       }`}
     >
       ✓
@@ -56,8 +56,7 @@ export function ConnectionCard({
   };
   const dragCls = drag ? 'cursor-grab active:cursor-grabbing' : '';
   const draggingCls = drag?.isDragging ? 'opacity-30' : '';
-  const selectedCls = selectMode && selected ? 'ring-2 ring-blue-500 ring-offset-1' : '';
-
+  const selectedCls = selectMode && selected ? 'ring-2 ring-primary ring-offset-1' : '';
   const onLinkClick = (e: React.MouseEvent) => {
     if (!selectMode) return;
     e.preventDefault();
@@ -69,19 +68,19 @@ export function ConnectionCard({
     const ch = conn.contentChannel;
     return (
       <li className={`group relative flex flex-col ${dragCls} ${draggingCls}`} {...dragProps}>
-        {drag && <span className="pointer-events-none absolute right-2 top-2 z-10 text-xs text-neutral-500 opacity-0 group-hover:opacity-100">⠿</span>}
+        {drag && <span className="pointer-events-none absolute right-2 top-2 z-10 text-xs text-base-content/50 opacity-0 group-hover:opacity-100">⠿</span>}
         {selectMode && <SelectCheckbox selected={!!selected} />}
         <Link
           href={`/channel/${ch.slug}`}
           onClick={onLinkClick}
-          className={`flex aspect-square flex-col justify-between rounded-lg border border-neutral-800 bg-neutral-900 p-4 text-neutral-100 transition-opacity hover:opacity-90 ${selectedCls}`}
+          className={`flex aspect-square flex-col justify-between rounded-lg border border-base-300 bg-base-300 p-4 text-base-content transition-opacity hover:opacity-90 ${selectedCls}`}
         >
-          <span className="text-[10px] uppercase tracking-widest text-neutral-500">Channel</span>
+          <span className="text-[10px] uppercase tracking-widest text-base-content/50">Channel</span>
           <span className="text-sm font-medium leading-snug">{ch.title}</span>
-          <span className="text-[11px] text-neutral-400">{ch.connectionCount} blocks</span>
+          <span className="text-[11px] bw-muted">{ch.connectionCount} blocks</span>
         </Link>
         <div className="mt-2 flex items-center justify-between">
-          <span className="text-[11px] text-neutral-400">{tb.rich('connectedBy', { name: () => conn.connectorName })}</span>
+          <span className="text-[11px] bw-muted">{tb.rich('connectedBy', { name: () => conn.connectorName })}</span>
           {isOwner && !selectMode && <DisconnectButton connectionId={conn.documentId} channelSlug={channelSlug} />}
         </div>
       </li>
@@ -91,24 +90,24 @@ export function ConnectionCard({
   if (!conn.block) return null;
   return (
     <li className={`group relative flex flex-col ${dragCls} ${draggingCls}`} {...dragProps}>
-      {drag && <span className="pointer-events-none absolute right-2 top-2 z-10 text-xs text-neutral-300 opacity-0 group-hover:opacity-100">⠿</span>}
+      {drag && <span className="pointer-events-none absolute right-2 top-2 z-10 text-xs text-base-content/40 opacity-0 group-hover:opacity-100">⠿</span>}
       {selectMode && <SelectCheckbox selected={!!selected} />}
       <Link
         href={`/block/${conn.block.documentId}`}
         onClick={onLinkClick}
-        className={`flex aspect-square flex-col rounded-lg border border-neutral-200 bg-white p-4 transition-colors hover:border-neutral-400 ${selectedCls}`}
+        className={`bw-card bw-card-hover flex aspect-square flex-col p-4 ${selectedCls}`}
       >
         {conn.block.coverImageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img src={conn.block.coverImageUrl} alt="" draggable={false} className="h-full w-full rounded object-cover" />
         ) : (
-          <p className="line-clamp-6 text-sm leading-relaxed text-neutral-700">
+          <p className="line-clamp-6 text-sm leading-relaxed text-base-content/80">
             {conn.block.excerpt || t('emptyBlock')}
           </p>
         )}
       </Link>
       <div className="mt-2 flex items-center justify-between">
-        <span className="text-[11px] text-neutral-400">
+        <span className="text-[11px] bw-muted">
           {tb.rich('connectedBy', { name: () => conn.connectorName })} · {conn.block.connectionCount} {t('references')}
           {conn.block.sourceUrl &&
             (() => {
@@ -120,7 +119,7 @@ export function ConnectionCard({
                     href={conn.block.sourceUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="hover:text-neutral-900"
+                    className="hover:text-base-content"
                   >
                     ↗ {h}
                   </a>

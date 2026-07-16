@@ -23,11 +23,11 @@ export function EditBlockForm({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-white/70 p-6 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-base-100/70 p-6 backdrop-blur-sm"
       onClick={() => router.push(`/block/${documentId}`)}
     >
       <div
-        className="flex h-[80vh] w-full max-w-4xl flex-col rounded-xl border border-blue-300 bg-neutral-50 shadow-xl"
+        className="flex h-[80vh] w-full max-w-4xl flex-col rounded-xl border border-primary/40 bg-base-100 shadow-xl"
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => {
           if ((e.metaKey || e.ctrlKey) && e.key === 's') {
@@ -38,12 +38,12 @@ export function EditBlockForm({
         }}
       >
         {/* 描述区 */}
-        <div className="shrink-0 border-b border-neutral-200 px-6 pt-5 pb-3">
+        <div className="shrink-0 border-b border-base-300 px-6 pb-3 pt-5">
           <textarea
             defaultValue={initialDescription}
             placeholder="Description"
             rows={2}
-            className="w-full resize-none bg-transparent text-sm outline-none placeholder:text-neutral-300"
+            className="w-full resize-none bg-transparent text-sm text-base-content outline-none placeholder:text-base-content/40"
           />
         </div>
 
@@ -60,17 +60,17 @@ export function EditBlockForm({
         </div>
 
         {/* 底部栏 */}
-        <div className="flex items-center justify-between border-t border-neutral-200 px-4 py-3">
+        <div className="flex items-center justify-between border-t border-base-300 px-4 py-3">
           <Link
             href={`/block/${documentId}`}
-            className="rounded border border-neutral-300 px-3 py-1 text-xs text-neutral-500 hover:border-neutral-900 hover:text-neutral-900"
+            className="bw-btn-ghost text-xs"
           >
             {t('cancelBack')}
           </Link>
           <button
             type="button"
             onClick={() => editorRef.current?.submit()}
-            className="rounded-md bg-blue-900 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800"
+            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-content shadow-sm transition-colors hover:bg-primary/90"
           >
             {t('saveChanges')}
           </button>

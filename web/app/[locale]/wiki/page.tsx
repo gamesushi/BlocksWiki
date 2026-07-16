@@ -33,11 +33,11 @@ export default async function WikiHomePage() {
     <main className="px-6 py-10">
       <header className="mb-10 flex flex-wrap items-center gap-4">
         <h1 className="text-lg font-medium tracking-tight">{t('homeTitle')}</h1>
-        <Link href="/" className="text-sm text-neutral-400 hover:text-neutral-900">{tc('backHome')}</Link>
+        <Link href="/" className="text-sm bw-muted hover:text-base-content">{tc('backHome')}</Link>
         {isAdmin && (
           <Link
             href="/wiki/new"
-            className="ml-auto rounded-full bg-neutral-900 px-4 py-1.5 text-xs text-white hover:bg-neutral-700"
+            className="ml-auto bw-btn"
           >
             {t('newPage')}
           </Link>
@@ -49,11 +49,11 @@ export default async function WikiHomePage() {
           <WikiNav nodes={nodes} />
         </aside>
         <section>
-          <p className="mb-6 text-sm leading-relaxed text-neutral-500">
+          <p className="mb-6 text-sm leading-relaxed text-base-content/60">
             {t('intro')}
           </p>
           {roots.length === 0 ? (
-            <p className="text-sm text-neutral-400">
+            <p className="text-sm bw-muted">
               {isAdmin ? t('noPagesOwner') : t('noPages')}
             </p>
           ) : (
@@ -62,10 +62,10 @@ export default async function WikiHomePage() {
                 <li key={n.documentId}>
                   <Link
                     href={`/wiki/${n.slug}`}
-                    className="block rounded-lg border border-neutral-200 bg-white px-5 py-4 transition-colors hover:border-neutral-400"
+                    className="bw-card bw-card-hover block px-5 py-4"
                   >
-                    <span className="text-sm font-medium text-neutral-900">{n.title}</span>
-                    {!n.published && <span className="ml-2 text-[10px] text-amber-500">{t('draft')}</span>}
+                    <span className="text-sm font-medium text-base-content">{n.title}</span>
+                    {!n.published && <span className="ml-2 text-[10px] text-warning">{t('draft')}</span>}
                   </Link>
                 </li>
               ))}

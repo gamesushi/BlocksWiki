@@ -32,20 +32,20 @@ export default async function SearchPage({
     <main className="px-6 py-10">
       <header className="mb-8 flex items-baseline gap-4">
         <h1 className="text-lg font-medium tracking-tight">{t('title')}</h1>
-        <Link href="/" className="text-sm text-neutral-400 hover:text-neutral-900">{tc('backHome')}</Link>
+        <Link href="/" className="text-sm bw-muted hover:text-base-content">{tc('backHome')}</Link>
       </header>
 
       <div className="mb-10 max-w-xl">
         <SearchBar defaultValue={query} instant />
       </div>
 
-      {!query && <p className="text-sm text-neutral-400">{t('hint')}</p>}
+      {!query && <p className="text-sm bw-muted">{t('hint')}</p>}
 
       {query && (
         <>
           {channels.length > 0 && (
             <section className="mb-12">
-              <h2 className="mb-3 text-xs uppercase tracking-widest text-neutral-400">
+              <h2 className="mb-3 bw-sep">
                 {tc('channel')} · {channels.length}
               </h2>
               <ul className="flex flex-wrap gap-2">
@@ -53,11 +53,11 @@ export default async function SearchPage({
                   <li key={ch.documentId}>
                     <Link
                       href={`/channel/${ch.slug}`}
-                      className="inline-flex items-center gap-1 rounded-full border border-neutral-200 px-3 py-1.5 text-xs text-neutral-600 hover:border-neutral-900 hover:text-neutral-900"
+                      className="bw-badge"
                     >
                       {ch.title}
-                      {ch.visibility === 'private' && <span className="text-neutral-300">🔒</span>}
-                      <span className="text-neutral-300">· {ch.connectionCount}</span>
+                      {ch.visibility === 'private' && <span className="text-base-content/30">🔒</span>}
+                      <span className="text-base-content/30">· {ch.connectionCount}</span>
                     </Link>
                   </li>
                 ))}
@@ -66,9 +66,9 @@ export default async function SearchPage({
           )}
 
           <section>
-            <h2 className="mb-4 text-xs uppercase tracking-widest text-neutral-400">Blocks</h2>
+            <h2 className="mb-4 bw-sep">Blocks</h2>
             {blockPage.blocks.length === 0 ? (
-              <p className="text-sm text-neutral-400">{t('noBlockMatch', { query })}</p>
+              <p className="text-sm bw-muted">{t('noBlockMatch', { query })}</p>
             ) : (
               <PaginatedBlocks
                 key={query}

@@ -23,7 +23,7 @@ function buildTree(nodes: WikiTreeNode[]): TreeItem[] {
 function NavList({ items, activeSlug, depth }: { items: TreeItem[]; activeSlug?: string; depth: number }) {
   const t = useTranslations('Wiki');
   return (
-    <ul className={depth > 0 ? 'ml-3 border-l border-neutral-100 pl-3' : ''}>
+    <ul className={depth > 0 ? 'ml-3 border-l border-base-300/60 pl-3' : ''}>
       {items.map((item) => {
         const active = item.slug === activeSlug;
         return (
@@ -31,11 +31,11 @@ function NavList({ items, activeSlug, depth }: { items: TreeItem[]; activeSlug?:
             <Link
               href={`/wiki/${item.slug}`}
               className={`block truncate rounded px-2 py-1 text-sm ${
-                active ? 'bg-neutral-900 text-white' : 'text-neutral-600 hover:bg-neutral-100'
+                active ? 'bg-primary text-primary-content' : 'text-base-content/70 hover:bg-base-200'
               }`}
             >
               {item.title}
-              {!item.published && <span className="ml-1 text-[10px] text-amber-500">{t('draft')}</span>}
+              {!item.published && <span className="ml-1 text-[10px] text-warning">{t('draft')}</span>}
             </Link>
             {item.children.length > 0 && (
               <NavList items={item.children} activeSlug={activeSlug} depth={depth + 1} />
@@ -52,11 +52,11 @@ export function WikiNav({ nodes, activeSlug }: { nodes: WikiTreeNode[]; activeSl
   const tree = buildTree(nodes);
   return (
     <nav className="text-sm">
-      <Link href="/wiki" className="mb-3 block text-xs uppercase tracking-widest text-neutral-400 hover:text-neutral-900">
+      <Link href="/wiki" className="mb-3 block bw-sep hover:text-base-content">
         Wiki
       </Link>
       {tree.length === 0 ? (
-        <p className="text-xs text-neutral-400">{t('navEmpty')}</p>
+        <p className="text-xs bw-muted">{t('navEmpty')}</p>
       ) : (
         <NavList items={tree} activeSlug={activeSlug} depth={0} />
       )}

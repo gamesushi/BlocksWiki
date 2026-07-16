@@ -46,24 +46,24 @@ export function ReadNav({ ids }: { ids: string[] }) {
   };
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-neutral-200 bg-white/90 backdrop-blur">
+    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-base-300/60 bg-base-100/90 backdrop-blur">
       <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-2 text-sm">
         <button
           type="button"
           onClick={() => go(current - 1)}
           disabled={current === 0}
-          className="rounded-full border border-neutral-300 px-4 py-1.5 text-neutral-700 transition-colors hover:border-neutral-900 hover:text-neutral-900 disabled:opacity-30"
+          className="rounded-full border border-base-300 px-4 py-1.5 text-base-content/70 transition-colors hover:border-base-content/40 hover:text-base-content disabled:opacity-30"
         >
           ← 上一段
         </button>
-        <span className="text-xs text-neutral-400">
+        <span className="text-xs bw-muted">
           第 {current + 1} / {ids.length} 段
         </span>
         <button
           type="button"
           onClick={() => go(current + 1)}
           disabled={current === ids.length - 1}
-          className="rounded-full border border-neutral-300 px-4 py-1.5 text-neutral-700 transition-colors hover:border-neutral-900 hover:text-neutral-900 disabled:opacity-30"
+          className="rounded-full border border-base-300 px-4 py-1.5 text-base-content/70 transition-colors hover:border-base-content/40 hover:text-base-content disabled:opacity-30"
         >
           下一段 →
         </button>

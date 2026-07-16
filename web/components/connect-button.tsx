@@ -70,34 +70,42 @@ export function ConnectButton({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="rounded-full border border-neutral-300 px-3 py-1 text-xs tracking-wide text-neutral-600 hover:border-neutral-900 hover:text-neutral-900"
+        className="btn btn-outline btn-xs gap-0.5 rounded-full border-base-300 font-normal text-base-content/60 transition-all hover:border-primary/50 hover:text-primary hover:shadow-sm"
       >
-        {t('connect')} →
+        {t('connect')}
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+        </svg>
       </button>
 
       {open && (
-        <div className="absolute right-0 z-10 mt-1 w-64 rounded-lg border border-neutral-200 bg-white py-1 shadow-sm">
-          <div className="px-2 py-1.5">
+        <div className="dropdown-content card compact z-20 mt-2 w-72 border border-base-300 bg-base-100 shadow-lg">
+          <div className="card-body p-4 pb-3">
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={t('searchPlaceholder')}
-              className="w-full rounded-md border border-neutral-200 px-2.5 py-1.5 text-xs outline-none focus:border-neutral-400"
+              className="input input-bordered input-sm w-full bg-base-200 focus:border-primary/50"
+              autoFocus
             />
           </div>
 
           {!query.trim() && (
-            <p className="px-3 pb-1 pt-0.5 text-[10px] uppercase tracking-widest text-neutral-300">
-              {tc('myChannels')}
-            </p>
+            <div className="-mt-1 px-4 pb-1 pt-0">
+              <span className="text-[10px] font-medium uppercase tracking-widest text-base-content/30">
+                {tc('myChannels')}
+              </span>
+            </div>
           )}
 
-          <ul className="max-h-64 overflow-y-auto">
-            {searching && <li className="px-3 py-2 text-xs text-neutral-400">{t('searching')}</li>}
+          <ul className="menu menu-sm max-h-64 overflow-y-auto rounded-box px-2 py-1">
+            {searching && (
+              <li><a className="pointer-events-none text-base-content/40">{t('searching')}</a></li>
+            )}
             {!searching && showing.length === 0 && (
-              <li className="px-3 py-2 text-xs text-neutral-400">
+              <li><a className="pointer-events-none text-base-content/40">
                 {query.trim() ? t('noMatch') : t('createFirst')}
-              </li>
+              </a></li>
             )}
             {showing.map((ch) => {
               const done = connectedIds.includes(ch.documentId);
@@ -107,15 +115,19 @@ export function ConnectButton({
                     type="button"
                     disabled={done || isPending}
                     onClick={() => connect(ch.documentId)}
-                    className="flex w-full items-center justify-between px-3 py-2 text-left text-sm hover:bg-neutral-50 disabled:opacity-50"
+                    className="flex items-center justify-between disabled:!opacity-50"
                   >
-                    <span className="min-w-0 flex-1 truncate">
+                    <span className="min-w-0 truncate">
                       {ch.title}
                       {ch.ownerName && (
-                        <span className="ml-1 text-[11px] text-neutral-400">· {ch.ownerName}</span>
+                        <span className="ml-1 text-[11px] text-base-content/35">· {ch.ownerName}</span>
                       )}
                     </span>
-                    {done && <span className="ml-2 shrink-0 text-xs text-emerald-600">✓</span>}
+                    {done && (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 shrink-0 text-success" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                      </svg>
+                    )}
                   </button>
                 </li>
               );

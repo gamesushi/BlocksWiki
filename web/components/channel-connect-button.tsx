@@ -63,27 +63,27 @@ export function ChannelConnectButton({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="rounded-full border border-neutral-300 px-3 py-1 text-xs text-neutral-600 hover:border-neutral-900 hover:text-neutral-900"
+        className="bw-btn-outline"
       >
         {t('connect')} →
       </button>
       {open && (
-        <div className="absolute right-0 z-10 mt-1 w-64 rounded-lg border border-neutral-200 bg-white py-1 shadow-sm">
+        <div className="absolute right-0 z-10 mt-1 w-64 rounded-lg border border-base-300 bg-base-100 py-1 shadow-sm">
           <div className="px-2 py-1.5">
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={t('placeholder')}
-              className="w-full rounded-md border border-neutral-200 px-2.5 py-1.5 text-xs outline-none focus:border-neutral-400"
+              className="w-full rounded-md border border-base-300 bg-base-100 px-2.5 py-1.5 text-xs text-base-content outline-none transition focus:border-primary"
             />
           </div>
           {!query.trim() && (
-            <p className="px-3 pb-1 text-[10px] uppercase tracking-widest text-neutral-300">{tc('myChannels')}</p>
+            <p className="px-3 pb-1 text-[10px] uppercase tracking-widest text-base-content/30">{tc('myChannels')}</p>
           )}
           <ul className="max-h-64 overflow-y-auto">
-            {searching && <li className="px-3 py-2 text-xs text-neutral-400">{t('searching')}</li>}
+            {searching && <li className="px-3 py-2 text-xs bw-muted">{t('searching')}</li>}
             {!searching && showing.length === 0 && (
-              <li className="px-3 py-2 text-xs text-neutral-400">
+              <li className="px-3 py-2 text-xs bw-muted">
                 {query.trim() ? t('noMatch') : t('noOptions')}
               </li>
             )}
@@ -97,10 +97,10 @@ export function ChannelConnectButton({
                       type="button"
                       disabled={done || isPending}
                       onClick={() => connect(ch.documentId, ch.slug)}
-                      className="flex w-full items-center justify-between px-3 py-2 text-left text-sm hover:bg-neutral-50 disabled:opacity-50"
+                      className="flex w-full items-center justify-between px-3 py-2 text-left text-sm hover:bg-base-200 disabled:opacity-50"
                     >
                       <span className="min-w-0 flex-1 truncate">{ch.title}</span>
-                      {done && <span className="ml-2 shrink-0 text-xs text-emerald-600">✓</span>}
+                      {done && <span className="ml-2 shrink-0 text-xs text-success">✓</span>}
                     </button>
                   </li>
                 );

@@ -36,7 +36,7 @@ export function DisconnectButton({
       onClick={remove}
       disabled={isPending}
       title={t('removeTitle')}
-      className="rounded-full px-2 py-0.5 text-xs text-neutral-300 hover:bg-neutral-100 hover:text-neutral-600 disabled:opacity-40"
+      className="rounded-full px-2 py-0.5 text-xs text-base-content/40 hover:bg-base-200 hover:text-base-content disabled:opacity-40"
     >
       {isPending ? '…' : '✕'}
     </button>

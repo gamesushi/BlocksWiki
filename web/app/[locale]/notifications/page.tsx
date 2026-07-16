@@ -17,8 +17,8 @@ export default async function NotificationsPage() {
   if (!session) {
     return (
       <main className="mx-auto max-w-2xl px-6 py-16 text-center">
-        <p className="text-sm text-neutral-400">
-          <Link href="/login" className="text-neutral-900 underline">{tn('login')}</Link> {t('viewHint')}
+        <p className="text-sm bw-muted">
+          <Link href="/login" className="text-base-content underline">{tn('login')}</Link> {t('viewHint')}
         </p>
       </main>
     );
@@ -32,13 +32,13 @@ export default async function NotificationsPage() {
     <main className="mx-auto max-w-2xl px-6 py-10">
       <header className="mb-8 flex items-baseline gap-4">
         <h1 className="text-lg font-medium tracking-tight">{t('title')}</h1>
-        <Link href="/" className="text-sm text-neutral-400 hover:text-neutral-900">{tc('backHome')}</Link>
+        <Link href="/" className="text-sm bw-muted hover:text-base-content">{tc('backHome')}</Link>
       </header>
 
       {items.length === 0 ? (
-        <p className="text-sm text-neutral-400">{t('empty')}</p>
+        <p className="text-sm bw-muted">{t('empty')}</p>
       ) : (
-        <ul className="divide-y divide-neutral-100">
+        <ul className="divide-y divide-base-300/60">
           {items.map((n) => (
             <NotificationRow key={n.documentId} n={n} />
           ))}

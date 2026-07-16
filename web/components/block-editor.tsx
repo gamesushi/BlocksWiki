@@ -163,19 +163,21 @@ export const BlockEditor = forwardRef<BlockEditorHandle, BlockEditorProps>(
           className={
             embedded
               ? 'min-h-[40vh]'
-              : 'min-h-[60vh] rounded-lg border border-neutral-200 bg-white p-4'
+              : 'min-h-[420px] rounded-xl border border-base-300 bg-base-100 p-6 lg:p-8'
           }
         />
-        {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
+        {error && <p className="mt-3 text-sm text-error">{error}</p>}
         {!embedded && (
-          <button
-            type="button"
-            onClick={submit}
-            disabled={isPending}
-            className="mt-3 rounded-full bg-neutral-900 px-5 py-2 text-sm text-white disabled:opacity-40"
-          >
-            {isPending ? tc('saving') : (submitLabel ?? t('publishBlock'))}
-          </button>
+          <div className="mt-4 flex justify-end">
+            <button
+              type="button"
+              onClick={submit}
+              disabled={isPending}
+              className="rounded-full bg-primary px-6 py-2.5 text-sm font-medium text-primary-content shadow-sm transition-colors hover:bg-primary/90 disabled:opacity-40"
+            >
+              {isPending ? tc('saving') : (submitLabel ?? t('publishBlock'))}
+            </button>
+          </div>
         )}
       </div>
     );

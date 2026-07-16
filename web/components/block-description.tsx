@@ -50,22 +50,22 @@ export function BlockDescription({
           placeholder={t('descPlaceholder')}
           rows={3}
           autoFocus
-          className="w-full resize-none rounded-lg border border-neutral-200 bg-white p-3 text-sm leading-relaxed text-neutral-700 outline-none focus:border-neutral-400"
+          className="bw-textarea text-base-content/80"
         />
-        {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
+        {error && <p className="mt-1 text-xs text-error">{error}</p>}
         <div className="mt-2 flex items-center gap-2">
           <button
             type="button"
             onClick={save}
             disabled={isPending}
-            className="rounded-full bg-neutral-900 px-4 py-1.5 text-xs text-white disabled:opacity-40"
+            className="bw-btn"
           >
             {isPending ? tc('saving') : tc('save')}
           </button>
           <button
             type="button"
             onClick={() => { setDraft(description); setEditing(false); setError(null); }}
-            className="rounded-full border border-neutral-200 px-4 py-1.5 text-xs text-neutral-500 hover:border-neutral-400"
+            className="bw-btn-ghost"
           >
             {tc('cancel')}
           </button>
@@ -77,13 +77,13 @@ export function BlockDescription({
   return (
     <div className="mb-6">
       {description ? (
-        <p className="whitespace-pre-wrap text-sm leading-relaxed text-neutral-500">{description}</p>
+        <p className="whitespace-pre-wrap text-sm leading-relaxed text-base-content/60">{description}</p>
       ) : isAuthor ? null : null}
       {isAuthor && (
         <button
           type="button"
           onClick={() => setEditing(true)}
-          className="mt-1 text-xs text-neutral-300 hover:text-neutral-600"
+          className="mt-1 text-xs text-base-content/40 hover:text-base-content"
         >
           {description ? t('editDesc') : t('addDesc')}
         </button>

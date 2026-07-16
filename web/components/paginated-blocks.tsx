@@ -16,17 +16,20 @@ export function PaginatedBlocks({
   myChannels,
   showConnect,
   loadMore,
+  gridClassName,
 }: {
   initialBlocks: Block[];
   initialHasMore: boolean;
   myChannels: MyChannel[];
   showConnect: boolean;
   loadMore: (page: number) => Promise<LoadMoreResult>;
+  gridClassName?: string;
 }) {
   return (
     <PaginatedList<Block>
       initialItems={initialBlocks}
       initialHasMore={initialHasMore}
+      gridClassName={gridClassName}
       loadMore={async (page) => {
         const r = await loadMore(page);
         return { items: r.blocks, hasMore: r.hasMore, page: r.page };

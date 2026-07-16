@@ -11,12 +11,14 @@ export default function PublishPage() {
   const tc = useTranslations('Common');
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-8">
-      <header className="mb-6 flex items-baseline justify-between">
-        <h1 className="text-lg font-medium tracking-tight">{tp('title')}</h1>
-        <Link href="/" className="text-sm text-neutral-400 hover:text-neutral-900">{tc('back')}</Link>
-      </header>
-      <BlockEditor onPublished={(documentId) => router.push(`/block/${documentId}`)} />
+    <main className="w-full px-6 py-10 lg:px-12">
+      <div className="mx-auto max-w-4xl">
+        <header className="mb-8 flex items-baseline justify-between">
+          <h1 className="text-2xl font-semibold tracking-tight">{tp('title')}</h1>
+          <Link href="/" className="text-sm bw-muted hover:text-base-content">{tc('back')}</Link>
+        </header>
+        <BlockEditor onPublished={(documentId) => router.push(`/block/${documentId}`)} />
+      </div>
     </main>
   );
 }

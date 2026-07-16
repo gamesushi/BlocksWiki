@@ -98,10 +98,10 @@ export default async function ChannelPage({
     <main className="px-6 py-16">
       <header className="mb-12">
         {/* 面包屑 —— 对齐 Are.na: BlocksWiki / channel */}
-        <nav className="mb-3 text-sm text-neutral-400">
-          <Link href="/" className="hover:text-neutral-600">BlocksWiki</Link>
+        <nav className="mb-3 text-sm bw-muted">
+          <Link href="/" className="hover:text-base-content/70">BlocksWiki</Link>
           <span className="mx-2">/</span>
-          <span className="text-neutral-600">{channel.title}</span>
+          <span className="text-base-content/70">{channel.title}</span>
         </nav>
 
         <div className="flex items-center justify-between gap-4">
@@ -137,21 +137,21 @@ export default async function ChannelPage({
             />
           </div>
         )}
-        <p className="mt-2 text-sm text-neutral-400">
-          <Link href={`/user/${channel.ownerName}`} className="hover:text-neutral-900">
+        <p className="mt-2 text-sm bw-muted">
+          <Link href={`/user/${channel.ownerName}`} className="hover:text-base-content">
             {channel.ownerName}
           </Link>{' '}
           · {channel.connectionCount} blocks · {channel.followerCount ?? 0} {tc('followers')} · {channel.visibility}
         </p>
         {channel.description && (
-          <p className="mt-3 max-w-lg text-sm leading-relaxed text-neutral-500">
+          <p className="mt-3 max-w-lg text-sm leading-relaxed text-base-content/60">
             {channel.description}
           </p>
         )}
 
         {/* Info + 视图切换（对齐 Are.na 的 Started/Modified/Length + Grid/Table） */}
-        <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-neutral-100 pt-4">
-          <dl className="flex flex-wrap gap-x-6 gap-y-1 text-xs text-neutral-400">
+        <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-base-300/60 pt-4">
+          <dl className="flex flex-wrap gap-x-6 gap-y-1 text-xs bw-muted">
             <span>{tc('createdOn')} <TimeAgo date={channel.createdAt} /></span>
             <span>{tc('updatedOn')} <TimeAgo date={channel.updatedAt} /></span>
             <span>Length {channel.connectionCount}</span>
@@ -161,12 +161,12 @@ export default async function ChannelPage({
 
         {appearances.length > 0 && (
           <div className="mt-4 flex flex-wrap items-center gap-2">
-            <span className="text-xs uppercase tracking-widest text-neutral-300">{t('appearsIn')}</span>
+            <span className="bw-sep">{t('appearsIn')}</span>
             {appearances.map((ch) => (
               <Link
                 key={ch.documentId}
                 href={`/channel/${ch.slug}`}
-                className="rounded-full border border-neutral-200 px-3 py-1 text-xs text-neutral-600 hover:border-neutral-900 hover:text-neutral-900"
+                className="bw-badge"
               >
                 {ch.title}
               </Link>
@@ -187,7 +187,7 @@ export default async function ChannelPage({
       {isReadView ? (
         <ChannelReader blocks={readBlocks ?? []} />
       ) : firstPage!.connections.length === 0 && !canConnect ? (
-        <p className="text-sm text-neutral-400">{t('empty')}</p>
+        <p className="text-sm bw-muted">{t('empty')}</p>
       ) : (
         <ChannelGrid
           channelDocumentId={channel.documentId}

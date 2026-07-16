@@ -41,27 +41,27 @@ export function CollaboratorsPanel({
   };
 
   return (
-    <section className="mb-10 rounded-lg border border-neutral-200 bg-neutral-50 p-4">
-      <h2 className="mb-1 text-xs uppercase tracking-widest text-neutral-400">{tc('collaborators')}</h2>
-      <p className="mb-3 text-xs text-neutral-400">
+    <section className="bw-card mb-10 p-4">
+      <h2 className="bw-sep">{tc('collaborators')}</h2>
+      <p className="mb-3 text-xs bw-muted">
         {visibility === 'public'
           ? tc('collabPublic')
           : tc('collabRestricted')}
       </p>
 
       <div className="mb-3 flex flex-wrap gap-2">
-        {names.length === 0 && <span className="text-xs text-neutral-400">{tc('noCollaborators')}</span>}
+        {names.length === 0 && <span className="text-xs bw-muted">{tc('noCollaborators')}</span>}
         {names.map((name) => (
           <span
             key={name}
-            className="inline-flex items-center gap-1 rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs text-neutral-600"
+            className="inline-flex items-center gap-1 rounded-full border border-base-300 bg-base-100 px-3 py-1 text-xs text-base-content/70"
           >
             {name}
             <button
               type="button"
               onClick={() => run(name, 'remove')}
               disabled={isPending}
-              className="text-neutral-300 hover:text-red-500 disabled:opacity-40"
+              className="text-base-content/40 hover:text-error disabled:opacity-40"
               title={tc('removeCollaborator')}
             >
               ✕
@@ -81,16 +81,16 @@ export function CollaboratorsPanel({
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder={tf('username')}
-          className="w-40 rounded-full border border-neutral-200 bg-white px-3 py-1.5 text-xs outline-none focus:border-neutral-400"
+          className="w-40 rounded-full border border-base-300 bg-base-100 px-3 py-1.5 text-xs text-base-content outline-none transition focus:border-primary"
         />
         <button
           type="submit"
           disabled={isPending || !input.trim()}
-          className="rounded-full border border-neutral-300 px-3 py-1.5 text-xs text-neutral-600 hover:border-neutral-900 disabled:opacity-40"
+          className="bw-btn-ghost"
         >
           {isPending ? '…' : tc('addCollaborator')}
         </button>
-        {error && <span className="text-xs text-red-500">{error}</span>}
+        {error && <span className="text-xs text-error">{error}</span>}
       </form>
     </section>
   );

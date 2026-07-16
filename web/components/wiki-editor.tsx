@@ -143,11 +143,11 @@ export function WikiEditor({
     });
   };
 
-  const inputCls = 'w-full rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm outline-none focus:border-neutral-400';
+  const inputCls = 'w-full rounded-lg border border-base-300 bg-base-100 px-3 py-2 text-sm text-base-content outline-none transition focus:border-primary';
 
   return (
     <main className="mx-auto max-w-2xl px-6 py-10">
-      <h1 className="mb-8 text-lg font-medium tracking-tight">
+      <h1 className="mb-8 text-lg font-medium tracking-tight text-base-content">
         {mode === 'new' ? t('editorNew') : t('editorEdit')}
       </h1>
 
@@ -163,9 +163,9 @@ export function WikiEditor({
         />
 
         <div className="flex flex-wrap items-center gap-4 text-sm">
-          <label className="flex items-center gap-2 text-neutral-600">
+          <label className="flex items-center gap-2 text-base-content/70">
             {t('parentLabel')}
-            <select value={parent} onChange={(e) => setParent(e.target.value)} className="rounded-lg border border-neutral-200 px-2 py-1.5 text-sm">
+            <select value={parent} onChange={(e) => setParent(e.target.value)} className="rounded-lg border border-base-300 px-2 py-1.5 text-sm text-base-content">
               <option value="">{t('topLevel')}</option>
               {nodes
                 .filter((n) => n.documentId !== documentId)
@@ -176,34 +176,34 @@ export function WikiEditor({
                 ))}
             </select>
           </label>
-          <label className="flex items-center gap-2 text-neutral-600">
+          <label className="flex items-center gap-2 text-base-content/70">
             {t('orderLabel')}
             <input
               type="number"
               value={order}
               onChange={(e) => setOrder(Number(e.target.value) || 0)}
-              className="w-16 rounded-lg border border-neutral-200 px-2 py-1.5 text-sm"
+              className="w-16 rounded-lg border border-base-300 px-2 py-1.5 text-sm text-base-content"
             />
           </label>
-          <label className="flex items-center gap-2 text-neutral-600">
+          <label className="flex items-center gap-2 text-base-content/70">
             <input type="checkbox" checked={published} onChange={(e) => setPublished(e.target.checked)} />
             {t('publishLabel')}
           </label>
         </div>
       </div>
 
-      <h2 className="mb-3 mt-10 text-xs uppercase tracking-widest text-neutral-400">{t('contentArrange')}</h2>
+      <h2 className="bw-sep mb-3 mt-10">{t('contentArrange')}</h2>
       <ul className="space-y-3">
         {items.map((it, i) => (
-          <li key={i} className="rounded-lg border border-neutral-200 bg-white p-3">
+          <li key={i} className="rounded-lg border border-base-300 bg-base-100 p-3">
             <div className="mb-2 flex items-center justify-between">
-              <span className="text-[10px] uppercase tracking-widest text-neutral-400">
+              <span className="text-[10px] uppercase tracking-widest text-base-content/40">
                 {it.type === 'text' ? t('itemText') : it.type === 'block' ? 'Block' : t('itemChannel')}
               </span>
               <span className="flex items-center gap-1">
-                <button type="button" onClick={() => move(i, -1)} className="px-1 text-neutral-400 hover:text-neutral-900">↑</button>
-                <button type="button" onClick={() => move(i, 1)} className="px-1 text-neutral-400 hover:text-neutral-900">↓</button>
-                <button type="button" onClick={() => remove(i)} className="px-1 text-neutral-300 hover:text-red-500">✕</button>
+                <button type="button" onClick={() => move(i, -1)} className="px-1 text-base-content/40 hover:text-base-content">↑</button>
+                <button type="button" onClick={() => move(i, 1)} className="px-1 text-base-content/40 hover:text-base-content">↓</button>
+                <button type="button" onClick={() => remove(i)} className="px-1 text-base-content/30 hover:text-error">✕</button>
               </span>
             </div>
             {it.type === 'text' ? (
@@ -216,7 +216,7 @@ export function WikiEditor({
               />
             ) : (
               <div>
-                <p className="mb-1 truncate text-sm text-neutral-700">{it.label}</p>
+                <p className="mb-1 truncate text-sm text-base-content/80">{it.label}</p>
                 <input
                   value={it.note}
                   onChange={(e) => setItemField(i, { note: e.target.value })}
@@ -231,13 +231,13 @@ export function WikiEditor({
 
       {/* 添加控件 */}
       <div className="mt-4 flex flex-wrap items-center gap-2">
-        <button type="button" onClick={addText} className="rounded-full border border-neutral-300 px-3 py-1.5 text-xs text-neutral-600 hover:border-neutral-900">{t('addText')}</button>
-        <button type="button" onClick={() => { setPick('block'); setPickQuery(''); setPickResults([]); }} className="rounded-full border border-neutral-300 px-3 py-1.5 text-xs text-neutral-600 hover:border-neutral-900">+ Block</button>
-        <button type="button" onClick={() => { setPick('channel'); setPickQuery(''); setPickResults([]); }} className="rounded-full border border-neutral-300 px-3 py-1.5 text-xs text-neutral-600 hover:border-neutral-900">{t('addChannel')}</button>
+        <button type="button" onClick={addText} className="rounded-full border border-base-300 px-3 py-1.5 text-xs text-base-content/70 hover:border-primary">{t('addText')}</button>
+        <button type="button" onClick={() => { setPick('block'); setPickQuery(''); setPickResults([]); }} className="rounded-full border border-base-300 px-3 py-1.5 text-xs text-base-content/70 hover:border-primary">+ Block</button>
+        <button type="button" onClick={() => { setPick('channel'); setPickQuery(''); setPickResults([]); }} className="rounded-full border border-base-300 px-3 py-1.5 text-xs text-base-content/70 hover:border-primary">{t('addChannel')}</button>
       </div>
 
       {pick && (
-        <div className="mt-3 rounded-lg border border-neutral-200 bg-neutral-50 p-3">
+        <div className="mt-3 rounded-lg border border-base-300 bg-base-100 p-3">
           <input
             autoFocus
             value={pickQuery}
@@ -246,16 +246,16 @@ export function WikiEditor({
             className={inputCls}
           />
           <ul className="mt-2 max-h-48 overflow-y-auto">
-            {picking && <li className="px-2 py-1.5 text-xs text-neutral-400">{t('searching')}</li>}
+            {picking && <li className="px-2 py-1.5 text-xs text-base-content/40">{t('searching')}</li>}
             {!picking && pickQuery.trim() && pickResults.length === 0 && (
-              <li className="px-2 py-1.5 text-xs text-neutral-400">{t('noMatch')}</li>
+              <li className="px-2 py-1.5 text-xs text-base-content/40">{t('noMatch')}</li>
             )}
             {pickResults.map((r) => (
               <li key={r.id}>
                 <button
                   type="button"
                   onClick={() => addPicked(r.id, r.label)}
-                  className="block w-full truncate rounded px-2 py-1.5 text-left text-sm hover:bg-white"
+                  className="block w-full truncate rounded px-2 py-1.5 text-left text-sm text-base-content hover:bg-base-200"
                 >
                   {r.label}
                 </button>
@@ -265,14 +265,13 @@ export function WikiEditor({
         </div>
       )}
 
-      {error && <p className="mt-4 text-sm text-red-500">{error}</p>}
-
+      {error && <p className="mt-4 text-sm text-error">{error}</p>}
       <div className="mt-8 flex items-center gap-3">
         <button
           type="button"
           onClick={save}
           disabled={isPending}
-          className="rounded-full bg-neutral-900 px-5 py-2 text-sm text-white disabled:opacity-40"
+          className="rounded-full bg-primary px-5 py-2 text-sm text-primary-content disabled:opacity-40"
         >
           {isPending ? tc('saving') : tc('save')}
         </button>
@@ -281,7 +280,7 @@ export function WikiEditor({
             type="button"
             onClick={onDelete}
             disabled={isPending}
-            className="rounded-full border border-neutral-200 px-4 py-2 text-xs text-neutral-400 hover:border-red-300 hover:text-red-500"
+            className="rounded-full border border-base-300 px-4 py-2 text-xs text-base-content/40 hover:border-error/50 hover:text-error"
           >
             {t('deletePage')}
           </button>

@@ -19,7 +19,7 @@ function LoginForm() {
   const pending = mode === 'login' ? loginPending : registerPending;
 
   const inputCls =
-    'w-full rounded-lg border border-neutral-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-neutral-400';
+    'w-full rounded-full border border-base-300 bg-base-100 px-4 py-2.5 text-sm text-base-content outline-none transition focus:border-primary focus:shadow-sm';
 
   const t = useTranslations('Form');
   const tn = useTranslations('Nav');
@@ -28,20 +28,20 @@ function LoginForm() {
   return (
     <main className="mx-auto flex min-h-dvh max-w-sm flex-col justify-center px-6">
       <h1 className="mb-1 text-xl font-medium tracking-tight">BlocksWiki</h1>
-      <p className="mb-8 text-sm text-neutral-400">{tc('tagline')}</p>
+      <p className="mb-8 text-sm bw-muted">{tc('tagline')}</p>
 
       <div className="mb-6 flex gap-4 text-sm">
         <button
           type="button"
           onClick={() => setMode('login')}
-          className={mode === 'login' ? 'font-medium text-neutral-900' : 'text-neutral-400'}
+          className={mode === 'login' ? 'font-medium text-base-content' : 'text-base-content/50'}
         >
           {tn('login')}
         </button>
         <button
           type="button"
           onClick={() => setMode('register')}
-          className={mode === 'register' ? 'font-medium text-neutral-900' : 'text-neutral-400'}
+          className={mode === 'register' ? 'font-medium text-base-content' : 'text-base-content/50'}
         >
           {tn('signup')}
         </button>
@@ -65,7 +65,7 @@ function LoginForm() {
           <button
             type="submit"
             disabled={pending}
-            className="mt-2 rounded-full bg-neutral-900 py-2.5 text-sm text-white disabled:opacity-40"
+            className="mt-2 rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-primary-content shadow-sm transition-colors hover:bg-primary/90 disabled:opacity-40"
           >
             {pending ? t('signingIn') : tn('login')}
           </button>
@@ -84,14 +84,14 @@ function LoginForm() {
           <button
             type="submit"
             disabled={pending}
-            className="mt-2 rounded-full bg-neutral-900 py-2.5 text-sm text-white disabled:opacity-40"
+            className="mt-2 rounded-full bg-primary px-4 py-2.5 text-sm font-medium text-primary-content shadow-sm transition-colors hover:bg-primary/90 disabled:opacity-40"
           >
             {pending ? t('signingUp') : tn('signup')}
           </button>
         </form>
       )}
 
-      <p className="mt-3 min-h-5 text-sm text-red-500">{error}</p>
+      <p className="mt-3 min-h-5 text-sm text-error">{error}</p>
     </main>
   );
 }
@@ -101,7 +101,7 @@ export default function LoginPage() {
   return (
     <Suspense
       fallback={
-        <main className="mx-auto flex min-h-dvh max-w-sm items-center justify-center px-6 text-sm text-neutral-400">
+        <main className="mx-auto flex min-h-dvh max-w-sm items-center justify-center px-6 text-sm bw-muted">
           {t('loading')}
         </main>
       }

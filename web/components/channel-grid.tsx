@@ -102,14 +102,14 @@ export function ChannelGrid({
             onClick={() => (selectMode ? exitSelectMode() : setSelectMode(true))}
             className={`rounded-full border px-3 py-1 text-xs transition-colors ${
               selectMode
-                ? 'border-neutral-900 text-neutral-900'
-                : 'border-neutral-200 text-neutral-400 hover:border-neutral-900 hover:text-neutral-900'
+                ? 'border-primary text-primary'
+                : 'border-base-300 text-base-content/50 hover:border-base-content/40 hover:text-base-content'
             }`}
           >
             {selectMode ? tc('cancelSelect') : tc('select')}
           </button>
         )}
-        {statusMsg && <span className="text-xs text-neutral-400">{statusMsg}</span>}
+        {statusMsg && <span className="text-xs bw-muted">{statusMsg}</span>}
       </div>
 
       <PaginatedConnections
@@ -117,26 +117,25 @@ export function ChannelGrid({
         initialHasMore={initialHasMore}
         channelSlug={channelSlug}
         isOwner={isOwner}
-        variant={variant}
         loadMore={loadMore}
+        leading={selectMode ? undefined : leading}
         reorderable={reorderable && !selectMode}
         onReorder={onReorder}
         selectMode={selectMode}
         selectedIds={new Set(selected.keys())}
         onToggleSelect={toggleSelect}
-        leading={selectMode ? undefined : leading}
         hiddenIds={hiddenIds}
       />
 
       {selectMode && selected.size > 0 && (
         <div className="fixed inset-x-0 bottom-6 z-30 flex justify-center px-4">
-          <div className="relative flex items-center gap-3 rounded-full border border-neutral-200 bg-white px-4 py-2 shadow-lg">
-            <span className="text-xs text-neutral-500">{tc('selectedCount', { count: selected.size })}</span>
+          <div className="relative flex items-center gap-3 rounded-full border border-base-300 bg-base-100 px-4 py-2 shadow-lg">
+            <span className="text-xs bw-muted">{tc('selectedCount', { count: selected.size })}</span>
             <button
               type="button"
               onClick={() => setPickerOpen((v) => !v)}
               disabled={isPending}
-              className="rounded-full bg-neutral-900 px-3 py-1 text-xs text-white disabled:opacity-40"
+              className="bw-btn"
             >
               {tc('connectTo')}
             </button>
@@ -145,7 +144,7 @@ export function ChannelGrid({
                 type="button"
                 onClick={handleBulkRemove}
                 disabled={isPending}
-                className="rounded-full border border-red-200 px-3 py-1 text-xs text-red-500 hover:bg-red-50 disabled:opacity-40"
+                className="rounded-full border border-error/30 px-3 py-1 text-xs text-error hover:bg-error/10 disabled:opacity-40"
               >
                 {isPending ? t('processing') : tc('remove')}
               </button>
@@ -153,11 +152,10 @@ export function ChannelGrid({
             <button
               type="button"
               onClick={exitSelectMode}
-              className="text-xs text-neutral-400 hover:text-neutral-700"
+              className="text-xs text-base-content/50 hover:text-base-content"
             >
               {t('cancel')}
             </button>
-
             {pickerOpen && (
               <BatchConnectPicker
                 items={[...selected.values()]}

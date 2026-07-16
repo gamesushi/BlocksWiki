@@ -18,8 +18,8 @@ export default async function FeedPage() {
   if (!session) {
     return (
       <main className="mx-auto max-w-2xl px-6 py-16 text-center">
-        <p className="text-sm text-neutral-400">
-          <Link href="/login" className="text-neutral-900 underline">{tn('login')}</Link> {t('viewHint')}
+        <p className="text-sm bw-muted">
+          <Link href="/login" className="text-base-content underline">{tn('login')}</Link> {t('viewHint')}
         </p>
       </main>
     );
@@ -32,21 +32,21 @@ export default async function FeedPage() {
     <main className="mx-auto max-w-2xl px-6 py-10">
       <header className="mb-8 flex items-baseline gap-4">
         <h1 className="text-lg font-medium tracking-tight">{t('title')}</h1>
-        <Link href="/" className="text-sm text-neutral-400 hover:text-neutral-900">{tc('backHome')}</Link>
+        <Link href="/" className="text-sm bw-muted hover:text-base-content">{tc('backHome')}</Link>
       </header>
 
       {followsNothing ? (
-        <p className="text-sm text-neutral-400">
+        <p className="text-sm bw-muted">
           {t.rich('noFollow', {
             explore: (chunks) => (
-              <Link href="/explore" className="text-neutral-900 underline">
+              <Link href="/explore" className="text-base-content underline">
                 {chunks}
               </Link>
             ),
           })}
         </p>
       ) : first.items.length === 0 ? (
-        <p className="text-sm text-neutral-400">{t('emptyFollow')}</p>
+        <p className="text-sm bw-muted">{t('emptyFollow')}</p>
       ) : (
         <PaginatedFeed initialItems={first.items} initialHasMore={first.hasMore} />
       )}

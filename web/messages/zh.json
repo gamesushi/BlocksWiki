@@ -35,7 +35,8 @@
     "backHome": "← BlocksWiki",
     "tagline": "基于 Block 的生活 Wiki",
     "createdOn": "创建于",
-    "updatedOn": "更新于"
+    "updatedOn": "更新于",
+    "newChannelPlaceholder": "新建频道名称…"
   },
   "Channel": {
     "myChannels": "我的频道",
@@ -51,6 +52,11 @@
     "remove": "移除",
     "connectedStatus": "已连结 {succeeded} 项",
     "connectedFailed": "，{failed} 项失败",
+    "public": "公开",
+    "private": "私密",
+    "create": "创建频道",
+    "creating": "创建中…",
+    "title": "频道名称",
     "removedStatus": "已移除 {succeeded} 项",
     "removedFailed": "，{failed} 项失败（无权限）",
     "collaborators": "协作者",
@@ -265,5 +271,14 @@
     "noMatch": "没有匹配",
     "titleRequired": "标题必填。",
     "deletePage": "删除页面"
+  },
+  "Theme": {
+    "ariaLabel": "切换风格",
+    "system": "跟随系统",
+    "blocks": "暖白·珊瑚",
+    "corporate": "商务·冷蓝",
+    "cupcake": "甜美·粉彩",
+    "dracula": "暗夜·紫",
+    "mosaic": "蓝绿·马赛克"
   }
 }

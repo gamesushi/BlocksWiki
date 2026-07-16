@@ -1,26 +1,232 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+ * BlocksWiki 自定义主题 —— 受 Are.na / Notion 启发：
+ * 默认主题 Mosaic（Logo 蓝绿紫马赛克：浅灰蓝底 + 主蓝 + 绿辅 + 紫强调）；
+ * 另有 Blocks（暖米色底 + 珊瑚橙主色 + 薰衣草紫辅色）。
+ * 所有颜色通过 oklch 定义，保证感知均匀、暗色模式下自动降级。
+ */
+@plugin "daisyui" {
+  themes: mosaic --default, blocks, blocks-dark --prefersdark, corporate, cupcake, dracula;
 }
 
+/* ═══════════════════════ light: blocks ═══════════════════════ */
+[data-theme=blocks] {
+  color-scheme: light;
+
+  /* 底色：三层递进，从页面底到卡片到输入框 */
+  --color-base-100: oklch(98% .006 80);
+  --color-base-200: oklch(95% .009 80);    /* 页面背景 */
+  --color-base-300: oklch(90% .015 80);      /* 边框 */
+
+  /* 内容文字 */
+  --color-base-content: oklch(28% .02 260);
+
+  /* 主色：珊瑚橙 — 温暖但不刺眼 */
+  --color-primary: oklch(68% .18 40);
+  --color-primary-content: oklch(98% .01 40);
+
+  /* 辅色：薰衣草紫 */
+  --color-secondary: oklch(65% .12 270);
+  --color-secondary-content: oklch(95% .01 270);
+
+  /* 强调：薄荷绿（用于成功态 / 已连接标记等） */
+  --color-accent: oklch(70% .14 165);
+  --color-accent-content: oklch(25% .04 165);
+
+  /* 中性色阶（用于 badge / muted 文本等） */
+  --color-neutral: oklch(20% .015 260);
+  --color-neutral-content: oklch(96% .005 260);
+
+  /* 信息 / 错误 */
+  --color-info: oklch(60% .16 240);
+  --color-info-content: oklch(25% .04 240);
+  --color-success: oklch(65% .16 155);
+  --color-success-content: oklch(25% .03 155);
+  --color-warning: oklch(75% .16 75);
+  --color-warning-content: oklch(25% .04 75);
+  --color-error: oklch(60% .22 25);
+  --color-error-content: oklch(98% .01 25);
+
+  /* 圆角统一 */
+  --rounded-box: .65rem;
+  --rounded-btn: .5rem;
+  --rounded-badge: 1rem;
+
+  /* 阴影：多层叠加，让元素"浮起来" */
+  --shadow-sm: 0 1px 2px oklch(0% 0 0 / .04), 0 1px 3px oklch(0% 0 0 / .06);
+  --shadow-md: 0 4px 8px -2px oklch(0% 0 0 / .07), 0 3px 6px -4px oklch(0% 0 0 / .05);
+  --shadow-lg: 0 10px 20px -4px oklch(0% 0 0 / .08), 0 6px 10px -6px oklch(0% 0 0 / .05);
+
+  /* 边框宽度 */
+  --border-btn: 1px;
+  --border-outline: 1px;
+}
+
+/* ═══════════════════════ dark: blocks-dark ═══════════════════════ */
+[data-theme=blocks-dark] {
+  color-scheme: dark;
+
+  --color-base-100: oklch(18% .015 260);
+  --color-base-200: oklch(15% .018 260);
+  --color-base-300: oklch(22% .02 260);
+  --color-base-content: oklch(92% .01 80);
+
+  --color-primary: oklch(72% .18 35);
+  --color-primary-content: oklch(18% .02 35);
+
+  --color-secondary: oklch(62% .14 275);
+  --color-secondary-content: oklch(92% .01 275);
+
+  --color-accent: oklch(68% .14 165);
+  --color-accent-content: oklch(93% .01 165);
+
+  --color-neutral: oklch(85% .01 80);
+  --color-neutral-content: oklch(20% .015 260);
+
+  --shadow-sm: 0 1px 3px oklch(0% 0 0 / .15);
+  --shadow-md: 0 4px 10px oklch(0% 0 0 / .2);
+  --shadow-lg: 0 10px 24px oklch(0% 0 0 / .25);
+}
+
+/* ═══════════════════════ light: mosaic（默认 · Logo 马赛克蓝绿紫） ═══════════════════════ */
+:root:not([data-theme]),
+[data-theme=mosaic] {
+  color-scheme: light;
+
+  /* 底色：Logo 背景的浅灰蓝，清爽通透 */
+  --color-base-100: oklch(97% .01 225);
+  --color-base-200: oklch(94% .014 225);
+  --color-base-300: oklch(86% .02 225);
+
+  /* 内容文字：深蓝灰，呼应 logo 深色方块 */
+  --color-base-content: oklch(28% .045 250);
+
+  /* 主色：Logo 主蓝（偏深） */
+  --color-primary: oklch(55% .15 250);
+  --color-primary-content: oklch(98% .01 250);
+
+  /* 辅色：Logo 绿色方块 */
+  --color-secondary: oklch(68% .12 160);
+  --color-secondary-content: oklch(18% .04 160);
+
+  /* 强调：Logo 紫色方块 */
+  --color-accent: oklch(60% .14 290);
+  --color-accent-content: oklch(98% .02 290);
+
+  /* 中性：接近 logo 深色轮廓 */
+  --color-neutral: oklch(22% .03 250);
+  --color-neutral-content: oklch(96% .005 250);
+
+  /* 信息 / 成功 / 警告 / 错误：在蓝绿基调上做区分 */
+  --color-info: oklch(60% .16 240);
+  --color-info-content: oklch(20% .04 240);
+  --color-success: oklch(65% .16 155);
+  --color-success-content: oklch(18% .04 155);
+  --color-warning: oklch(78% .16 80);
+  --color-warning-content: oklch(25% .04 80);
+  --color-error: oklch(60% .22 25);
+  --color-error-content: oklch(98% .01 25);
+
+  /* 圆角 */
+  --rounded-box: .65rem;
+  --rounded-btn: .5rem;
+  --rounded-badge: 1rem;
+
+  /* 阴影：偏冷的灰蓝阴影 */
+  --shadow-sm: 0 1px 2px oklch(0% 0 0 / .04), 0 1px 3px oklch(0% 0 0 / .06);
+  --shadow-md: 0 4px 8px -2px oklch(0% 0 0 / .07), 0 3px 6px -4px oklch(0% 0 0 / .05);
+  --shadow-lg: 0 10px 20px -4px oklch(0% 0 0 / .08), 0 6px 10px -6px oklch(0% 0 0 / .05);
+
+  --border-btn: 1px;
+  --border-outline: 1px;
+}
+
+/* 选中文本也带一点蓝 */
+[data-theme=mosaic] ::selection {
+  background-color: oklch(60% .14 250 / .25);
+}
+
+/* ═══════════════════════ 全局排版 ═══════════════════════ */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-base-200);
+  color: var(--color-base-content);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+}
+
+/* 让选择文本也有品牌感 */
+::selection {
+  background-color: oklch(68% .18 40 / .25);
+}
+
+/* ═══════════════════════ 复用组件类（主题感知） ═══════════════════════ */
+/* 所有颜色走 DaisyUI 主题令牌：切换 data-theme 时全站整体变色。 */
+@layer components {
+  .bw-card {
+    @apply rounded-xl border border-base-300 bg-base-100 shadow-sm transition duration-200;
+  }
+  .bw-card-hover {
+    @apply hover:shadow-md hover:border-primary/40;
+  }
+  /* 实心主色按钮（珊瑚/corporate蓝/cupcake粉/dracula紫 随主题变） */
+  .bw-btn {
+    @apply inline-flex items-center justify-center rounded-full bg-primary px-4 py-1.5 text-xs
+      font-medium text-primary-content shadow-sm transition-colors hover:bg-primary/90
+      disabled:opacity-40;
+  }
+  .bw-btn-ghost {
+    @apply inline-flex items-center justify-center rounded-full border border-base-300 px-4 py-1.5 text-xs
+      font-medium text-base-content/70 transition-colors hover:border-base-content/40 hover:text-base-content
+      disabled:opacity-40;
+  }
+  .bw-btn-outline {
+    @apply inline-flex items-center justify-center rounded-full border border-base-300 px-3 py-1.5 text-xs
+      font-medium text-base-content/70 transition-colors hover:border-primary hover:text-primary
+      disabled:opacity-40;
+  }
+  .bw-input {
+    @apply w-full rounded-full border border-base-300 bg-base-100 px-4 py-2 text-sm text-base-content
+      outline-none transition focus:border-primary focus:shadow-sm;
+  }
+  .bw-textarea {
+    @apply w-full resize-none rounded-xl border border-base-300 bg-base-100 p-3 text-sm text-base-content
+      outline-none transition focus:border-primary;
+  }
+  .bw-select {
+    @apply rounded-full border border-base-300 bg-base-100 px-3 py-1.5 text-sm text-base-content
+      outline-none transition focus:border-primary;
+  }
+  .bw-badge {
+    @apply inline-flex items-center gap-1 rounded-full border border-base-300 bg-base-100 px-3 py-1
+      text-xs text-base-content/70 transition-colors hover:border-base-content/40 hover:text-base-content;
+  }
+  /* 小标签 / 区块标题（uppercase wide tracking） */
+  .bw-sep {
+    @apply text-xs font-medium uppercase tracking-widest text-base-content/40;
+  }
+  .bw-muted {
+    @apply text-base-content/50;
+  }
+}
+
+/* 主题切换时平滑过渡（仅颜色，不影响布局） */
+html {
+  transition: background-color .25s ease, color .25s ease;
+}
+
+/* ═══════════════════════ Editor.js 宽度覆盖 ═══════════════════════ */
+/* Editor.js 默认把内容区限制在 ~650px，导致宽屏下发布页/编辑页中间很窄；
+   让内容区填满父容器，由外层布局控制实际宽度。 */
+#blockwiki-editor .codex-editor__redactor,
+#blockwiki-editor .ce-block__content,
+#blockwiki-editor .ce-toolbar__content {
+  max-width: none !important;
+  margin-right: 0 !important;
 }

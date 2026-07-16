@@ -47,15 +47,15 @@ export function DeleteButton({
 
   return (
     <span className="inline-flex items-center gap-2">
-      {error && <span className="text-xs text-red-500">{error}</span>}
+      {error && <span className="text-xs text-error">{error}</span>}
       <button
         type="button"
         onClick={onClick}
         disabled={isPending}
         className={`rounded-full border px-3 py-1 text-xs transition-colors disabled:opacity-40 ${
           arming
-            ? 'border-red-300 bg-red-50 text-red-600'
-            : 'border-neutral-200 text-neutral-400 hover:border-neutral-400 hover:text-neutral-600'
+            ? 'border-error/40 bg-error/10 text-error'
+            : 'border-base-300 text-base-content/50 hover:border-base-content/40 hover:text-base-content'
         }`}
       >
         {isPending ? t('deleting') : arming ? confirmLabel : label}

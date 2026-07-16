@@ -56,7 +56,7 @@ export function PaginatedConnections({
       hiddenIds={hiddenIds}
       gridClassName={
         isTable
-          ? 'flex flex-col divide-y divide-neutral-100 border-t border-neutral-100'
+          ? 'flex flex-col divide-y divide-base-300/60 border-t border-base-300/60'
           : undefined
       }
       loadMore={async (page) => {

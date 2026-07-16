@@ -4,7 +4,7 @@
  */
 import Link from '@/i18n/navigation';
 import { getTranslations } from 'next-intl/server';
-import { getSession, logout } from '@/app/actions/auth';
+import { getSession } from '@/app/actions/auth';
 import { loadFeedPage } from '@/app/actions/feed';
 import { getUnreadCount } from '@/app/actions/notifications';
 import { NewChannelForm } from '@/components/new-channel-form';
@@ -27,53 +27,75 @@ export default async function HomePage() {
   const tc = await getTranslations('Channel');
 
   return (
-    <main className="px-6 py-10">
-      <header className="mb-10 flex flex-wrap items-center gap-4">
-        <nav className="flex items-center gap-3 text-sm text-neutral-500">
-          {me && <Link href="/feed" className="hover:text-neutral-900">{t('feed')}</Link>}
-          {me && (
-            <Link href="/notifications" className="relative hover:text-neutral-900">
-              {t('notifications')}
-              {unread > 0 && (
-                <span className="absolute -right-3 -top-1.5 rounded-full bg-red-500 px-1.5 text-[10px] leading-4 text-white">
-                  {unread > 9 ? '9+' : unread}
-                </span>
-              )}
-            </Link>
-          )}
-          <Link href="/wiki" className="hover:text-neutral-900">{t('wiki')}</Link>
-          <Link href="/explore" className="hover:text-neutral-900">{t('explore')}</Link>
-          <Link href="/search" className="hover:text-neutral-900">{t('search')}</Link>
-          <Link href="/publish" className="hover:text-neutral-900">{t('publish')}</Link>
-        </nav>
-      </header>
+    <main className="mx-auto max-w-screen-2xl px-4 py-8 sm:px-6 sm:py-10">
+      {/* 区块导航 */}
+      <nav className="mb-8 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+        {me && (
+          <Link href="/feed" className="link link-hover text-base-content/70 hover:text-primary">
+            {t('feed')}
+          </Link>
+        )}
+        {me && (
+          <Link
+            href="/notifications"
+            className="link link-hover relative text-base-content/70 hover:text-primary"
+          >
+            {t('notifications')}
+            {unread > 0 && (
+              <span className="badge badge-primary badge-xs absolute -right-3 -top-2">
+                {unread > 9 ? '9+' : unread}
+              </span>
+            )}
+          </Link>
+        )}
+        <Link href="/wiki" className="link link-hover text-base-content/70 hover:text-primary">
+          {t('wiki')}
+        </Link>
+        <Link href="/explore" className="link link-hover text-base-content/70 hover:text-primary">
+          {t('explore')}
+        </Link>
+        <Link href="/search" className="link link-hover text-base-content/70 hover:text-primary">
+          {t('search')}
+        </Link>
+        <Link href="/publish" className="link link-hover text-base-content/70 hover:text-primary">
+          {t('publish')}
+        </Link>
+      </nav>
 
-      <div className="mb-10">
+      {/* 搜索 */}
+      <div className="mb-8">
         <SearchBar />
       </div>
 
+      {/* 我的频道 */}
       {me && (
-        <section className="mb-10 flex flex-wrap items-center gap-2">
-          <span className="mr-1 text-xs uppercase tracking-widest text-neutral-400">{tc('myChannels')}</span>
-          {myChannels.map((ch) => (
-            <Link
-              key={ch.documentId}
-              href={`/channel/${ch.slug}`}
-              className="rounded-full border border-neutral-200 px-3 py-1.5 text-xs text-neutral-600 hover:border-neutral-900 hover:text-neutral-900"
-            >
-              {ch.title}
-            </Link>
-          ))}
-          <NewChannelForm />
+        <section className="mb-8">
+          <h2 className="mb-3 text-xs font-medium uppercase tracking-widest text-base-content/40">
+            {tc('myChannels')}
+          </h2>
+          <div className="flex flex-wrap items-center gap-2">
+            {myChannels.map((ch) => (
+              <Link
+                key={ch.documentId}
+                href={`/channel/${ch.slug}`}
+                className="badge badge-ghost badge-lg gap-1 border-base-300 hover:border-primary hover:text-primary"
+              >
+                {ch.title}
+              </Link>
+            ))}
+            <NewChannelForm />
+          </div>
         </section>
       )}
 
+      {/* Feed 网格 */}
       <PaginatedBlocks
         initialBlocks={firstPage.blocks}
         initialHasMore={firstPage.hasMore}
         myChannels={myChannels}
         showConnect={!!me}
         loadMore={loadFeedPage}
+        gridClassName="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4 lg:gap-6"
       />
     </main>
   );

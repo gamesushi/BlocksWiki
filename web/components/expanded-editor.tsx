@@ -13,7 +13,7 @@ import { markdownToEditorJs, editorJsToHtml, isUrl } from '@/lib/markdown';
 import type { EditorJsOutput } from '@/lib/types';
 
 const PREVIEW_CLS =
-  'wiki-md text-sm leading-relaxed text-neutral-700 [&_a]:underline [&_blockquote]:border-l-2 [&_blockquote]:border-neutral-300 [&_blockquote]:pl-3 [&_code]:rounded [&_code]:bg-neutral-200 [&_code]:px-1 [&_h1]:mb-2 [&_h1]:mt-4 [&_h1]:text-2xl [&_h1]:font-semibold [&_h2]:mb-2 [&_h2]:mt-4 [&_h2]:text-xl [&_h2]:font-semibold [&_h3]:mt-3 [&_h3]:text-lg [&_h3]:font-medium [&_h4]:mt-2 [&_h4]:text-base [&_h4]:font-medium [&_img]:my-2 [&_img]:rounded [&_li]:ml-5 [&_li]:list-disc [&_ol_li]:list-decimal [&_p]:my-2';
+  'wiki-md text-sm leading-relaxed text-base-content/80 [&_a]:underline [&_blockquote]:border-l-2 [&_blockquote]:border-base-300 [&_blockquote]:pl-3 [&_code]:rounded [&_code]:bg-base-300 [&_code]:px-1 [&_h1]:mb-2 [&_h1]:mt-4 [&_h1]:text-2xl [&_h1]:font-semibold [&_h2]:mb-2 [&_h2]:mt-4 [&_h2]:text-xl [&_h2]:font-semibold [&_h3]:mt-3 [&_h3]:text-lg [&_h3]:font-medium [&_h4]:mt-2 [&_h4]:text-base [&_h4]:font-medium [&_img]:my-2 [&_img]:rounded [&_li]:ml-5 [&_li]:list-disc [&_ol_li]:list-decimal [&_p]:my-2';
 
 export function ExpandedEditor({
   channelId,
@@ -86,7 +86,7 @@ export function ExpandedEditor({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-white/70 p-6 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-base-100/70 p-6 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
@@ -97,65 +97,65 @@ export function ExpandedEditor({
             submit();
           }
         }}
-        className="flex h-[80vh] w-full max-w-4xl flex-col rounded-xl border border-blue-300 bg-neutral-50 shadow-xl"
+        className="flex h-[80vh] w-full max-w-4xl flex-col rounded-xl border border-primary/40 bg-base-100 shadow-xl"
       >
         <div className="flex min-h-0 flex-1">
           {/* 左：始终可编辑 */}
-          <div className={`flex min-h-0 flex-col overflow-y-auto p-6 ${showPreview ? 'w-1/2 border-r border-neutral-200' : 'w-full'}`}>
+          <div className={`flex min-h-0 flex-col overflow-y-auto p-6 ${showPreview ? 'w-1/2 border-r border-base-300' : 'w-full'}`}>
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Title"
-              className="mb-2 w-full shrink-0 bg-transparent text-2xl font-bold outline-none placeholder:text-neutral-300"
+              className="mb-2 w-full shrink-0 bg-transparent text-2xl font-bold text-base-content outline-none placeholder:text-base-content/40"
             />
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Description"
               rows={2}
-              className="mb-3 w-full shrink-0 resize-none bg-transparent text-sm outline-none placeholder:text-neutral-300"
+              className="mb-3 w-full shrink-0 resize-none bg-transparent text-sm text-base-content outline-none placeholder:text-base-content/40"
             />
             <textarea
               ref={bodyRef}
               value={body}
               onChange={(e) => setBody(e.target.value)}
               placeholder={tBlock('markdownPlaceholder')}
-              className="min-h-0 flex-1 w-full resize-none bg-transparent font-mono text-sm leading-relaxed outline-none placeholder:font-sans placeholder:text-neutral-300"
+              className="min-h-0 flex-1 w-full resize-none bg-transparent font-mono text-sm leading-relaxed text-base-content outline-none placeholder:font-sans placeholder:text-base-content/40"
             />
           </div>
 
           {/* 右：实时渲染预览（可选） */}
           {showPreview && (
-            <div className="w-1/2 overflow-y-auto bg-white p-6">
+            <div className="w-1/2 overflow-y-auto bg-base-100 p-6">
               <div
                 className={PREVIEW_CLS}
-                dangerouslySetInnerHTML={{ __html: previewHtml || '<p class="text-neutral-300">' + tBlock('noContentPreview') + '</p>' }}
+                dangerouslySetInnerHTML={{ __html: previewHtml || '<p class="text-base-content/40">' + tBlock('noContentPreview') + '</p>' }}
               />
             </div>
           )}
         </div>
 
-        <div className="flex items-center justify-between border-t border-neutral-200 px-4 py-3">
+        <div className="flex items-center justify-between border-t border-base-300 px-4 py-3">
           <button
             type="button"
             onClick={() => setShowPreview((v) => !v)}
             title={tBlock('previewTitle')}
             className={`rounded border px-2 py-1 text-xs ${
               showPreview
-                ? 'border-neutral-900 text-neutral-900'
-                : 'border-neutral-300 text-neutral-500 hover:border-neutral-900 hover:text-neutral-900'
+                ? 'border-primary text-primary'
+                : 'border-base-300 text-base-content/50 hover:border-primary hover:text-primary'
             }`}
           >
             {showPreview ? <>✎ {tBlock('editOnly')}</> : <>M↓ {tBlock('preview')}</>}
           </button>
 
           <div className="flex items-center gap-3">
-            {error && <span className="text-xs text-red-500">{error}</span>}
+            {error && <span className="text-xs text-error">{error}</span>}
             <button
               type="button"
               onClick={submit}
               disabled={isPending}
-              className="flex items-center gap-2 rounded-md bg-blue-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-40"
+              className="flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-content shadow-sm transition-colors hover:bg-primary/90 disabled:opacity-40"
             >
               {isPending ? t('adding') : 'Add block'}
               <span className="text-xs opacity-70">⌘⏎</span>

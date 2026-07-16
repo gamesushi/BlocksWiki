@@ -24,20 +24,20 @@ export function ConnectionRow({
     return (
       <li className="flex items-center gap-4 py-2.5">
         <Link href={`/channel/${ch.slug}`} className="flex min-w-0 flex-1 items-center gap-3">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-neutral-900 text-[8px] uppercase tracking-wide text-neutral-400">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-base-300 text-[8px] uppercase tracking-wide text-base-content/50">
             {t('channel')}
           </span>
-          <span className="min-w-0 flex-1 truncate text-sm text-neutral-800 hover:text-neutral-500">
+          <span className="min-w-0 flex-1 truncate text-sm text-base-content/80 hover:text-base-content/60">
             {ch.title}
           </span>
         </Link>
-        <span className="hidden w-28 shrink-0 truncate text-xs text-neutral-400 sm:block">
+        <span className="hidden w-28 shrink-0 truncate text-xs bw-muted sm:block">
           {conn.connectorName}
         </span>
-        <span className="hidden w-16 shrink-0 text-right text-xs text-neutral-400 md:block">
+        <span className="hidden w-16 shrink-0 text-right text-xs bw-muted md:block">
           {ch.connectionCount} blocks
         </span>
-        <span className="w-20 shrink-0 text-right text-xs text-neutral-400">
+        <span className="w-20 shrink-0 text-right text-xs bw-muted">
           <TimeAgo date={conn.createdAt} />
         </span>
         {isOwner && (
@@ -53,23 +53,23 @@ export function ConnectionRow({
   return (
     <li className="flex items-center gap-4 py-2.5">
       <Link href={`/block/${conn.block.documentId}`} className="flex min-w-0 flex-1 items-center gap-3">
-        <span className="h-9 w-9 shrink-0 overflow-hidden rounded bg-neutral-100">
+        <span className="h-9 w-9 shrink-0 overflow-hidden rounded bg-base-200">
           {conn.block.coverImageUrl && (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={conn.block.coverImageUrl} alt="" className="h-full w-full object-cover" />
           )}
         </span>
-        <span className="min-w-0 flex-1 truncate text-sm text-neutral-800 hover:text-neutral-500">
+        <span className="min-w-0 flex-1 truncate text-sm text-base-content/80 hover:text-base-content/60">
           {conn.block.excerpt || t('emptyBlock')}
         </span>
       </Link>
-      <span className="hidden w-28 shrink-0 truncate text-xs text-neutral-400 sm:block">
+      <span className="hidden w-28 shrink-0 truncate text-xs bw-muted sm:block">
         {conn.connectorName}
       </span>
-      <span className="hidden w-16 shrink-0 text-right text-xs text-neutral-400 md:block">
+      <span className="hidden w-16 shrink-0 text-right text-xs bw-muted md:block">
         {conn.block.connectionCount} {t('ref')}
       </span>
-      <span className="w-20 shrink-0 text-right text-xs text-neutral-400">
+      <span className="w-20 shrink-0 text-right text-xs bw-muted">
         <TimeAgo date={conn.createdAt} />
       </span>
       {isOwner && (

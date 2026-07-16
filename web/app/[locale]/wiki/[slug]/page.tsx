@@ -44,13 +44,11 @@ export default async function WikiPageView({ params }: { params: Promise<{ slug:
   return (
     <main className="px-6 py-10">
       <header className="mb-8 flex items-center gap-4">
-        <Link href="/wiki" className="text-xs uppercase tracking-widest text-neutral-400 hover:text-neutral-900">
-          ← {tn('wiki')}
-        </Link>
+        <Link href="/wiki" className="bw-sep hover:text-base-content">← {tn('wiki')}</Link>
         {isAdmin && (
           <Link
             href={`/wiki/${slug}/edit`}
-            className="ml-auto rounded-full border border-neutral-200 px-3 py-1 text-xs text-neutral-500 hover:border-neutral-900 hover:text-neutral-900"
+            className="ml-auto bw-btn-ghost text-xs"
           >
             {t('edit')}
           </Link>
@@ -65,20 +63,20 @@ export default async function WikiPageView({ params }: { params: Promise<{ slug:
         <article className="min-w-0">
           <div className="mb-2 flex items-center gap-2">
             <h1 className="text-2xl font-medium tracking-tight">{page.title}</h1>
-            {!page.published && <span className="text-xs text-amber-500">{t('draft')}</span>}
+            {!page.published && <span className="text-xs text-warning">{t('draft')}</span>}
           </div>
           {page.curatorName && (
-            <p className="mb-8 text-xs text-neutral-400">{t('curatedBy', { name: page.curatorName })}</p>
+            <p className="mb-8 text-xs bw-muted">{t('curatedBy', { name: page.curatorName })}</p>
           )}
 
           {page.intro && (
-            <div className="mb-10 border-l-2 border-neutral-200 pl-4 text-neutral-600">
+            <div className="mb-10 border-l-2 border-base-300 pl-4 text-base-content/70">
               <RenderBlocks content={page.intro} />
             </div>
           )}
 
           {resolved.length === 0 ? (
-            <p className="text-sm text-neutral-400">{t('empty')}</p>
+            <p className="text-sm bw-muted">{t('empty')}</p>
           ) : (
             <WikiContent items={resolved} />
           )}

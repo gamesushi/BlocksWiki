@@ -14,44 +14,44 @@ import { ReadNav } from '@/components/read-nav';
  */
 export function ChannelReader({ blocks }: { blocks: ChannelReadBlock[] }) {
   if (blocks.length === 0) {
-    return <p className="mx-auto max-w-2xl text-sm text-neutral-400">这个频道还没有 block。</p>;
+    return <p className="mx-auto max-w-2xl text-sm bw-muted">这个频道还没有 block。</p>;
   }
   const ids = blocks.map((b) => b.block.documentId).filter(Boolean) as string[];
   return (
     <>
       <article className="mx-auto max-w-2xl pb-24">
         {blocks.map(({ block }, i) => {
-        const id = block.documentId;
-        const isFirst = i === 0;
-        return (
-          <section
-            key={id ?? i}
-            id={id ? `block-${id}` : undefined}
-            className={
-              'group relative scroll-mt-24 ' +
-              (isFirst ? 'pt-2' : 'mt-8 border-t border-neutral-100 pt-8')
-            }
-          >
-            {id && (
-              <Link
-                href={`/block/${id}`}
-                className="absolute -left-6 top-8 hidden text-neutral-300 transition-colors hover:text-neutral-900 group-hover:inline"
-                title="打开这个 block"
-                aria-label="打开这个 block"
-              >
-                §
-              </Link>
-            )}
-            {block.content ? (
-              <RenderBlocks content={block.content} />
-            ) : block.coverImageUrl ? (
-              // 极少数仅有封面的图片块兜底
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={block.coverImageUrl} alt={block.excerpt || ''} className="w-full rounded" />
-            ) : null}
-          </section>
-        );
-      })}
+          const id = block.documentId;
+          const isFirst = i === 0;
+          return (
+            <section
+              key={id ?? i}
+              id={id ? `block-${id}` : undefined}
+              className={
+                'group relative scroll-mt-24 ' +
+                (isFirst ? 'pt-2' : 'mt-8 border-t border-base-300/60 pt-8')
+              }
+            >
+              {id && (
+                <Link
+                  href={`/block/${id}`}
+                  className="absolute -left-6 top-8 hidden text-base-content/40 transition-colors hover:text-base-content group-hover:inline"
+                  title="打开这个 block"
+                  aria-label="打开这个 block"
+                >
+                  §
+                </Link>
+              )}
+              {block.content ? (
+                <RenderBlocks content={block.content} />
+              ) : block.coverImageUrl ? (
+                // 极少数仅有封面的图片块兜底
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={block.coverImageUrl} alt={block.excerpt || ''} className="w-full rounded" />
+              ) : null}
+            </section>
+          );
+        })}
       </article>
       <ReadNav ids={ids} />
     </>

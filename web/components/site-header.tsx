@@ -1,11 +1,12 @@
 /**
- * 全站顶栏 —— 对齐 Are.na：左侧 Logo/首页链接，右侧 登录/注册 或 用户名+退出。
- * 放在 root layout 里，所有页面共享。
+ * 全站顶栏 —— 暖色主题下有存在感但不抢内容风头。
+ * sticky + 微妙底阴影分隔页面；品牌用主色强调；注册按钮用 primary 实心。
  */
 import Link from '@/i18n/navigation';
 import { getTranslations } from 'next-intl/server';
 import { getSession, logout } from '@/app/actions/auth';
 import { LocaleSwitcher } from '@/components/locale-switcher';
+import { ThemeSwitcher } from '@/components/theme-switcher';
 
 export async function SiteHeader() {
   const session = await getSession();
@@ -13,40 +14,44 @@ export async function SiteHeader() {
   const t = await getTranslations('Nav');
 
   return (
-    <header className="border-b border-neutral-100 bg-white/80 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-screen-2xl items-center justify-between px-6 py-2.5 text-sm">
-        {/* 左侧：品牌 + 首页 */}
-        <Link href="/" className="font-medium tracking-tight text-neutral-900 hover:text-neutral-600">
-          BlocksWiki
-        </Link>
+    <header className="sticky top-0 z-50 border-b border-base-300/60 bg-base-100/90 backdrop-blur-md supports-[backdrop-filter]:bg-base-100/70 shadow-sm">
+      <nav className="navbar mx-auto max-w-screen-2xl px-4 sm:px-6">
+        {/* 品牌 */}
+        <div className="navbar-start gap-1">
+          <Link
+            href="/"
+            className="btn btn-ghost text-base font-bold tracking-tight normal-case sm:text-lg"
+            style={{ color: 'var(--color-primary)' }}
+          >
+            BlocksWiki
+          </Link>
+        </div>
 
-        {/* 右侧：认证 + 语言切换 */}
-        <div className="flex items-center gap-4">
+        {/* 右侧 */}
+        <div className="navbar-end items-center gap-1.5 sm:gap-2">
+          <ThemeSwitcher />
           <LocaleSwitcher />
           {me ? (
             <>
-              <span className="text-neutral-400">{me.username}</span>
+              <span className="hidden text-sm text-base-content/60 sm:inline-flex">{me.username}</span>
               <form action={logout}>
-                <button type="submit" className="text-neutral-500 hover:text-neutral-900">
+                <button type="submit" className="btn btn-ghost btn-sm text-base-content/60 hover:text-base-content">
                   {t('logout')}
                 </button>
               </form>
             </>
           ) : (
             <>
-              <Link href="/login" className="text-neutral-500 hover:text-neutral-900">
+              <Link href="/login" className="btn btn-ghost btn-sm">
                 {t('login')}
               </Link>
-              <Link
-                href="/login?mode=register"
-                className="rounded-md border border-neutral-200 px-3 py-1 text-neutral-600 hover:border-neutral-400 hover:text-neutral-900"
-              >
+              <Link href="/login?mode=register" className="btn btn-primary btn-sm shadow-sm">
                 {t('signup')}
               </Link>
             </>
           )}
         </div>
-      </div>
+      </nav>
     </header>
   );
 }

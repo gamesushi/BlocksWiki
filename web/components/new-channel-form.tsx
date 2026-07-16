@@ -2,24 +2,24 @@
 
 import { useActionState } from 'react';
 import { useTranslations } from 'next-intl';
-import { createChannel, type CreateChannelState } from '@/app/actions/channels';
+import { createChannel } from '@/app/actions/channels';
 
 export function NewChannelForm() {
-  const [state, action, pending] = useActionState<CreateChannelState, FormData>(createChannel, null);
-  const t = useTranslations('Common');
-  const tc = useTranslations('Channel');
+  const t = useTranslations('Channel');
+  const tc = useTranslations('Common');
+  const [state, action, pending] = useActionState(createChannel, null);
 
   return (
     <form action={action} className="flex items-center gap-2">
       <input
         name="title"
         placeholder={tc('newChannelPlaceholder')}
-        className="w-44 rounded-full border border-neutral-200 bg-white px-4 py-1.5 text-xs outline-none focus:border-neutral-400"
+        className="bw-input w-44"
       />
       <select
         name="visibility"
         defaultValue="public"
-        className="rounded-full border border-neutral-200 bg-white px-2 py-1.5 text-xs text-neutral-600 outline-none"
+        className="bw-select"
       >
         <option value="public">{t('public')}</option>
         <option value="private">{t('private')}</option>
@@ -27,11 +27,11 @@ export function NewChannelForm() {
       <button
         type="submit"
         disabled={pending}
-        className="rounded-full border border-neutral-300 px-3 py-1.5 text-xs text-neutral-600 hover:border-neutral-900 disabled:opacity-40"
+        className="bw-btn"
       >
         {pending ? t('creating') : t('create')}
       </button>
-      {state?.error && <span className="text-xs text-red-500">{state.error}</span>}
+      {state?.error && <span className="text-xs text-error">{state.error}</span>}
     </form>
   );
 }

@@ -31,17 +31,17 @@ export function NotificationRow({ n }: { n: AppNotification }) {
 
   const { text, href } = describe(n);
   return (
-    <li className={`flex items-start gap-3 py-3 ${n.read ? '' : 'bg-blue-50/50'} -mx-3 px-3`}>
-      {!n.read && <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-blue-500" />}
+    <li className={`flex items-start gap-3 py-3 ${n.read ? '' : 'bg-primary/10'} -mx-3 px-3`}>
+      {!n.read && <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />}
       {n.read && <span className="mt-2 h-1.5 w-1.5 shrink-0" />}
       <div className="min-w-0 flex-1">
-        <p className="text-sm leading-relaxed text-neutral-700">
-          <Link href={`/user/${n.actorName}`} className="font-medium text-neutral-900 hover:text-neutral-500">
+        <p className="text-sm leading-relaxed text-base-content/80">
+          <Link href={`/user/${n.actorName}`} className="font-medium text-base-content hover:text-primary">
             {n.actorName}
           </Link>{' '}
-          <Link href={href} className="hover:text-neutral-900">{text}</Link>
+          <Link href={href} className="hover:text-base-content">{text}</Link>
         </p>
-        <p className="mt-0.5 text-xs text-neutral-400"><TimeAgo date={n.createdAt} /></p>
+        <p className="mt-0.5 text-xs bw-muted"><TimeAgo date={n.createdAt} /></p>
       </div>
     </li>
   );

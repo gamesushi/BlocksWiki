@@ -55,10 +55,10 @@ export function BatchConnectPicker({
   };
 
   return (
-    <div className="absolute bottom-full left-0 z-20 mb-2 w-64 rounded-lg border border-neutral-200 bg-white py-1 shadow-lg">
+    <div className="absolute bottom-full left-0 z-20 mb-2 w-64 rounded-lg border border-base-300 bg-base-100 py-1 shadow-lg">
       <div className="flex items-center justify-between px-3 py-1.5">
-        <span className="text-[10px] uppercase tracking-widest text-neutral-300">{tc('connectTo')}</span>
-        <button type="button" onClick={onClose} className="text-xs text-neutral-300 hover:text-neutral-600">✕</button>
+        <span className="text-[10px] uppercase tracking-widest text-base-content/30">{tc('connectTo')}</span>
+        <button type="button" onClick={onClose} className="text-xs text-base-content/40 hover:text-base-content">✕</button>
       </div>
       <div className="px-2 pb-1.5">
         <input
@@ -66,14 +66,14 @@ export function BatchConnectPicker({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={t('searchPlaceholderPublic')}
-          className="w-full rounded-md border border-neutral-200 px-2.5 py-1.5 text-xs outline-none focus:border-neutral-400"
+          className="w-full rounded-md border border-base-300 bg-base-100 px-2.5 py-1.5 text-xs text-base-content outline-none transition focus:border-primary"
         />
       </div>
       <ul className="max-h-56 overflow-y-auto">
-        {isPending && <li className="px-3 py-2 text-xs text-neutral-400">{t('batchConnecting')}</li>}
-        {!isPending && searching && <li className="px-3 py-2 text-xs text-neutral-400">{t('searching')}</li>}
+        {isPending && <li className="px-3 py-2 text-xs bw-muted">{t('batchConnecting')}</li>}
+        {!isPending && searching && <li className="px-3 py-2 text-xs bw-muted">{t('searching')}</li>}
         {!isPending && !searching && showing.length === 0 && (
-          <li className="px-3 py-2 text-xs text-neutral-400">
+          <li className="px-3 py-2 text-xs bw-muted">
             {query.trim() ? t('noMatch') : t('noOptions')}
           </li>
         )}
@@ -83,7 +83,7 @@ export function BatchConnectPicker({
               <button
                 type="button"
                 onClick={() => pick(ch.documentId, ch.slug)}
-                className="block w-full truncate px-3 py-2 text-left text-sm hover:bg-neutral-50"
+                className="block w-full truncate px-3 py-2 text-left text-sm hover:bg-base-200"
               >
                 {ch.title}
               </button>

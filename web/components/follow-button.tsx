@@ -37,8 +37,8 @@ export function FollowButton(
       disabled={isPending}
       className={`rounded-full px-3 py-1 text-xs transition-colors disabled:opacity-40 ${
         following
-          ? 'border border-neutral-200 text-neutral-500 hover:border-red-300 hover:text-red-500'
-          : 'bg-neutral-900 text-white hover:bg-neutral-700'
+          ? 'border border-error/30 text-error hover:bg-error/10'
+          : 'bw-btn'
       }`}
     >
       {following ? t('following') : t('follow')}

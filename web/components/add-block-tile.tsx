@@ -113,9 +113,9 @@ export function AddBlockTile({ channelId, channelSlug }: { channelId: string; ch
         onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
         onDragLeave={() => setDragOver(false)}
         onDrop={onDrop}
-        className={`relative flex aspect-square flex-col rounded-lg border bg-neutral-50 ${
-          dragOver ? 'border-blue-400 bg-blue-50' : 'border-neutral-200'
-        } ${active ? '' : 'cursor-pointer hover:border-neutral-400'}`}
+        className={`relative flex aspect-square flex-col rounded-lg border bg-base-100 ${
+          dragOver ? 'border-primary bg-primary/10' : 'border-base-300'
+        } ${active ? '' : 'cursor-pointer hover:border-primary/40'}`}
       >
         {active ? (
           <textarea
@@ -131,15 +131,15 @@ export function AddBlockTile({ channelId, channelSlug }: { channelId: string; ch
             disabled={isPending}
             placeholder={tBlock('tilePlaceholder')}
             // 底部留白给控件行，避免与占位符重叠
-            className="h-full w-full resize-none rounded-lg bg-transparent px-4 pb-10 pt-4 text-sm leading-relaxed outline-none placeholder:text-neutral-400"
+            className="h-full w-full resize-none rounded-lg bg-transparent px-4 pb-10 pt-4 text-sm leading-relaxed text-base-content outline-none placeholder:text-base-content/40"
           />
         ) : (
-          <div className="flex flex-1 items-center justify-center pb-8 text-2xl text-neutral-300">+</div>
+          <div className="flex flex-1 items-center justify-center pb-8 text-2xl text-base-content/30">+</div>
         )}
 
         {/* 底部控件行：始终存在（含 idle），互不重叠 */}
         <div className="absolute inset-x-3 bottom-3 flex items-center justify-between">
-          <span className="pointer-events-none rounded bg-neutral-100 px-1.5 py-0.5 text-[11px] text-neutral-400">
+          <span className="pointer-events-none rounded bg-base-200 px-1.5 py-0.5 text-[11px] text-base-content/50">
             {isPending || status ? (status ?? t('adding')) : '⌘ENTER'}
           </span>
           <span className="flex items-center gap-1.5">
@@ -147,7 +147,7 @@ export function AddBlockTile({ channelId, channelSlug }: { channelId: string; ch
               type="button"
               onMouseDown={(e) => e.preventDefault()}
               onClick={(e) => { e.stopPropagation(); fileRef.current?.click(); }}
-              className="rounded bg-neutral-100 px-1.5 py-0.5 text-[11px] text-neutral-400 hover:text-neutral-900"
+              className="rounded bg-base-200 px-1.5 py-0.5 text-[11px] text-base-content/50 hover:text-base-content"
             >
               {tBlock('selectFile')}
             </button>
@@ -156,7 +156,7 @@ export function AddBlockTile({ channelId, channelSlug }: { channelId: string; ch
               onMouseDown={(e) => e.preventDefault()}
               onClick={(e) => { e.stopPropagation(); setExpanded(true); }}
               title={tBlock('expandTitle')}
-              className="rounded bg-neutral-100 px-1.5 py-0.5 text-[11px] text-neutral-400 hover:text-neutral-900"
+              className="rounded bg-base-200 px-1.5 py-0.5 text-[11px] text-base-content/50 hover:text-base-content"
             >
               ⤢ {tBlock('expand')}
             </button>
@@ -171,8 +171,7 @@ export function AddBlockTile({ channelId, channelSlug }: { channelId: string; ch
           onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadImage(f); e.target.value = ''; }}
         />
       </div>
-      {error && <p className="mt-1 text-[11px] text-red-500">{error}</p>}
-
+      {error && <p className="mt-1 text-[11px] text-error">{error}</p>}
       {expanded && (
         <ExpandedEditor
           channelId={channelId}

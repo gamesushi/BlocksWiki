@@ -89,7 +89,7 @@ export default async function ExplorePage() {
     <main className="px-6 py-10">
       <header className="mb-10 flex items-baseline gap-4">
         <h1 className="text-lg font-medium tracking-tight">{t('title')}</h1>
-        <Link href="/" className="text-sm text-neutral-400 hover:text-neutral-900">{tc('backHome')}</Link>
+        <Link href="/" className="text-sm bw-muted hover:text-base-content">{tc('backHome')}</Link>
       </header>
 
       <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -99,7 +99,7 @@ export default async function ExplorePage() {
             <li key={ch.documentId}>
               <Link
                 href={`/channel/${ch.slug}`}
-                className="block rounded-lg border border-neutral-200 bg-white p-5 transition-colors hover:border-neutral-400"
+                className="bw-card bw-card-hover block p-5"
               >
                 <div className="mb-4 grid grid-cols-3 gap-2">
                   {[0, 1, 2].map((i) => {
@@ -107,7 +107,7 @@ export default async function ExplorePage() {
                     return (
                       <div
                         key={i}
-                        className="flex aspect-square items-center overflow-hidden rounded bg-neutral-50 p-1.5"
+                        className="flex aspect-square items-center overflow-hidden rounded bg-base-200 p-1.5"
                       >
                         {block?.coverImageUrl ? (
                           // eslint-disable-next-line @next/next/no-img-element
@@ -117,7 +117,7 @@ export default async function ExplorePage() {
                             className="h-full w-full rounded-sm object-cover"
                           />
                         ) : block?.excerpt ? (
-                          <p className="line-clamp-4 text-[9px] leading-tight text-neutral-500">
+                          <p className="line-clamp-4 text-[9px] leading-tight text-base-content/60">
                             {block.excerpt}
                           </p>
                         ) : null}
@@ -125,12 +125,12 @@ export default async function ExplorePage() {
                     );
                   })}
                 </div>
-                <h2 className="truncate text-sm font-medium text-neutral-900">{ch.title}</h2>
-                <p className="mt-1 text-xs text-neutral-400">
+                <h2 className="truncate text-sm font-medium text-base-content">{ch.title}</h2>
+                <p className="mt-1 text-xs text-base-content/50">
                   {ch.ownerName} · {ch.connectionCount} blocks
                 </p>
                 {ch.description && (
-                  <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-neutral-500">
+                  <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-base-content/60">
                     {ch.description}
                   </p>
                 )}
@@ -141,7 +141,7 @@ export default async function ExplorePage() {
       </ul>
 
       {channels.length === 0 && (
-        <p className="text-sm text-neutral-400">{t('empty')}</p>
+        <p className="text-sm bw-muted">{t('empty')}</p>
       )}
     </main>
   );

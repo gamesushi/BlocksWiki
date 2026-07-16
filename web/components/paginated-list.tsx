@@ -132,7 +132,7 @@ export function PaginatedList<T>({
             type="button"
             onClick={onLoadMore}
             disabled={isPending}
-            className="rounded-full border border-neutral-300 px-6 py-2 text-sm text-neutral-600 hover:border-neutral-900 hover:text-neutral-900 disabled:opacity-40"
+            className="btn btn-outline btn-sm rounded-full disabled:opacity-40"
           >
             {isPending ? t('loading') : t('loadMore')}
           </button>

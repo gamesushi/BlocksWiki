@@ -35,7 +35,8 @@
     "backHome": "← BlocksWiki",
     "tagline": "A Block-based life Wiki",
     "createdOn": "Created",
-    "updatedOn": "Updated"
+    "updatedOn": "Updated",
+    "newChannelPlaceholder": "New channel name…"
   },
   "Channel": {
     "myChannels": "My Channels",
@@ -55,6 +56,11 @@
     "removedFailed": ", {failed} failed (no permission)",
     "collaborators": "Collaborators",
     "collabPublic": "Anyone signed in can connect to a public channel; collaborator settings have no extra effect on connect permission.",
+    "public": "Public",
+    "private": "Private",
+    "create": "Create channel",
+    "creating": "Creating…",
+    "title": "Channel name",
     "collabRestricted": "Only the owner and the following collaborators can connect Blocks to this channel.",
     "noCollaborators": "No collaborators yet",
     "addCollaborator": "+ Add",
@@ -265,5 +271,14 @@
     "noMatch": "No matches",
     "titleRequired": "Title is required.",
     "deletePage": "Delete page"
+  },
+  "Theme": {
+    "ariaLabel": "Switch theme",
+    "system": "System",
+    "blocks": "Warm cream · Coral",
+    "corporate": "Corporate · Cool blue",
+    "cupcake": "Sweet · Pastel",
+    "dracula": "Midnight · Purple",
+    "mosaic": "Mosaic · Blue-Green"
   }
 }

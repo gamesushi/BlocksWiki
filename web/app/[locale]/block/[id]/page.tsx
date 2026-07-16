@@ -111,13 +111,13 @@ export default async function BlockPage({ params }: { params: Promise<{ id: stri
     <main className="px-6 py-10">
       {/* 顶栏 */}
       <div className="mx-auto mb-8 flex max-w-screen-xl items-center justify-between">
-        <Link href="/" className="text-sm text-neutral-400 hover:text-neutral-900">{tc('backHome')}</Link>
+        <Link href="/" className="text-sm bw-muted hover:text-base-content">{tc('backHome')}</Link>
         <span className="flex items-center gap-2">
           {isAuthor && (
             <>
               <Link
                 href={`/block/${block.documentId}/edit`}
-                className="rounded-full border border-neutral-200 px-3 py-1 text-xs text-neutral-500 hover:border-neutral-900 hover:text-neutral-900"
+                className="bw-btn-ghost text-xs"
               >
                 {t('edit')}
               </Link>
@@ -149,10 +149,10 @@ export default async function BlockPage({ params }: { params: Promise<{ id: stri
           />
 
           {/* 元数据 */}
-          <div className="space-y-1.5 text-xs text-neutral-400">
+          <div className="space-y-1.5 text-xs bw-muted">
             <p>
               {t('by')}{' '}
-              <Link href={`/user/${block.creatorName}`} className="text-neutral-500 hover:text-neutral-900">
+              <Link href={`/user/${block.creatorName}`} className="text-base-content/60 hover:text-base-content">
                 {block.creatorName}
               </Link>
             </p>
@@ -165,7 +165,7 @@ export default async function BlockPage({ params }: { params: Promise<{ id: stri
                 return h ? (
                   <p>
                     {tc('source')}{' '}
-                    <a href={block.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-neutral-500 hover:text-neutral-900">
+                    <a href={block.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-base-content/60 hover:text-base-content">
                       {h}
                     </a>
                   </p>
@@ -179,11 +179,11 @@ export default async function BlockPage({ params }: { params: Promise<{ id: stri
           )}
 
           {/* 分隔线 */}
-          <div className="border-t border-neutral-100" />
+          <div className="border-t border-base-300/60" />
 
           {/* 关联频道 */}
           <div>
-            <h2 className="mb-3 text-xs font-medium uppercase tracking-wider text-neutral-400">
+            <h2 className="mb-3 bw-sep">
               Connected to {connections.length} channel{connections.length !== 1 ? 's' : ''}
             </h2>
             <ul className="space-y-2">
@@ -192,10 +192,10 @@ export default async function BlockPage({ params }: { params: Promise<{ id: stri
                   <li key={conn.documentId}>
                     <Link
                       href={`/channel/${conn.channel.slug}`}
-                      className="block rounded-lg border border-neutral-200 px-3 py-2 text-sm text-neutral-700 hover:border-neutral-400"
+                      className="block rounded-lg border border-base-300 bg-base-100 px-3 py-2 text-sm text-base-content/80 transition-colors hover:border-primary/40"
                     >
                       {conn.channel.title}
-                      <span className="mt-0.5 block text-[11px] text-neutral-400">
+                      <span className="mt-0.5 block text-[11px] bw-muted">
                         {t('connectedBy', { name: conn.connectorName ?? '' })}
                       </span>
                     </Link>
@@ -207,11 +207,11 @@ export default async function BlockPage({ params }: { params: Promise<{ id: stri
 
           {/* block→block 出链 */}
           <div>
-            <h2 className="mb-3 text-xs font-medium uppercase tracking-wider text-neutral-400">
+            <h2 className="mb-3 bw-sep">
               Links to {outgoingLinks.length} block{outgoingLinks.length !== 1 ? 's' : ''}
             </h2>
             {outgoingLinks.length === 0 ? (
-              <p className="text-xs text-neutral-300">—</p>
+              <p className="text-xs text-base-content/30">—</p>
             ) : (
               <ul className="space-y-2">
                 {outgoingLinks.map((conn) =>
@@ -219,7 +219,7 @@ export default async function BlockPage({ params }: { params: Promise<{ id: stri
                     <li key={conn.documentId}>
                       <Link
                         href={`/block/${conn.targetBlock.documentId}`}
-                        className="block rounded-lg border border-neutral-200 px-3 py-2 text-sm text-neutral-700 hover:border-neutral-400"
+                        className="block rounded-lg border border-base-300 bg-base-100 px-3 py-2 text-sm text-base-content/80 transition-colors hover:border-primary/40"
                       >
                         {conn.targetBlock.excerpt || 'Untitled block'}
                       </Link>
@@ -232,11 +232,11 @@ export default async function BlockPage({ params }: { params: Promise<{ id: stri
 
           {/* block→block 反链 */}
           <div>
-            <h2 className="mb-3 text-xs font-medium uppercase tracking-wider text-neutral-400">
+            <h2 className="mb-3 bw-sep">
               Linked from {incomingLinks.length} block{incomingLinks.length !== 1 ? 's' : ''}
             </h2>
             {incomingLinks.length === 0 ? (
-              <p className="text-xs text-neutral-300">—</p>
+              <p className="text-xs text-base-content/30">—</p>
             ) : (
               <ul className="space-y-2">
                 {incomingLinks.map((conn) =>
@@ -244,7 +244,7 @@ export default async function BlockPage({ params }: { params: Promise<{ id: stri
                     <li key={conn.documentId}>
                       <Link
                         href={`/block/${conn.block.documentId}`}
-                        className="block rounded-lg border border-neutral-200 px-3 py-2 text-sm text-neutral-700 hover:border-neutral-400"
+                        className="block rounded-lg border border-base-300 bg-base-100 px-3 py-2 text-sm text-base-content/80 transition-colors hover:border-primary/40"
                       >
                         {conn.block.excerpt || 'Untitled block'}
                       </Link>

@@ -18,7 +18,7 @@ export function PaginatedFeed({
       initialHasMore={initialHasMore}
       loadMore={getFeed}
       getKey={(c) => c.documentId}
-      gridClassName="flex flex-col divide-y divide-neutral-100"
+      gridClassName="flex flex-col divide-y divide-base-300/60"
       renderItem={(conn) => <FeedRow key={conn.documentId} conn={conn} />}
     />
   );

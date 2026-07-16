@@ -66,8 +66,8 @@ export class BlockLinkInlineTool implements InlineTool {
       `left:${window.scrollX + rect.left}px`,
       'width:280px',
       'max-width:90vw',
-      'background:#fff',
-      'border:1px solid #e5e5e5',
+      'background:var(--color-base-100)',
+      'border:1px solid var(--color-base-300)',
       'border-radius:8px',
       'box-shadow:0 4px 16px rgba(0,0,0,0.12)',
       'padding:8px',
@@ -77,7 +77,7 @@ export class BlockLinkInlineTool implements InlineTool {
     const input = document.createElement('input');
     input.placeholder = '搜索 block…';
     input.style.cssText =
-      'width:100%;box-sizing:border-box;padding:6px 8px;border:1px solid #ddd;border-radius:6px;outline:none;';
+      'width:100%;box-sizing:border-box;padding:6px 8px;border:1px solid var(--color-base-300);border-radius:6px;outline:none;';
 
     const list = document.createElement('ul');
     list.style.cssText = 'margin:6px 0 0;padding:0;list-style:none;max-height:220px;overflow-y:auto;';
@@ -92,7 +92,7 @@ export class BlockLinkInlineTool implements InlineTool {
       if (items.length === 0) {
         const li = document.createElement('li');
         li.textContent = '没有匹配的 block';
-        li.style.cssText = 'color:#aaa;padding:6px 4px;';
+        li.style.cssText = 'color:var(--color-base-content);opacity:.5;padding:6px 4px;';
         list.appendChild(li);
         return;
       }
@@ -101,7 +101,7 @@ export class BlockLinkInlineTool implements InlineTool {
         li.textContent = it.label;
         li.style.cssText =
           'padding:6px 4px;cursor:pointer;border-radius:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
-        li.addEventListener('mouseenter', () => (li.style.background = '#f5f5f5'));
+        li.addEventListener('mouseenter', () => (li.style.background = 'var(--color-base-200)'));
         li.addEventListener('mouseleave', () => (li.style.background = 'transparent'));
         li.addEventListener('mousedown', (e) => {
           e.preventDefault(); // 保留编辑器里的选中，避免失焦后选区丢失
