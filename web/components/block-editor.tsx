@@ -3,6 +3,7 @@
 /**
  * Editor.js 输入端。产出纯净的 OutputData JSON，直接交给 createBlock server action。
  * 依赖: @editorjs/editorjs @editorjs/header @editorjs/list @editorjs/quote @editorjs/image
+ * block→block 链接用本地 BlockLinkInlineTool（替代 @editorjs/link）。
  */
 import {
   useEffect,
@@ -12,7 +13,9 @@ import {
   forwardRef,
   useImperativeHandle,
 } from 'react';
+import { useTranslations } from 'next-intl';
 import type EditorJS from '@editorjs/editorjs';
+import { BlockLinkInlineTool } from '@/components/block-link-inline-tool';
 import { createBlock } from '@/app/actions/blocks';
 import type { EditorJsOutput } from '@/lib/types';
 
@@ -49,6 +52,9 @@ export const BlockEditor = forwardRef<BlockEditorHandle, BlockEditorProps>(
     const editorRef = useRef<EditorJS | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [isPending, startTransition] = useTransition();
+    const t = useTranslations('Block');
+    const tc = useTranslations('Common');
+    const te = useTranslations('Errors');
 
     const submit = () => {
       setError(null);
@@ -58,14 +64,14 @@ export const BlockEditor = forwardRef<BlockEditorHandle, BlockEditorProps>(
 
         const output = (await editor.save()) as EditorJsOutput;
         if (output.blocks.length === 0) {
-          setError('内容为空。');
+          setError(te('emptyContent'));
           return;
         }
 
         if (onSubmit) {
           const result = await onSubmit(output);
           if (result.ok) onPublished?.(result.documentId ?? '');
-          else setError(result.error ?? '保存失败。');
+          else setError(result.error ?? te('saveFailedShort'));
           return;
         }
 
@@ -104,13 +110,23 @@ export const BlockEditor = forwardRef<BlockEditorHandle, BlockEditorProps>(
 
         editorRef.current = new EditorJSClass({
           holder: HOLDER_ID,
-          placeholder: '记录一条生活心得…',
+          placeholder: t('editorPlaceholder'),
           minHeight: 120,
           ...(initialData ? { data: initialData as any } : {}),
           tools: {
-            header: { class: Header, config: { levels: [2, 3], defaultLevel: 2 } },
-            list: { class: List, inlineToolbar: true },
-            quote: Quote,
+            paragraph: { inlineToolbar: ['blockLink', 'bold', 'italic'] },
+            header: {
+              class: Header,
+              config: { levels: [2, 3], defaultLevel: 2 },
+              inlineToolbar: ['blockLink', 'bold', 'italic'],
+            },
+            list: { class: List, inlineToolbar: ['blockLink', 'bold', 'italic'] },
+            quote: { class: Quote, inlineToolbar: ['blockLink', 'bold', 'italic'] },
+            blockLink: {
+              // 选中文字 → 弹搜索框 → 选 block → 包成 /block/<id> 链接，
+              // 由 reconcile 在保存时自动建 Connection 边并记反链。
+              class: BlockLinkInlineTool,
+            },
             image: {
               class: ImageTool,
               config: {
@@ -158,7 +174,7 @@ export const BlockEditor = forwardRef<BlockEditorHandle, BlockEditorProps>(
             disabled={isPending}
             className="mt-3 rounded-full bg-neutral-900 px-5 py-2 text-sm text-white disabled:opacity-40"
           >
-            {isPending ? '保存中…' : (submitLabel ?? '发布 Block')}
+            {isPending ? tc('saving') : (submitLabel ?? t('publishBlock'))}
           </button>
         )}
       </div>

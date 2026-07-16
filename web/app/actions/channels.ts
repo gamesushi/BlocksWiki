@@ -2,6 +2,7 @@
 
 import { revalidatePath, updateTag } from 'next/cache';
 import { strapiFetch, StrapiError, type StrapiResponse } from '@/lib/strapi';
+import { getTranslations } from 'next-intl/server';
 import type { Channel } from '@/lib/types';
 
 export type CreateChannelState = { error: string } | null;
@@ -10,8 +11,9 @@ export async function createChannel(
   _prev: CreateChannelState,
   formData: FormData
 ): Promise<CreateChannelState> {
+  const t = await getTranslations('Errors');
   const title = String(formData.get('title') ?? '').trim();
-  if (!title) return { error: 'Channel 名称不能为空。' };
+  if (!title) return { error: t('channelNameEmpty') };
   const raw = String(formData.get('visibility') ?? 'public');
   const visibility = raw === 'private' ? 'private' : 'public';
 
@@ -22,13 +24,13 @@ export async function createChannel(
     });
   } catch (err) {
     if (err instanceof StrapiError) {
-      if (err.status === 401) return { error: '请先登录。' };
+      if (err.status === 401) return { error: t('loginRequired') };
       if (err.status === 403)
-        return { error: '权限不足，无法创建频道（账号角色缺少 channel.create 权限）。' };
-      if (err.status === 400) return { error: '提交内容不合法，请检查频道名称。' };
-      if (err.status >= 500) return { error: '服务暂时不可用，请稍后重试。' };
+        return { error: t('createChannelForbidden') };
+      if (err.status === 400) return { error: t('channelNameInvalid') };
+      if (err.status >= 500) return { error: t('serviceUnavailable') };
     }
-    return { error: '创建失败，请重试。' };
+    return { error: t('createFailed') };
   }
 
   revalidatePath('/');
@@ -41,8 +43,9 @@ export async function manageCollaborator(
   username: string,
   action: 'add' | 'remove'
 ): Promise<{ ok: boolean; error?: string; names?: string[] }> {
+  const t = await getTranslations('Errors');
   const name = username.trim();
-  if (!name) return { ok: false, error: '请输入用户名。' };
+  if (!name) return { ok: false, error: t('enterUsername') };
   try {
     const res = await strapiFetch<{ data: { collaboratorNames?: string[] } }>(
       '/channels/collaborators',
@@ -52,10 +55,10 @@ export async function manageCollaborator(
     return { ok: true, names: res.data.collaboratorNames };
   } catch (err) {
     if (err instanceof StrapiError) {
-      if (err.status === 403) return { ok: false, error: '只有属主可以管理协作者。' };
-      if (err.status === 400) return { ok: false, error: '该用户不存在或无需添加。' };
+      if (err.status === 403) return { ok: false, error: t('onlyOwnerManageCollaborators') };
+      if (err.status === 400) return { ok: false, error: t('userNotFoundOrNotNeeded') };
     }
-    return { ok: false, error: '操作失败，请重试。' };
+    return { ok: false, error: t('actionFailed') };
   }
 }
 
@@ -63,6 +66,7 @@ export async function deleteChannel(
   documentId: string,
   slug: string
 ): Promise<{ ok: boolean; error?: string }> {
+  const t = await getTranslations('Errors');
   try {
     await strapiFetch(`/channels/${documentId}`, { method: 'DELETE' });
     updateTag(`channel:${slug}`);
@@ -70,9 +74,9 @@ export async function deleteChannel(
     return { ok: true };
   } catch (err) {
     if (err instanceof StrapiError && err.status === 403) {
-      return { ok: false, error: '只能删除自己的 Channel。' };
+      return { ok: false, error: t('onlyOwnChannelDelete') };
     }
-    return { ok: false, error: '删除失败，请重试。' };
+    return { ok: false, error: t('deleteFailed') };
   }
 }
 
@@ -84,6 +88,7 @@ export async function updateChannel(
   _prev: UpdateChannelState,
   formData: FormData
 ): Promise<UpdateChannelState> {
+  const t = await getTranslations('Errors');
   const title = String(formData.get('title') ?? '').trim();
   const description = String(formData.get('description') ?? '').trim();
   const raw = String(formData.get('visibility') ?? 'public');
@@ -96,12 +101,12 @@ export async function updateChannel(
     });
   } catch (err) {
     if (err instanceof StrapiError && err.status === 403) {
-      return { error: '只能编辑自己的 Channel。' };
+      return { error: t('onlyOwnChannelEdit') };
     }
     if (err instanceof StrapiError && err.status === 401) {
-      return { error: '请先登录。' };
+      return { error: t('loginRequired') };
     }
-    return { error: '保存失败，请重试。' };
+    return { error: t('saveFailed') };
   }
 
   updateTag(`channel:${slug}`);

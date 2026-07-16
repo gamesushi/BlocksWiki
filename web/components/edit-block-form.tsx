@@ -1,8 +1,9 @@
 'use client';
 
 import { useRef } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useRouter } from '@/i18n/navigation';
+import Link from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import { BlockEditor, type BlockEditorHandle } from '@/components/block-editor';
 import { updateBlock } from '@/app/actions/blocks';
 import type { EditorJsOutput } from '@/lib/types';
@@ -10,16 +11,15 @@ import type { EditorJsOutput } from '@/lib/types';
 export function EditBlockForm({
   documentId,
   initialData,
-  initialTitle = '',
   initialDescription = '',
 }: {
   documentId: string;
   initialData: EditorJsOutput;
-  initialTitle?: string;
   initialDescription?: string;
 }) {
   const router = useRouter();
   const editorRef = useRef<BlockEditorHandle>(null);
+  const t = useTranslations('Form');
 
   return (
     <div
@@ -37,13 +37,8 @@ export function EditBlockForm({
           if (e.key === 'Escape') router.push(`/block/${documentId}`);
         }}
       >
-        {/* 标题 & 描述区 */}
+        {/* 描述区 */}
         <div className="shrink-0 border-b border-neutral-200 px-6 pt-5 pb-3">
-          <input
-            defaultValue={initialTitle}
-            placeholder="Title"
-            className="mb-2 w-full bg-transparent text-2xl font-bold outline-none placeholder:text-neutral-300"
-          />
           <textarea
             defaultValue={initialDescription}
             placeholder="Description"
@@ -58,7 +53,7 @@ export function EditBlockForm({
             ref={editorRef}
             embedded
             initialData={initialData}
-            submitLabel="保存修改"
+            submitLabel={t('saveChanges')}
             onSubmit={(output: EditorJsOutput) => updateBlock(documentId, output)}
             onPublished={() => router.push(`/block/${documentId}`)}
           />
@@ -70,14 +65,14 @@ export function EditBlockForm({
             href={`/block/${documentId}`}
             className="rounded border border-neutral-300 px-3 py-1 text-xs text-neutral-500 hover:border-neutral-900 hover:text-neutral-900"
           >
-            ← 取消
+            {t('cancelBack')}
           </Link>
           <button
             type="button"
             onClick={() => editorRef.current?.submit()}
             className="rounded-md bg-blue-900 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800"
           >
-            保存修改
+            {t('saveChanges')}
           </button>
         </div>
       </div>

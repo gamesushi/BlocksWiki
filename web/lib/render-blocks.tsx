@@ -1,12 +1,26 @@
 /**
  * Editor.js JSON -> React 渲染器（服务端组件可用，零客户端 JS）。
- * 注意：Editor.js 的 text 字段是受控的内联 HTML（b/i/a/mark），
- * 生产环境请在此处套一层 sanitize（如 isomorphic-dompurify）再注入。
+ * Editor.js 的 text 字段是受控的内联 HTML（b/i/a/mark）；
+ * 放行 Link 工具后用户可注入任意 <a>，故用 isomorphic-dompurify 净化后再注入，
+ * 防 XSS（如 javascript: 伪协议）。仅白名单内标签/属性通过。
  */
+import DOMPurify from 'isomorphic-dompurify';
 import type { EditorJsBlockNode, EditorJsOutput } from './types';
 
+const ALLOWED_TAGS = [
+  'p', 'br', 'h1', 'h2', 'h3', 'h4',
+  'ul', 'ol', 'li', 'blockquote',
+  'b', 'i', 'em', 'strong', 'mark', 'a', 'span',
+];
+const ALLOWED_ATTR = ['href', 'target', 'rel', 'class', 'title'];
+
 function Inline({ html }: { html: string }) {
-  return <span dangerouslySetInnerHTML={{ __html: html }} />;
+  const clean = DOMPurify.sanitize(html ?? '', {
+    ALLOWED_TAGS,
+    ALLOWED_ATTR,
+    ALLOW_DATA_ATTR: false,
+  });
+  return <span dangerouslySetInnerHTML={{ __html: clean }} />;
 }
 
 function renderNode(node: EditorJsBlockNode, i: number) {

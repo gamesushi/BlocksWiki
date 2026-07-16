@@ -7,6 +7,7 @@
  *  - 搜索：防抖查任意公开频道 —— 兑现"任何人可连公开频道"的语义。
  */
 import { useEffect, useRef, useState, useTransition } from 'react';
+import { useTranslations } from 'next-intl';
 import { connectBlock } from '@/app/actions/connections';
 import { searchConnectableChannels, type ConnectableChannel } from '@/app/actions/search';
 import type { Channel } from '@/lib/types';
@@ -20,6 +21,8 @@ export function ConnectButton({
   blockId: string;
   myChannels: Pick<Channel, 'documentId' | 'title' | 'slug'>[];
 }) {
+  const t = useTranslations('Connect');
+  const tc = useTranslations('Channel');
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<ConnectableChannel[]>([]);
@@ -69,7 +72,7 @@ export function ConnectButton({
         onClick={() => setOpen((v) => !v)}
         className="rounded-full border border-neutral-300 px-3 py-1 text-xs tracking-wide text-neutral-600 hover:border-neutral-900 hover:text-neutral-900"
       >
-        Connect →
+        {t('connect')} →
       </button>
 
       {open && (
@@ -78,22 +81,22 @@ export function ConnectButton({
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="搜索公开频道…"
+              placeholder={t('searchPlaceholder')}
               className="w-full rounded-md border border-neutral-200 px-2.5 py-1.5 text-xs outline-none focus:border-neutral-400"
             />
           </div>
 
           {!query.trim() && (
             <p className="px-3 pb-1 pt-0.5 text-[10px] uppercase tracking-widest text-neutral-300">
-              我的频道
+              {tc('myChannels')}
             </p>
           )}
 
           <ul className="max-h-64 overflow-y-auto">
-            {searching && <li className="px-3 py-2 text-xs text-neutral-400">搜索中…</li>}
+            {searching && <li className="px-3 py-2 text-xs text-neutral-400">{t('searching')}</li>}
             {!searching && showing.length === 0 && (
               <li className="px-3 py-2 text-xs text-neutral-400">
-                {query.trim() ? '没有匹配的公开频道' : '先创建一个 Channel'}
+                {query.trim() ? t('noMatch') : t('createFirst')}
               </li>
             )}
             {showing.map((ch) => {

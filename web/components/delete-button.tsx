@@ -5,7 +5,8 @@
  * 第一击进入确认态，3 秒不二次点击自动还原。
  */
 import { useRef, useState, useTransition } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 
 export function DeleteButton({
   label,
@@ -23,6 +24,8 @@ export function DeleteButton({
   const [isPending, startTransition] = useTransition();
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const router = useRouter();
+  const t = useTranslations('Common');
+  const te = useTranslations('Errors');
 
   const onClick = () => {
     if (!arming) {
@@ -37,7 +40,7 @@ export function DeleteButton({
         router.push(redirectTo);
       } else {
         setArming(false);
-        setError(result.error ?? '操作失败。');
+        setError(result.error ?? te('actionFailedShort'));
       }
     });
   };
@@ -55,7 +58,7 @@ export function DeleteButton({
             : 'border-neutral-200 text-neutral-400 hover:border-neutral-400 hover:text-neutral-600'
         }`}
       >
-        {isPending ? '删除中…' : arming ? confirmLabel : label}
+        {isPending ? t('deleting') : arming ? confirmLabel : label}
       </button>
     </span>
   );

@@ -35,7 +35,7 @@ export function PaginatedConnections({
   isOwner: boolean;
   loadMore: (page: number) => Promise<ConnectionPage>;
   leading?: ReactNode;
-  variant?: 'grid' | 'table';
+  variant?: 'grid' | 'table' | 'read';
   reorderable?: boolean;
   onReorder?: (orderedIds: string[]) => Promise<boolean>;
   /** 多选模式：Grid 视图内点击卡片切换选中，而非导航 */

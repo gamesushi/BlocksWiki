@@ -2,14 +2,13 @@
 
 > A block-based personal knowledge wiki. Capture anything, connect it, and grow a network of ideas.
 
-BlocksWiki is a personal knowledge-management app built around the idea of **blocks** — small, atomic pieces of content (a note, a quote, an image, a link). Instead of organizing content into folders, you connect blocks into **channels** to form a navigable graph, Are.na-style. It is designed for fast capture (including a PWA "quick capture" mode) and for curating what you collect.
+BlocksWiki is a personal knowledge-management app built around the idea of **blocks** — small, atomic pieces of content (a note, a quote, an image, a link). Instead of organizing content into folders, you connect blocks into **channels** to form a navigable graph, Are.na-style. It is designed for fast capture and for curating what you collect.
 
 ## Features
 
 - **Blocks** — atomic content units (text / image / link). Create, edit, and delete your own blocks.
 - **Channels** — curated collections of blocks. Connect any block into a channel; reorder the channel's contents.
 - **Connections graph** — blocks and channels are linked through typed edges, forming a personal knowledge graph.
-- **Quick Capture (PWA)** — add-to-homescreen install; open straight to a capture box, paste from clipboard, and store offline (queued, synced when back online).
 - **Social layer** — follow users and channels, comment on blocks, receive notifications.
 - **Wiki pages** — admin-authored documentation pages (write access restricted to admins).
 - **Search & Explore** — full-text search across blocks and a public-channel discovery view.
@@ -34,7 +33,7 @@ blockswiki/
 │   ├── src/      # content-types, controllers, bootstrap seed/permissions
 │   └── .tmp/     # SQLite DB + uploads (gitignored, created at runtime)
 ├── web/          # Next.js 16 frontend (the live application frontend)
-│   ├── app/      # App Router pages (channel, block, explore, capture, ...)
+│   ├── app/      # App Router pages (channel, block, explore, ...)
 │   └── components/
 ├── backend/      # early prototype (not the live backend; kept for reference)
 ├── frontend/     # early prototype (not the live frontend; kept for reference)

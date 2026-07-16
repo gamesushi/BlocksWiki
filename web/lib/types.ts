@@ -24,6 +24,10 @@ export type Block = StrapiDoc<{
   sourceUrl?: string | null;
   connectionCount: number;
   commentCount: number;
+  /** block→block 出链计数（正文里链出的 block 数） */
+  outgoingLinkCount?: number;
+  /** block→block 反链计数（被多少 block 链） */
+  incomingLinkCount?: number;
   creatorName: string;
   creator?: UserSummary;
 }>;
@@ -48,7 +52,10 @@ export type Channel = StrapiDoc<{
 export type Connection = StrapiDoc<{
   position: number;
   connectorName: string;
+  /** 边的源 block（block→channel 或 block→block 均为源） */
   block?: Block;
+  /** block→block 边的目标 block；block→channel 边此字段为空 */
+  targetBlock?: Block;
   channel?: Channel;
   /** 频道套频道：这条边的内容是一个频道而非 block */
   contentChannel?: Channel;

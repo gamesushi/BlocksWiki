@@ -8,6 +8,7 @@
  */
 import { updateTag } from 'next/cache';
 import { strapiFetch, StrapiError, type StrapiResponse } from '@/lib/strapi';
+import { getTranslations } from 'next-intl/server';
 import type { Connection } from '@/lib/types';
 
 export type ConnectResult =
@@ -18,6 +19,7 @@ export async function connectBlock(
   blockId: string,
   channelId: string
 ): Promise<ConnectResult> {
+  const t = await getTranslations('Errors');
   try {
     const res = await strapiFetch<
       StrapiResponse<Connection> & { meta?: { duplicated?: boolean } }
@@ -34,11 +36,11 @@ export async function connectBlock(
     return { ok: true, connection: res.data, duplicated: !!res.meta?.duplicated };
   } catch (err) {
     if (err instanceof StrapiError) {
-      if (err.status === 401) return { ok: false, error: '请先登录。' };
-      if (err.status === 403) return { ok: false, error: '只能连结到自己的 Channel。' };
-      if (err.status === 409) return { ok: false, error: '已经连结过了。' };
+      if (err.status === 401) return { ok: false, error: t('loginRequired') };
+      if (err.status === 403) return { ok: false, error: t('onlyConnectOwnChannel') };
+      if (err.status === 409) return { ok: false, error: t('alreadyConnected') };
     }
-    return { ok: false, error: '连结失败，请重试。' };
+    return { ok: false, error: t('connectFailed') };
   }
 }
 

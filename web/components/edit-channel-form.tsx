@@ -5,6 +5,7 @@
  * 保存/取消收起。保存成功后服务端 revalidate，标题/描述/可见性即时刷新。
  */
 import { useEffect, useActionState, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { updateChannel, type UpdateChannelState } from '@/app/actions/channels';
 
 export function EditChannelForm({
@@ -20,6 +21,8 @@ export function EditChannelForm({
   description: string;
   visibility: 'public' | 'closed' | 'private';
 }) {
+  const t = useTranslations('Common');
+  const tc = useTranslations('Channel');
   const [open, setOpen] = useState(false);
   const [state, action, pending] = useActionState<UpdateChannelState, FormData>(
     updateChannel.bind(null, documentId, slug),
@@ -38,7 +41,7 @@ export function EditChannelForm({
         onClick={() => setOpen(true)}
         className="rounded-full border border-neutral-200 px-3 py-1 text-xs text-neutral-400 hover:border-neutral-400 hover:text-neutral-600"
       >
-        编辑
+        {tc('edit')}
       </button>
     );
   }
@@ -46,34 +49,34 @@ export function EditChannelForm({
   return (
     <form action={action} className="w-full max-w-lg space-y-3 rounded-lg border border-neutral-200 bg-white p-4">
       <div>
-        <label className="mb-1 block text-xs text-neutral-500">标题</label>
+        <label className="mb-1 block text-xs text-neutral-500">{tc('titleLabel')}</label>
         <input
           name="title"
           defaultValue={title}
-          placeholder="Channel 名称"
+          placeholder={tc('namePlaceholder')}
           className="w-full rounded-md border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-neutral-400"
         />
       </div>
       <div>
-        <label className="mb-1 block text-xs text-neutral-500">描述</label>
+        <label className="mb-1 block text-xs text-neutral-500">{tc('descLabel')}</label>
         <textarea
           name="description"
           defaultValue={description}
           rows={3}
-          placeholder="这个频道是关于什么的？"
+          placeholder={tc('descPlaceholder')}
           className="w-full resize-none rounded-md border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-neutral-400"
         />
       </div>
       <div>
-        <label className="mb-1 block text-xs text-neutral-500">可见性</label>
+        <label className="mb-1 block text-xs text-neutral-500">{tc('visibilityLabel')}</label>
         <select
           name="visibility"
           defaultValue={visibility}
           className="rounded-md border border-neutral-200 bg-white px-3 py-2 text-sm text-neutral-700 outline-none"
         >
-          <option value="public">公开</option>
-          <option value="closed">关闭（仅成员可见）</option>
-          <option value="private">私密（仅属主与协作者）</option>
+          <option value="public">{t('public')}</option>
+          <option value="closed">{tc('visibilityClosed')}</option>
+          <option value="private">{tc('visibilityPrivate')}</option>
         </select>
       </div>
       <div className="flex items-center gap-2">
@@ -82,14 +85,14 @@ export function EditChannelForm({
           disabled={pending}
           className="rounded-full bg-neutral-900 px-4 py-1.5 text-xs text-white disabled:opacity-40"
         >
-          {pending ? '保存中…' : '保存'}
+          {pending ? t('saving') : t('save')}
         </button>
         <button
           type="button"
           onClick={() => setOpen(false)}
           className="rounded-full border border-neutral-300 px-4 py-1.5 text-xs text-neutral-600 hover:border-neutral-900"
         >
-          取消
+          {t('cancel')}
         </button>
         {state?.error && <span className="text-xs text-red-500">{state.error}</span>}
       </div>

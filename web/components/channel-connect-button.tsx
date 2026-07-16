@@ -5,7 +5,8 @@
  * 搜索可连入的公开频道 + 快捷列出我的频道；选中即连结。
  */
 import { useEffect, useRef, useState, useTransition } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import { connectChannelToChannel } from '@/app/actions/channel';
 import { searchConnectableChannels } from '@/app/actions/search';
 
@@ -18,6 +19,8 @@ export function ChannelConnectButton({
   channelId: string;
   myChannels: Pick[];
 }) {
+  const t = useTranslations('Connect');
+  const tc = useTranslations('Channel');
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Pick[]>([]);
@@ -62,7 +65,7 @@ export function ChannelConnectButton({
         onClick={() => setOpen((v) => !v)}
         className="rounded-full border border-neutral-300 px-3 py-1 text-xs text-neutral-600 hover:border-neutral-900 hover:text-neutral-900"
       >
-        Connect →
+        {t('connect')} →
       </button>
       {open && (
         <div className="absolute right-0 z-10 mt-1 w-64 rounded-lg border border-neutral-200 bg-white py-1 shadow-sm">
@@ -70,18 +73,18 @@ export function ChannelConnectButton({
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="连入哪个频道…（搜公开频道）"
+              placeholder={t('placeholder')}
               className="w-full rounded-md border border-neutral-200 px-2.5 py-1.5 text-xs outline-none focus:border-neutral-400"
             />
           </div>
           {!query.trim() && (
-            <p className="px-3 pb-1 text-[10px] uppercase tracking-widest text-neutral-300">我的频道</p>
+            <p className="px-3 pb-1 text-[10px] uppercase tracking-widest text-neutral-300">{tc('myChannels')}</p>
           )}
           <ul className="max-h-64 overflow-y-auto">
-            {searching && <li className="px-3 py-2 text-xs text-neutral-400">搜索中…</li>}
+            {searching && <li className="px-3 py-2 text-xs text-neutral-400">{t('searching')}</li>}
             {!searching && showing.length === 0 && (
               <li className="px-3 py-2 text-xs text-neutral-400">
-                {query.trim() ? '没有匹配的公开频道' : '没有可选频道'}
+                {query.trim() ? t('noMatch') : t('noOptions')}
               </li>
             )}
             {showing

@@ -495,9 +495,27 @@ export interface ApiBlockBlock extends Struct.CollectionTypeSchema {
       Schema.Attribute.SetMinMaxLength<{
         maxLength: 240;
       }>;
+    incomingLinkCount: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    incomingLinks: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::connection.connection'
+    >;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::block.block'> &
       Schema.Attribute.Private;
+    outgoingLinkCount: Schema.Attribute.Integer &
+      Schema.Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
     publishedAt: Schema.Attribute.DateTime;
     searchText: Schema.Attribute.Text;
     sourceUrl: Schema.Attribute.String;
@@ -624,7 +642,7 @@ export interface ApiCommentComment extends Struct.CollectionTypeSchema {
 export interface ApiConnectionConnection extends Struct.CollectionTypeSchema {
   collectionName: 'connections';
   info: {
-    description: '\u56FE\u7684\u8FB9\uFF1A\u8BB0\u5F55 [connector \u7528\u6237] \u5728 [createdAt \u65F6\u95F4] \u628A [block] \u8FDE\u7ED3\u5230 [channel]\u3002Block\u2194Channel \u591A\u5BF9\u591A\u5173\u7CFB\u7684\u552F\u4E00\u4E8B\u5B9E\u6765\u6E90\u3002';
+    description: '\u56FE\u7684\u8FB9\uFF1Ablock\u2194channel\uFF08contentChannel \u7528\u4E8E\u9891\u9053\u5957\u9891\u9053\uFF09\uFF0C\u4EE5\u53CA block\u2192block \u7684\u53CD\u94FE\u3002\u4E00\u6761\u8FB9\u4E8C\u9009\u4E00\u627F\u8F7D\u76EE\u6807\u2014\u2014channel \u6216 targetBlock\u3002\u552F\u4E00\u4E8B\u5B9E\u6765\u6E90\u3002';
     displayName: 'Connection';
     pluralName: 'connections';
     singularName: 'connection';
@@ -659,6 +677,7 @@ export interface ApiConnectionConnection extends Struct.CollectionTypeSchema {
       Schema.Attribute.Unique;
     position: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     publishedAt: Schema.Attribute.DateTime;
+    targetBlock: Schema.Attribute.Relation<'manyToOne', 'api::block.block'>;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

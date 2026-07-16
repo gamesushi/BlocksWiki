@@ -5,6 +5,7 @@
  */
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 import type { UserSummary } from '@/lib/types';
 
 const STRAPI_URL = process.env.STRAPI_URL ?? 'http://localhost:1337';
@@ -22,9 +23,10 @@ async function setJwtCookie(jwt: string) {
 }
 
 export async function login(_prev: AuthState, formData: FormData): Promise<AuthState> {
+  const t = await getTranslations('Errors');
   const identifier = String(formData.get('identifier') ?? '').trim();
   const password = String(formData.get('password') ?? '');
-  if (!identifier || !password) return { error: '请输入用户名和密码。' };
+  if (!identifier || !password) return { error: t('loginRequiredFields') };
 
   let payload: any;
   try {
@@ -35,9 +37,9 @@ export async function login(_prev: AuthState, formData: FormData): Promise<AuthS
       cache: 'no-store',
     });
     payload = await res.json();
-    if (!res.ok) return { error: payload?.error?.message ?? '登录失败。' };
+    if (!res.ok) return { error: payload?.error?.message ?? t('loginFailed') };
   } catch {
-    return { error: '无法连接服务器，请稍后重试。' };
+    return { error: t('serverUnreachable') };
   }
 
   await setJwtCookie(payload.jwt);
@@ -45,10 +47,11 @@ export async function login(_prev: AuthState, formData: FormData): Promise<AuthS
 }
 
 export async function register(_prev: AuthState, formData: FormData): Promise<AuthState> {
+  const t = await getTranslations('Errors');
   const username = String(formData.get('username') ?? '').trim();
   const email = String(formData.get('email') ?? '').trim();
   const password = String(formData.get('password') ?? '');
-  if (!username || !email || !password) return { error: '用户名、邮箱、密码均为必填。' };
+  if (!username || !email || !password) return { error: t('registerRequiredFields') };
 
   let payload: any;
   try {
@@ -59,9 +62,9 @@ export async function register(_prev: AuthState, formData: FormData): Promise<Au
       cache: 'no-store',
     });
     payload = await res.json();
-    if (!res.ok) return { error: payload?.error?.message ?? '注册失败。' };
+    if (!res.ok) return { error: payload?.error?.message ?? t('registerFailed') };
   } catch {
-    return { error: '无法连接服务器，请稍后重试。' };
+    return { error: t('serverUnreachable') };
   }
 
   await setJwtCookie(payload.jwt);

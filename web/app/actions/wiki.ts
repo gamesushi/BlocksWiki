@@ -2,6 +2,7 @@
 
 import { revalidatePath, updateTag } from 'next/cache';
 import { strapiFetch, StrapiError, type StrapiResponse } from '@/lib/strapi';
+import { getTranslations } from 'next-intl/server';
 import type { Block, Channel, EditorJsOutput, WikiItem, WikiPage, WikiTreeNode } from '@/lib/types';
 
 export async function getWikiTree(): Promise<WikiTreeNode[]> {
@@ -84,12 +85,12 @@ export async function resolveWikiItems(items: WikiItem[]): Promise<ResolvedItem[
 
 export type WikiWriteResult = { ok: true; slug: string } | { ok: false; error: string };
 
-function mapWriteError(err: unknown): WikiWriteResult {
+function mapWriteError(err: unknown, t: Awaited<ReturnType<typeof getTranslations>>): WikiWriteResult {
   if (err instanceof StrapiError) {
-    if (err.status === 403) return { ok: false, error: '仅管理员可编排 Wiki。' };
-    if (err.status === 400) return { ok: false, error: '内容结构非法。' };
+    if (err.status === 403) return { ok: false, error: t('wikiAdminOnly') };
+    if (err.status === 400) return { ok: false, error: t('wikiInvalidStructure') };
   }
-  return { ok: false, error: '保存失败，请重试。' };
+  return { ok: false, error: t('saveFailed') };
 }
 
 export async function createWikiPage(data: {
@@ -100,6 +101,7 @@ export async function createWikiPage(data: {
   parent?: string | null;
   order?: number;
 }): Promise<WikiWriteResult> {
+  const t = await getTranslations('Errors');
   try {
     const res = await strapiFetch<StrapiResponse<WikiPage>>('/wiki-pages', {
       method: 'POST',
@@ -109,7 +111,7 @@ export async function createWikiPage(data: {
     revalidatePath('/wiki');
     return { ok: true, slug: res.data.slug };
   } catch (err) {
-    return mapWriteError(err);
+    return mapWriteError(err, t);
   }
 }
 
@@ -125,6 +127,7 @@ export async function updateWikiPage(
     order?: number;
   }
 ): Promise<WikiWriteResult> {
+  const t = await getTranslations('Errors');
   try {
     const res = await strapiFetch<StrapiResponse<WikiPage>>(`/wiki-pages/${documentId}`, {
       method: 'PUT',
@@ -135,18 +138,19 @@ export async function updateWikiPage(
     revalidatePath('/wiki');
     return { ok: true, slug: res.data.slug };
   } catch (err) {
-    return mapWriteError(err);
+    return mapWriteError(err, t);
   }
 }
 
 export async function deleteWikiPage(documentId: string): Promise<{ ok: boolean; error?: string }> {
+  const t = await getTranslations('Errors');
   try {
     await strapiFetch(`/wiki-pages/${documentId}`, { method: 'DELETE' });
     updateTag('wiki');
     revalidatePath('/wiki');
     return { ok: true };
   } catch (err) {
-    const r = mapWriteError(err);
+    const r = mapWriteError(err, t);
     return { ok: false, error: r.ok ? undefined : r.error };
   }
 }

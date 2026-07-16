@@ -1,6 +1,7 @@
 'use client';
 
-import Link from 'next/link';
+import Link from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import { DisconnectButton } from '@/components/disconnect-button';
 import { sourceHost } from '@/lib/markdown';
 import type { DragHandlers } from '@/components/paginated-list';
@@ -44,6 +45,8 @@ export function ConnectionCard({
   selected?: boolean;
   onToggleSelect?: () => void;
 }) {
+  const t = useTranslations('Common');
+  const tb = useTranslations('Block');
   const dragProps = drag && {
     draggable: drag.draggable,
     onDragStart: drag.onDragStart,
@@ -78,7 +81,7 @@ export function ConnectionCard({
           <span className="text-[11px] text-neutral-400">{ch.connectionCount} blocks</span>
         </Link>
         <div className="mt-2 flex items-center justify-between">
-          <span className="text-[11px] text-neutral-400">由 {conn.connectorName} 连结</span>
+          <span className="text-[11px] text-neutral-400">{tb.rich('connectedBy', { name: () => conn.connectorName })}</span>
           {isOwner && !selectMode && <DisconnectButton connectionId={conn.documentId} channelSlug={channelSlug} />}
         </div>
       </li>
@@ -100,19 +103,19 @@ export function ConnectionCard({
           <img src={conn.block.coverImageUrl} alt="" draggable={false} className="h-full w-full rounded object-cover" />
         ) : (
           <p className="line-clamp-6 text-sm leading-relaxed text-neutral-700">
-            {conn.block.excerpt || '(空白 Block)'}
+            {conn.block.excerpt || t('emptyBlock')}
           </p>
         )}
       </Link>
       <div className="mt-2 flex items-center justify-between">
         <span className="text-[11px] text-neutral-400">
-          由 {conn.connectorName} 连结 · {conn.block.connectionCount} 处引用
+          {tb.rich('connectedBy', { name: () => conn.connectorName })} · {conn.block.connectionCount} {t('references')}
           {conn.block.sourceUrl &&
             (() => {
               const h = sourceHost(conn.block.sourceUrl);
               return h ? (
                 <>
-                  {' · '}来源{' '}
+                  {' · '}{t('source')}{' '}
                   <a
                     href={conn.block.sourceUrl}
                     target="_blank"

@@ -1,4 +1,5 @@
-import Link from 'next/link';
+import Link from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import type { WikiTreeNode } from '@/lib/types';
 
 type TreeItem = WikiTreeNode & { children: TreeItem[] };
@@ -20,6 +21,7 @@ function buildTree(nodes: WikiTreeNode[]): TreeItem[] {
 }
 
 function NavList({ items, activeSlug, depth }: { items: TreeItem[]; activeSlug?: string; depth: number }) {
+  const t = useTranslations('Wiki');
   return (
     <ul className={depth > 0 ? 'ml-3 border-l border-neutral-100 pl-3' : ''}>
       {items.map((item) => {
@@ -33,7 +35,7 @@ function NavList({ items, activeSlug, depth }: { items: TreeItem[]; activeSlug?:
               }`}
             >
               {item.title}
-              {!item.published && <span className="ml-1 text-[10px] text-amber-500">草稿</span>}
+              {!item.published && <span className="ml-1 text-[10px] text-amber-500">{t('draft')}</span>}
             </Link>
             {item.children.length > 0 && (
               <NavList items={item.children} activeSlug={activeSlug} depth={depth + 1} />
@@ -46,6 +48,7 @@ function NavList({ items, activeSlug, depth }: { items: TreeItem[]; activeSlug?:
 }
 
 export function WikiNav({ nodes, activeSlug }: { nodes: WikiTreeNode[]; activeSlug?: string }) {
+  const t = useTranslations('Wiki');
   const tree = buildTree(nodes);
   return (
     <nav className="text-sm">
@@ -53,7 +56,7 @@ export function WikiNav({ nodes, activeSlug }: { nodes: WikiTreeNode[]; activeSl
         Wiki
       </Link>
       {tree.length === 0 ? (
-        <p className="text-xs text-neutral-400">还没有 Wiki 页。</p>
+        <p className="text-xs text-neutral-400">{t('navEmpty')}</p>
       ) : (
         <NavList items={tree} activeSlug={activeSlug} depth={0} />
       )}

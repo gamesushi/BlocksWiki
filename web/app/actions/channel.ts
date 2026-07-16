@@ -5,6 +5,7 @@ import { strapiFetch, StrapiError, type StrapiResponse } from '@/lib/strapi';
 import { FEED_PAGE_SIZE } from '@/lib/blocks-query';
 import { textToContent } from '@/lib/editorjs-text';
 import { connectBlock, disconnectBlock } from '@/app/actions/connections';
+import { getTranslations } from 'next-intl/server';
 import type { Block, Connection, EditorJsOutput } from '@/lib/types';
 
 /**
@@ -20,7 +21,8 @@ export async function addBlockToChannel(
   sourceUrl?: string,
   description?: string
 ): Promise<{ ok: boolean; error?: string }> {
-  if (!content?.blocks?.length) return { ok: false, error: '内容为空。' };
+  const t = await getTranslations('Errors');
+  if (!content?.blocks?.length) return { ok: false, error: t('emptyContent') };
 
   try {
     const blockRes = await strapiFetch<StrapiResponse<Block>>('/blocks', {
@@ -39,10 +41,10 @@ export async function addBlockToChannel(
     return { ok: true };
   } catch (err) {
     if (err instanceof StrapiError) {
-      if (err.status === 401) return { ok: false, error: '请先登录。' };
-      if (err.status === 403) return { ok: false, error: '无权向该频道添加内容。' };
+      if (err.status === 401) return { ok: false, error: t('loginRequired') };
+      if (err.status === 403) return { ok: false, error: t('noAddToChannel') };
     }
-    return { ok: false, error: '添加失败，请重试。' };
+    return { ok: false, error: t('addFailed') };
   }
 }
 
@@ -57,6 +59,7 @@ export async function connectChannelToChannel(
   targetChannelId: string,
   targetSlug: string
 ): Promise<{ ok: boolean; error?: string; duplicated?: boolean }> {
+  const t = await getTranslations('Errors');
   try {
     const res = await strapiFetch<{ meta?: { duplicated?: boolean } }>('/connections/connect-channel', {
       method: 'POST',
@@ -66,12 +69,12 @@ export async function connectChannelToChannel(
     return { ok: true, duplicated: !!res.meta?.duplicated };
   } catch (err) {
     if (err instanceof StrapiError) {
-      if (err.status === 401) return { ok: false, error: '请先登录。' };
-      if (err.status === 403) return { ok: false, error: '无权连结到该频道。' };
-      if (err.status === 400) return { ok: false, error: '频道不能连结到自身。' };
-      if (err.status === 409) return { ok: false, error: '已经连结过了。' };
+      if (err.status === 401) return { ok: false, error: t('loginRequired') };
+      if (err.status === 403) return { ok: false, error: t('noConnectToChannel') };
+      if (err.status === 400) return { ok: false, error: t('channelCannotConnectSelf') };
+      if (err.status === 409) return { ok: false, error: t('alreadyConnected') };
     }
-    return { ok: false, error: '连结失败，请重试。' };
+    return { ok: false, error: t('connectFailed') };
   }
 }
 
@@ -167,6 +170,41 @@ export async function batchRemoveFromChannel(
 }
 
 export type ConnectionPage = { connections: Connection[]; hasMore: boolean; page: number };
+
+/** 阅读视图用的「一个 block 成员」：连接边 id + 完整 block（含正文）。 */
+export type ChannelReadBlock = { connectionId: string; block: Block };
+
+/**
+ * 频道"阅读视图"加载器：取频道下所有 block 边（position 升序 = 作者编排的文章顺序），
+ * 并 populate block 的完整正文 content。频道套频道的边（contentChannel 非空）被忽略——
+ * 文章只由 block 段落组成。用于把频道当一篇可连续阅读的文章渲染。
+ */
+export async function loadChannelBlocksForReading(
+  channelId: string,
+  slug: string
+): Promise<ChannelReadBlock[]> {
+  const qs = new URLSearchParams({
+    'filters[channel][documentId][$eq]': channelId,
+    'sort[0]': 'position:asc',
+    'pagination[pageSize]': '300',
+    'fields[0]': 'position',
+    'fields[1]': 'connectorName',
+    'populate[block][fields][0]': 'content',
+    'populate[block][fields][1]': 'blockType',
+    'populate[block][fields][2]': 'coverImageUrl',
+  });
+  try {
+    const res = await strapiFetch<StrapiResponse<Connection[]>>(`/connections?${qs}`, {
+      tags: [`channel:${slug}`],
+      revalidate: 300,
+    });
+    return res.data
+      .filter((c) => c.block)
+      .map((c) => ({ connectionId: c.documentId, block: c.block! }));
+  } catch {
+    return [];
+  }
+}
 
 /** 频道页某一页的边。position desc = Are.na 式新连结排最前 */
 export async function loadChannelConnections(

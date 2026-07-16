@@ -7,6 +7,7 @@
  * 标题作为 header 块前置，正文按 markdown 解析。
  */
 import { useEffect, useRef, useState, useTransition } from 'react';
+import { useTranslations } from 'next-intl';
 import { addBlockToChannel } from '@/app/actions/channel';
 import { markdownToEditorJs, editorJsToHtml, isUrl } from '@/lib/markdown';
 import type { EditorJsOutput } from '@/lib/types';
@@ -37,6 +38,9 @@ export function ExpandedEditor({
   const [showPreview, setShowPreview] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const t = useTranslations('Common');
+  const tErr = useTranslations('Errors');
+  const tBlock = useTranslations('Block');
   const bodyRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -68,13 +72,13 @@ export function ExpandedEditor({
         ? 'link'
         : blockType;
     if (!content.blocks.length) {
-      setError('内容为空。');
+      setError(tErr('emptyContent'));
       return;
     }
     startTransition(async () => {
       const result = await addBlockToChannel(channelId, channelSlug, content, finalBlockType, src, description.trim() || undefined);
       if (result.ok) onAdded();
-      else setError(result.error ?? '添加失败。');
+      else setError(result.error ?? tErr('addFailedShort'));
     });
   };
 
@@ -115,7 +119,7 @@ export function ExpandedEditor({
               ref={bodyRef}
               value={body}
               onChange={(e) => setBody(e.target.value)}
-              placeholder="用 Markdown 书写…（# 标题、## 二级、**粗体**、*斜体*、- 列表、> 引用、[链接](url)、![图](url)）"
+              placeholder={tBlock('markdownPlaceholder')}
               className="min-h-0 flex-1 w-full resize-none bg-transparent font-mono text-sm leading-relaxed outline-none placeholder:font-sans placeholder:text-neutral-300"
             />
           </div>
@@ -125,7 +129,7 @@ export function ExpandedEditor({
             <div className="w-1/2 overflow-y-auto bg-white p-6">
               <div
                 className={PREVIEW_CLS}
-                dangerouslySetInnerHTML={{ __html: previewHtml || '<p class="text-neutral-300">（暂无内容）</p>' }}
+                dangerouslySetInnerHTML={{ __html: previewHtml || '<p class="text-neutral-300">' + tBlock('noContentPreview') + '</p>' }}
               />
             </div>
           )}
@@ -135,14 +139,14 @@ export function ExpandedEditor({
           <button
             type="button"
             onClick={() => setShowPreview((v) => !v)}
-            title="并排显示渲染后的 Markdown 预览（正文始终可编辑）"
+            title={tBlock('previewTitle')}
             className={`rounded border px-2 py-1 text-xs ${
               showPreview
                 ? 'border-neutral-900 text-neutral-900'
                 : 'border-neutral-300 text-neutral-500 hover:border-neutral-900 hover:text-neutral-900'
             }`}
           >
-            {showPreview ? '✎ 仅编辑' : 'M↓ 预览'}
+            {showPreview ? <>✎ {tBlock('editOnly')}</> : <>M↓ {tBlock('preview')}</>}
           </button>
 
           <div className="flex items-center gap-3">
@@ -153,7 +157,7 @@ export function ExpandedEditor({
               disabled={isPending}
               className="flex items-center gap-2 rounded-md bg-blue-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-40"
             >
-              {isPending ? '添加中…' : 'Add block'}
+              {isPending ? t('adding') : 'Add block'}
               <span className="text-xs opacity-70">⌘⏎</span>
             </button>
           </div>

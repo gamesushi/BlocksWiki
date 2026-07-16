@@ -1,6 +1,7 @@
 'use client';
 
 import { Fragment, useState, useTransition, type ReactNode } from 'react';
+import { useTranslations } from 'next-intl';
 
 export type Page<T> = { items: T[]; hasMore: boolean; page: number };
 
@@ -61,6 +62,7 @@ export function PaginatedList<T>({
   const [hasMore, setHasMore] = useState(initialHasMore);
   const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
   const [isPending, startTransition] = useTransition();
+  const t = useTranslations('Common');
 
   const onLoadMore = () => {
     startTransition(async () => {
@@ -132,7 +134,7 @@ export function PaginatedList<T>({
             disabled={isPending}
             className="rounded-full border border-neutral-300 px-6 py-2 text-sm text-neutral-600 hover:border-neutral-900 hover:text-neutral-900 disabled:opacity-40"
           >
-            {isPending ? '加载中…' : '加载更多'}
+            {isPending ? t('loading') : t('loadMore')}
           </button>
         </div>
       )}

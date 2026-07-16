@@ -5,6 +5,7 @@
  * 仅在当前用户是 Channel 主人时由服务端组件渲染。
  */
 import { useState, useTransition } from 'react';
+import { useTranslations } from 'next-intl';
 import { disconnectBlock } from '@/app/actions/connections';
 
 export function DisconnectButton({
@@ -14,6 +15,8 @@ export function DisconnectButton({
   connectionId: string;
   channelSlug: string;
 }) {
+  const t = useTranslations('Connect');
+  const te = useTranslations('Errors');
   const [removed, setRemoved] = useState(false);
   const [isPending, startTransition] = useTransition();
 
@@ -21,7 +24,7 @@ export function DisconnectButton({
     startTransition(async () => {
       const { ok } = await disconnectBlock(connectionId, channelSlug);
       if (ok) setRemoved(true);
-      else alert('移除失败，请重试。');
+      else alert(te('removeFailed'));
     });
   };
 
@@ -32,7 +35,7 @@ export function DisconnectButton({
       type="button"
       onClick={remove}
       disabled={isPending}
-      title="从此频道移除（不删除 Block 本体）"
+      title={t('removeTitle')}
       className="rounded-full px-2 py-0.5 text-xs text-neutral-300 hover:bg-neutral-100 hover:text-neutral-600 disabled:opacity-40"
     >
       {isPending ? '…' : '✕'}

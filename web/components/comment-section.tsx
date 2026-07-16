@@ -4,19 +4,12 @@
  * Block 下的评论区：列表 + 发布表单。
  * 服务端渲染初始列表，客户端追加新评论（不整页刷新）；删除走单击 ✕（低风险动作，无需二次确认）。
  */
-import Link from 'next/link';
+import Link from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import { useState, useTransition } from 'react';
 import { postComment, deleteComment } from '@/app/actions/comments';
 import type { Comment } from '@/lib/types';
-
-function timeAgo(iso: string): string {
-  const mins = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
-  if (mins < 1) return '刚刚';
-  if (mins < 60) return `${mins} 分钟前`;
-  const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs} 小时前`;
-  return `${Math.floor(hrs / 24)} 天前`;
-}
+import { TimeAgo } from '@/components/time-ago';
 
 export function CommentSection({
   blockId,
@@ -31,6 +24,8 @@ export function CommentSection({
   const [text, setText] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const t = useTranslations('Comment');
+  const tErr = useTranslations('Errors');
 
   const submit = () => {
     const value = text.trim();
@@ -42,7 +37,7 @@ export function CommentSection({
         setComments((prev) => [...prev, result.comment!]);
         setText('');
       } else {
-        setError(result.error ?? '发布失败。');
+        setError(result.error ?? tErr('publishFailedShort'));
       }
     });
   };
@@ -52,7 +47,7 @@ export function CommentSection({
     startTransition(async () => {
       const result = await deleteComment(documentId, blockId);
       if (!result.ok) {
-        setError(result.error ?? '删除失败。');
+        setError(result.error ?? tErr('deleteFailedShort'));
         // 失败回滚：从最初列表里找回（简化处理，重新拉取更稳妥但成本更高，评论量小可接受）
         setComments((prev) => (prev.some((c) => c.documentId === documentId) ? prev : initialComments));
       }
@@ -62,7 +57,7 @@ export function CommentSection({
   return (
     <section>
       <h2 className="mb-3 text-xs uppercase tracking-widest text-neutral-400">
-        评论 · {comments.length}
+        {t('heading')} · {comments.length}
       </h2>
 
       {comments.length > 0 && (
@@ -76,13 +71,13 @@ export function CommentSection({
                   </Link>{' '}
                   {c.body}
                 </p>
-                <p className="mt-0.5 text-[11px] text-neutral-400">{timeAgo(c.createdAt)}</p>
+                <p className="mt-0.5 text-[11px] text-neutral-400"><TimeAgo date={c.createdAt} /></p>
               </div>
               {me === c.authorName && (
                 <button
                   type="button"
                   onClick={() => remove(c.documentId)}
-                  title="删除评论"
+                  title={t('deleteCommentTitle')}
                   className="shrink-0 rounded-full px-1.5 py-0.5 text-xs text-neutral-300 opacity-0 hover:bg-neutral-100 hover:text-neutral-600 group-hover:opacity-100"
                 >
                   ✕
@@ -98,7 +93,7 @@ export function CommentSection({
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
-            placeholder="写下你的想法…"
+            placeholder={t('placeholder')}
             rows={2}
             className="w-full resize-none rounded-lg border border-neutral-200 bg-white p-2.5 text-sm outline-none focus:border-neutral-400"
           />
@@ -109,12 +104,12 @@ export function CommentSection({
             disabled={isPending || !text.trim()}
             className="mt-2 rounded-full bg-neutral-900 px-4 py-1.5 text-xs text-white disabled:opacity-40"
           >
-            {isPending ? '发布中…' : '评论'}
+            {isPending ? t('posting') : t('post')}
           </button>
         </div>
       ) : (
         <p className="text-xs text-neutral-400">
-          <Link href="/login" className="text-neutral-900 underline">登录</Link> 后可以评论。
+          <Link href="/login" className="text-neutral-900 underline">{t('login')}</Link> {t('loginHint')}
         </p>
       )}
     </section>

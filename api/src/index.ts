@@ -1,5 +1,6 @@
 import type { Core } from '@strapi/strapi';
 import { deriveBlockFields } from './utils/derive-block-fields';
+import { reconcileBlockLinks } from './utils/reconcile-block-links';
 
 /**
  * 启动时幂等种子化 users-permissions 角色权限，免去在管理后台手动勾选。
@@ -125,6 +126,24 @@ export default {
       }
     } catch (err: any) {
       strapi.log.warn(`[bootstrap] searchText 回填跳过 — ${err?.message}`);
+    }
+
+    // block→block 内链计数回填：仅处理 outgoingLinkCount 为 null 的旧 Block（一次性），
+    // reconcile 会同时校正被链 block 的 incomingLinkCount。新 Block 由 afterCreate 自动维护。
+    try {
+      const linkStale = await strapi.documents('api::block.block').findMany({
+        filters: { outgoingLinkCount: { $null: true } },
+        fields: ['documentId', 'content'],
+        limit: -1,
+      });
+      for (const b of linkStale as any[]) {
+        await reconcileBlockLinks(strapi, { documentId: b.documentId, content: b.content ?? {} });
+      }
+      if ((linkStale as any[]).length > 0) {
+        strapi.log.info(`[bootstrap] block→block 链接回填 ${(linkStale as any[]).length} 个 Block`);
+      }
+    } catch (err: any) {
+      strapi.log.warn(`[bootstrap] block→block 链接回填跳过 — ${err?.message}`);
     }
 
     // 提升管理员（幂等）

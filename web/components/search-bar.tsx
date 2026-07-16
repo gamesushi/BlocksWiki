@@ -1,6 +1,7 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState, useTransition } from 'react';
 
 /**
@@ -17,6 +18,7 @@ export function SearchBar({
 }) {
   const [value, setValue] = useState(defaultValue);
   const router = useRouter();
+  const t = useTranslations('Search');
   const [isPending, startTransition] = useTransition();
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   // 防抖导航后 defaultValue 会随 URL 变化回流；仅当用户未在输入时才同步，避免打断
@@ -57,12 +59,12 @@ export function SearchBar({
         onChange={(e) => onChange(e.target.value)}
         onFocus={() => (focused.current = true)}
         onBlur={() => (focused.current = false)}
-        placeholder="搜索 Block 与频道…"
+        placeholder={t('placeholder')}
         className="w-full rounded-full border border-neutral-200 bg-white px-5 py-2.5 text-sm outline-none focus:border-neutral-400"
       />
       {instant && isPending && (
         <span className="absolute right-5 top-1/2 -translate-y-1/2 text-xs text-neutral-300">
-          搜索中…
+          {t('searching')}
         </span>
       )}
     </form>

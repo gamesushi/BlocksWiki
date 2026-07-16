@@ -68,6 +68,20 @@
       "relation": "oneToMany",
       "target": "api::connection.connection",
       "mappedBy": "block"
+    },
+    "incomingLinks": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::connection.connection",
+      "mappedBy": "targetBlock"
+    },
+    "outgoingLinkCount": {
+      "type": "integer",
+      "min": 0
+    },
+    "incomingLinkCount": {
+      "type": "integer",
+      "min": 0
     }
   }
 }

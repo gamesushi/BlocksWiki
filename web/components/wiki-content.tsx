@@ -1,4 +1,5 @@
-import Link from 'next/link';
+import Link from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import { RenderBlocks } from '@/lib/render-blocks';
 import { sourceHost } from '@/lib/markdown';
 import type { ResolvedItem } from '@/app/actions/wiki';
@@ -9,6 +10,8 @@ import type { ResolvedItem } from '@/app/actions/wiki';
  * 引用失效（已删除 / private 无权）→ 占位符，不报错。
  */
 export function WikiContent({ items }: { items: ResolvedItem[] }) {
+  const t = useTranslations('Wiki');
+  const c = useTranslations('Common');
   return (
     <div className="space-y-8">
       {items.map((item, i) => {
@@ -24,7 +27,7 @@ export function WikiContent({ items }: { items: ResolvedItem[] }) {
           if (!item.block) {
             return (
               <p key={i} className="rounded-lg border border-dashed border-neutral-200 px-4 py-3 text-xs text-neutral-400">
-                （引用的 Block 已被移除）
+                {t('removedBlockRef')}
               </p>
             );
           }
@@ -40,14 +43,14 @@ export function WikiContent({ items }: { items: ResolvedItem[] }) {
                 href={`/block/${item.block.documentId}`}
                 className="mt-4 inline-block text-xs text-neutral-400 hover:text-neutral-900"
               >
-                {item.block.creatorName} 的 Block · {item.block.connectionCount} 处引用 →
+                {t('blockLink', { name: item.block.creatorName, count: item.block.connectionCount })}
               </Link>
               {item.block.sourceUrl &&
                 (() => {
                   const h = sourceHost(item.block.sourceUrl);
                   return h ? (
                     <span className="ml-2 text-xs text-neutral-400">
-                      · 来源{' '}
+                      · {c('source')}{' '}
                       <a
                         href={item.block.sourceUrl}
                         target="_blank"
@@ -67,7 +70,7 @@ export function WikiContent({ items }: { items: ResolvedItem[] }) {
         if (!item.channel) {
           return (
             <p key={i} className="rounded-lg border border-dashed border-neutral-200 px-4 py-3 text-xs text-neutral-400">
-              （引用的频道已被移除或不可见）
+              {t('removedChannelRef')}
             </p>
           );
         }
@@ -84,7 +87,7 @@ export function WikiContent({ items }: { items: ResolvedItem[] }) {
                 {item.channel.ownerName} · {item.channel.connectionCount} blocks
               </span>
             </span>
-            <span className="text-xs text-neutral-400">频道 →</span>
+            <span className="text-xs text-neutral-400">{t('channelArrow')}</span>
           </Link>
         );
       })}

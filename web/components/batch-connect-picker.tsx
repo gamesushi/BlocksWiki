@@ -5,6 +5,7 @@
  * 复用 ChannelConnectButton 的搜索交互，选中频道后一次性批量提交。
  */
 import { useEffect, useRef, useState, useTransition } from 'react';
+import { useTranslations } from 'next-intl';
 import { batchConnectToChannel, type SelectedItem } from '@/app/actions/channel';
 import { searchConnectableChannels } from '@/app/actions/search';
 
@@ -24,6 +25,8 @@ export function BatchConnectPicker({
   onClose: () => void;
   onDone: (result: { succeeded: number; failed: number }) => void;
 }) {
+  const t = useTranslations('Connect');
+  const tc = useTranslations('Channel');
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Pick[]>([]);
   const [searching, setSearching] = useState(false);
@@ -54,7 +57,7 @@ export function BatchConnectPicker({
   return (
     <div className="absolute bottom-full left-0 z-20 mb-2 w-64 rounded-lg border border-neutral-200 bg-white py-1 shadow-lg">
       <div className="flex items-center justify-between px-3 py-1.5">
-        <span className="text-[10px] uppercase tracking-widest text-neutral-300">连结到…</span>
+        <span className="text-[10px] uppercase tracking-widest text-neutral-300">{tc('connectTo')}</span>
         <button type="button" onClick={onClose} className="text-xs text-neutral-300 hover:text-neutral-600">✕</button>
       </div>
       <div className="px-2 pb-1.5">
@@ -62,16 +65,16 @@ export function BatchConnectPicker({
           autoFocus
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="搜公开频道…"
+          placeholder={t('searchPlaceholderPublic')}
           className="w-full rounded-md border border-neutral-200 px-2.5 py-1.5 text-xs outline-none focus:border-neutral-400"
         />
       </div>
       <ul className="max-h-56 overflow-y-auto">
-        {isPending && <li className="px-3 py-2 text-xs text-neutral-400">批量连结中…</li>}
-        {!isPending && searching && <li className="px-3 py-2 text-xs text-neutral-400">搜索中…</li>}
+        {isPending && <li className="px-3 py-2 text-xs text-neutral-400">{t('batchConnecting')}</li>}
+        {!isPending && searching && <li className="px-3 py-2 text-xs text-neutral-400">{t('searching')}</li>}
         {!isPending && !searching && showing.length === 0 && (
           <li className="px-3 py-2 text-xs text-neutral-400">
-            {query.trim() ? '没有匹配的公开频道' : '没有可选频道'}
+            {query.trim() ? t('noMatch') : t('noOptions')}
           </li>
         )}
         {!isPending &&

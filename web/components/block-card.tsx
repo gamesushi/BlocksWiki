@@ -1,6 +1,7 @@
 'use client';
 
-import Link from 'next/link';
+import Link from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import { ConnectButton } from '@/components/connect-button';
 import { sourceHost } from '@/lib/markdown';
 import type { Block, Channel } from '@/lib/types';
@@ -17,6 +18,7 @@ export function BlockCard({
   showConnect: boolean;
 }) {
   const srcHost = block.sourceUrl ? sourceHost(block.sourceUrl) : null;
+  const t = useTranslations('Common');
   return (
     <li className="flex flex-col">
       <Link
@@ -28,7 +30,7 @@ export function BlockCard({
           <img src={block.coverImageUrl} alt="" className="h-full w-full rounded object-cover" />
         ) : (
           <p className="line-clamp-6 text-sm leading-relaxed text-neutral-700">
-            {block.excerpt || '(空白 Block)'}
+            {block.excerpt || t('emptyBlock')}
           </p>
         )}
       </Link>
@@ -37,11 +39,11 @@ export function BlockCard({
           <Link href={`/user/${block.creatorName}`} className="hover:text-neutral-900">
             {block.creatorName}
           </Link>{' '}
-          · {block.connectionCount} 处引用
-          {block.commentCount > 0 && <> · {block.commentCount} 评论</>}
+          · {block.connectionCount} {t('references')}
+          {block.commentCount > 0 && <> · {block.commentCount} {t('comments')}</>}
           {srcHost && (
             <>
-              {' · '}来源{' '}
+              {' · '}{t('source')}{' '}
               <a
                 href={block.sourceUrl ?? undefined}
                 target="_blank"

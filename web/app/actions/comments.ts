@@ -2,6 +2,7 @@
 
 import { updateTag } from 'next/cache';
 import { strapiFetch, StrapiError, type StrapiResponse } from '@/lib/strapi';
+import { getTranslations } from 'next-intl/server';
 import type { Comment } from '@/lib/types';
 
 export async function getComments(blockId: string): Promise<Comment[]> {
@@ -24,9 +25,10 @@ export async function postComment(
   blockId: string,
   body: string
 ): Promise<{ ok: boolean; error?: string; comment?: Comment }> {
+  const t = await getTranslations('Errors');
   const trimmed = body.trim();
-  if (!trimmed) return { ok: false, error: '评论不能为空。' };
-  if (trimmed.length > 2000) return { ok: false, error: '评论过长（上限 2000 字）。' };
+  if (!trimmed) return { ok: false, error: t('commentEmpty') };
+  if (trimmed.length > 2000) return { ok: false, error: t('commentTooLong') };
 
   try {
     const res = await strapiFetch<StrapiResponse<Comment>>('/comments', {
@@ -37,9 +39,9 @@ export async function postComment(
     return { ok: true, comment: res.data };
   } catch (err) {
     if (err instanceof StrapiError && (err.status === 401 || err.status === 403)) {
-      return { ok: false, error: '请先登录后再评论。' };
+      return { ok: false, error: t('loginToComment') };
     }
-    return { ok: false, error: '发布失败，请重试。' };
+    return { ok: false, error: t('commentPublishFailed') };
   }
 }
 
@@ -47,14 +49,15 @@ export async function deleteComment(
   commentId: string,
   blockId: string
 ): Promise<{ ok: boolean; error?: string }> {
+  const t = await getTranslations('Errors');
   try {
     await strapiFetch(`/comments/${commentId}`, { method: 'DELETE' });
     updateTag(`block:${blockId}`);
     return { ok: true };
   } catch (err) {
     if (err instanceof StrapiError && err.status === 403) {
-      return { ok: false, error: '只能删除自己发布的评论。' };
+      return { ok: false, error: t('onlyOwnCommentDelete') };
     }
-    return { ok: false, error: '删除失败，请重试。' };
+    return { ok: false, error: t('deleteFailed') };
   }
 }

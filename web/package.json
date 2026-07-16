@@ -12,9 +12,12 @@
     "@editorjs/editorjs": "^2.31.6",
     "@editorjs/header": "^2.8.9",
     "@editorjs/image": "^2.10.3",
+    "@editorjs/link": "^2.6.2",
     "@editorjs/list": "^2.0.9",
     "@editorjs/quote": "^2.7.6",
+    "isomorphic-dompurify": "^3.18.0",
     "next": "16.2.10",
+    "next-intl": "^4.13.2",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },

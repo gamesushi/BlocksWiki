@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { strapiFetch, StrapiError, type StrapiResponse } from '@/lib/strapi';
 import { getSession } from '@/app/actions/auth';
+import { getTranslations } from 'next-intl/server';
 import { FEED_PAGE_SIZE } from '@/lib/blocks-query';
 import type { Connection } from '@/lib/types';
 
@@ -10,14 +11,15 @@ export async function followUser(
   username: string,
   action: 'follow' | 'unfollow'
 ): Promise<{ ok: boolean; error?: string }> {
+  const t = await getTranslations('Errors');
   try {
     await strapiFetch('/follow/user', { method: 'POST', body: { username, action } });
     revalidatePath(`/user/${username}`);
     revalidatePath('/feed');
     return { ok: true };
   } catch (err) {
-    if (err instanceof StrapiError && err.status === 401) return { ok: false, error: '请先登录。' };
-    return { ok: false, error: '操作失败，请重试。' };
+    if (err instanceof StrapiError && err.status === 401) return { ok: false, error: t('loginRequired') };
+    return { ok: false, error: t('actionFailed') };
   }
 }
 
@@ -26,6 +28,7 @@ export async function followChannel(
   slug: string,
   action: 'follow' | 'unfollow'
 ): Promise<{ ok: boolean; error?: string }> {
+  const t = await getTranslations('Errors');
   try {
     await strapiFetch('/follow/channel', { method: 'POST', body: { channelId, action } });
     revalidatePath(`/channel/${slug}`);
@@ -33,10 +36,10 @@ export async function followChannel(
     return { ok: true };
   } catch (err) {
     if (err instanceof StrapiError) {
-      if (err.status === 401) return { ok: false, error: '请先登录。' };
-      if (err.status === 403) return { ok: false, error: '无权关注该私密频道。' };
+      if (err.status === 401) return { ok: false, error: t('loginRequired') };
+      if (err.status === 403) return { ok: false, error: t('cannotFollowPrivateChannel') };
     }
-    return { ok: false, error: '操作失败，请重试。' };
+    return { ok: false, error: t('actionFailed') };
   }
 }
 

@@ -8,7 +8,8 @@
  * 内容发起部分失败、语义不清的批量操作）。
  */
 import { useState, useTransition, type ReactNode } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import { PaginatedConnections, type ConnectionPage } from '@/components/paginated-connections';
 import { BatchConnectPicker } from '@/components/batch-connect-picker';
 import { batchRemoveFromChannel, type SelectedItem } from '@/app/actions/channel';
@@ -34,7 +35,7 @@ export function ChannelGrid({
   channelSlug: string;
   isOwner: boolean;
   canSelect: boolean;
-  variant: 'grid' | 'table';
+  variant: 'grid' | 'table' | 'read';
   initialConnections: Connection[];
   initialHasMore: boolean;
   loadMore: (page: number) => Promise<ConnectionPage>;
@@ -43,6 +44,8 @@ export function ChannelGrid({
   leading?: ReactNode;
   myChannels: Pick[];
 }) {
+  const t = useTranslations('Common');
+  const tc = useTranslations('Channel');
   const [selectMode, setSelectMode] = useState(false);
   const [selected, setSelected] = useState<Map<string, SelectedItem>>(new Map());
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -78,7 +81,8 @@ export function ChannelGrid({
     startTransition(async () => {
       const result = await batchRemoveFromChannel(ids, channelSlug);
       setStatusMsg(
-        `已移除 ${result.succeeded} 项${result.failed ? `，${result.failed} 项失败（无权限）` : ''}`
+        tc('removedStatus', { succeeded: result.succeeded }) +
+          (result.failed ? tc('removedFailed', { failed: result.failed }) : '')
       );
       // 立即本地隐藏这批卡片，不等 router.refresh() —— 实测 updateTag 的失效
       // 对紧随其后的 refresh 请求不保证已生效（偶发仍读到失效前的缓存）。
@@ -102,7 +106,7 @@ export function ChannelGrid({
                 : 'border-neutral-200 text-neutral-400 hover:border-neutral-900 hover:text-neutral-900'
             }`}
           >
-            {selectMode ? '取消选择' : '选择'}
+            {selectMode ? tc('cancelSelect') : tc('select')}
           </button>
         )}
         {statusMsg && <span className="text-xs text-neutral-400">{statusMsg}</span>}
@@ -127,14 +131,14 @@ export function ChannelGrid({
       {selectMode && selected.size > 0 && (
         <div className="fixed inset-x-0 bottom-6 z-30 flex justify-center px-4">
           <div className="relative flex items-center gap-3 rounded-full border border-neutral-200 bg-white px-4 py-2 shadow-lg">
-            <span className="text-xs text-neutral-500">已选 {selected.size} 项</span>
+            <span className="text-xs text-neutral-500">{tc('selectedCount', { count: selected.size })}</span>
             <button
               type="button"
               onClick={() => setPickerOpen((v) => !v)}
               disabled={isPending}
               className="rounded-full bg-neutral-900 px-3 py-1 text-xs text-white disabled:opacity-40"
             >
-              连结到…
+              {tc('connectTo')}
             </button>
             {isOwner && (
               <button
@@ -143,7 +147,7 @@ export function ChannelGrid({
                 disabled={isPending}
                 className="rounded-full border border-red-200 px-3 py-1 text-xs text-red-500 hover:bg-red-50 disabled:opacity-40"
               >
-                {isPending ? '处理中…' : '移除'}
+                {isPending ? t('processing') : tc('remove')}
               </button>
             )}
             <button
@@ -151,7 +155,7 @@ export function ChannelGrid({
               onClick={exitSelectMode}
               className="text-xs text-neutral-400 hover:text-neutral-700"
             >
-              取消
+              {t('cancel')}
             </button>
 
             {pickerOpen && (
@@ -162,7 +166,8 @@ export function ChannelGrid({
                 onClose={() => setPickerOpen(false)}
                 onDone={(result) => {
                   setStatusMsg(
-                    `已连结 ${result.succeeded} 项${result.failed ? `，${result.failed} 项失败` : ''}`
+                    tc('connectedStatus', { succeeded: result.succeeded }) +
+                      (result.failed ? tc('connectedFailed', { failed: result.failed }) : '')
                   );
                   exitSelectMode();
                 }}

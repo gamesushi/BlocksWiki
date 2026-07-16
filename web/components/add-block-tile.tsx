@@ -10,7 +10,8 @@
  * 否则空内容时点按钮会先触发 blur→setActive(false)→按钮卸载→点击丢失。
  */
 import { useRef, useState, useTransition } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from '@/i18n/navigation';
+import { useTranslations } from 'next-intl';
 import { addBlockToChannel, addTextToChannel } from '@/app/actions/channel';
 import { isUrl, urlToBlock } from '@/lib/markdown';
 import { ExpandedEditor } from '@/components/expanded-editor';
@@ -27,6 +28,9 @@ export function AddBlockTile({ channelId, channelSlug }: { channelId: string; ch
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const t = useTranslations('Common');
+  const tErr = useTranslations('Errors');
+  const tBlock = useTranslations('Block');
 
   const activate = () => {
     setActive(true);
@@ -49,7 +53,7 @@ export function AddBlockTile({ channelId, channelSlug }: { channelId: string; ch
     startTransition(async () => {
       const result = await addBlockToChannel(channelId, channelSlug, content, blockType, sourceUrl);
       if (result.ok) done();
-      else setError(result.error ?? '添加失败。');
+      else setError(result.error ?? tErr('addFailedShort'));
     });
   };
 
@@ -64,13 +68,13 @@ export function AddBlockTile({ channelId, channelSlug }: { channelId: string; ch
     startTransition(async () => {
       const result = await addTextToChannel(channelId, channelSlug, value);
       if (result.ok) done();
-      else setError(result.error ?? '添加失败。');
+      else setError(result.error ?? tErr('addFailedShort'));
     });
   };
 
   const uploadImage = async (file: File) => {
     setError(null);
-    setStatus('上传中…');
+    setStatus(t('uploading'));
     try {
       const form = new FormData();
       form.append('files', file);
@@ -83,7 +87,7 @@ export function AddBlockTile({ channelId, channelSlug }: { channelId: string; ch
       );
     } catch {
       setStatus(null);
-      setError('图片上传失败。');
+      setError(tErr('imageUploadFailed'));
     }
   };
 
@@ -125,7 +129,7 @@ export function AddBlockTile({ channelId, channelSlug }: { channelId: string; ch
               if (e.key === 'Escape' && !text.trim()) setActive(false);
             }}
             disabled={isPending}
-            placeholder="拖拽或选择文件、粘贴 URL（图片 / 视频 / 链接），或在此输入文字"
+            placeholder={tBlock('tilePlaceholder')}
             // 底部留白给控件行，避免与占位符重叠
             className="h-full w-full resize-none rounded-lg bg-transparent px-4 pb-10 pt-4 text-sm leading-relaxed outline-none placeholder:text-neutral-400"
           />
@@ -136,7 +140,7 @@ export function AddBlockTile({ channelId, channelSlug }: { channelId: string; ch
         {/* 底部控件行：始终存在（含 idle），互不重叠 */}
         <div className="absolute inset-x-3 bottom-3 flex items-center justify-between">
           <span className="pointer-events-none rounded bg-neutral-100 px-1.5 py-0.5 text-[11px] text-neutral-400">
-            {isPending || status ? (status ?? '添加中…') : '⌘ENTER'}
+            {isPending || status ? (status ?? t('adding')) : '⌘ENTER'}
           </span>
           <span className="flex items-center gap-1.5">
             <button
@@ -145,16 +149,16 @@ export function AddBlockTile({ channelId, channelSlug }: { channelId: string; ch
               onClick={(e) => { e.stopPropagation(); fileRef.current?.click(); }}
               className="rounded bg-neutral-100 px-1.5 py-0.5 text-[11px] text-neutral-400 hover:text-neutral-900"
             >
-              选择文件
+              {tBlock('selectFile')}
             </button>
             <button
               type="button"
               onMouseDown={(e) => e.preventDefault()}
               onClick={(e) => { e.stopPropagation(); setExpanded(true); }}
-              title="展开编辑器（Markdown）"
+              title={tBlock('expandTitle')}
               className="rounded bg-neutral-100 px-1.5 py-0.5 text-[11px] text-neutral-400 hover:text-neutral-900"
             >
-              ⤢ 展开
+              ⤢ {tBlock('expand')}
             </button>
           </span>
         </div>

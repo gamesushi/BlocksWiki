@@ -6,6 +6,7 @@
  */
 import { updateTag } from 'next/cache';
 import { strapiFetch, StrapiError, type StrapiResponse } from '@/lib/strapi';
+import { getTranslations } from 'next-intl/server';
 import type { Block, EditorJsOutput } from '@/lib/types';
 
 export type CreateBlockResult =
@@ -16,8 +17,9 @@ export async function updateBlock(
   documentId: string,
   content: EditorJsOutput
 ): Promise<{ ok: boolean; error?: string; documentId?: string }> {
+  const t = await getTranslations('Errors');
   if (!content?.blocks?.length) {
-    return { ok: false, error: '内容为空。' };
+    return { ok: false, error: t('emptyContent') };
   }
   const hasImage = content.blocks.some((b) => b.type === 'image');
   try {
@@ -30,10 +32,10 @@ export async function updateBlock(
     return { ok: true, documentId };
   } catch (err) {
     if (err instanceof StrapiError) {
-      if (err.status === 401) return { ok: false, error: '请先登录。' };
-      if (err.status === 403) return { ok: false, error: '只能编辑自己发布的 Block。' };
+      if (err.status === 401) return { ok: false, error: t('loginRequired') };
+      if (err.status === 403) return { ok: false, error: t('onlyOwnBlockEdit') };
     }
-    return { ok: false, error: '保存失败，请重试。' };
+    return { ok: false, error: t('saveFailed') };
   }
 }
 
@@ -41,8 +43,9 @@ export async function updateBlockDescription(
   documentId: string,
   description: string
 ): Promise<{ ok: boolean; error?: string }> {
+  const t = await getTranslations('Errors');
   if (description.length > 2000) {
-    return { ok: false, error: '描述过长（上限 2000 字）。' };
+    return { ok: false, error: t('descriptionTooLong') };
   }
   try {
     await strapiFetch(`/blocks/${documentId}/description`, {
@@ -53,16 +56,17 @@ export async function updateBlockDescription(
     return { ok: true };
   } catch (err) {
     if (err instanceof StrapiError) {
-      if (err.status === 401) return { ok: false, error: '请先登录。' };
-      if (err.status === 403) return { ok: false, error: '只能编辑自己发布的 Block。' };
+      if (err.status === 401) return { ok: false, error: t('loginRequired') };
+      if (err.status === 403) return { ok: false, error: t('onlyOwnBlockEdit') };
     }
-    return { ok: false, error: '保存失败，请重试。' };
+    return { ok: false, error: t('saveFailed') };
   }
 }
 
 export async function deleteBlock(
   documentId: string
 ): Promise<{ ok: boolean; error?: string }> {
+  const t = await getTranslations('Errors');
   try {
     await strapiFetch(`/blocks/${documentId}`, { method: 'DELETE' });
     updateTag('feed');
@@ -70,9 +74,9 @@ export async function deleteBlock(
     return { ok: true };
   } catch (err) {
     if (err instanceof StrapiError && err.status === 403) {
-      return { ok: false, error: '只能删除自己发布的 Block。' };
+      return { ok: false, error: t('onlyOwnBlockDelete') };
     }
-    return { ok: false, error: '删除失败，请重试。' };
+    return { ok: false, error: t('deleteFailed') };
   }
 }
 
@@ -81,8 +85,9 @@ export async function createBlock(
   blockType: Block['blockType'] = 'text',
   sourceUrl?: string
 ): Promise<CreateBlockResult> {
+  const t = await getTranslations('Errors');
   if (!content?.blocks?.length) {
-    return { ok: false, error: '内容为空，无法发布。' };
+    return { ok: false, error: t('emptyContentCannotPublish') };
   }
 
   try {
@@ -97,8 +102,8 @@ export async function createBlock(
   } catch (err) {
     const message =
       err instanceof StrapiError && err.status === 401
-        ? '请先登录再发布。'
-        : '发布失败，请稍后重试。';
+        ? t('loginRequiredPublish')
+        : t('publishFailed');
     return { ok: false, error: message };
   }
 }

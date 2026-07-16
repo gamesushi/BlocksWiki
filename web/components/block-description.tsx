@@ -5,6 +5,7 @@
  * 非作者只读展示（无描述则不渲染任何东西）；作者永远看到编辑入口。
  */
 import { useState, useTransition } from 'react';
+import { useTranslations } from 'next-intl';
 import { updateBlockDescription } from '@/app/actions/blocks';
 
 export function BlockDescription({
@@ -21,6 +22,9 @@ export function BlockDescription({
   const [draft, setDraft] = useState(initialDescription);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const t = useTranslations('Block');
+  const tc = useTranslations('Common');
+  const te = useTranslations('Errors');
 
   if (!isAuthor && !description) return null;
 
@@ -32,7 +36,7 @@ export function BlockDescription({
         setDescription(draft.trim());
         setEditing(false);
       } else {
-        setError(result.error ?? '保存失败。');
+        setError(result.error ?? te('saveFailedShort'));
       }
     });
   };
@@ -43,7 +47,7 @@ export function BlockDescription({
         <textarea
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
-          placeholder="给这个 Block 补充一段说明…"
+          placeholder={t('descPlaceholder')}
           rows={3}
           autoFocus
           className="w-full resize-none rounded-lg border border-neutral-200 bg-white p-3 text-sm leading-relaxed text-neutral-700 outline-none focus:border-neutral-400"
@@ -56,14 +60,14 @@ export function BlockDescription({
             disabled={isPending}
             className="rounded-full bg-neutral-900 px-4 py-1.5 text-xs text-white disabled:opacity-40"
           >
-            {isPending ? '保存中…' : '保存'}
+            {isPending ? tc('saving') : tc('save')}
           </button>
           <button
             type="button"
             onClick={() => { setDraft(description); setEditing(false); setError(null); }}
             className="rounded-full border border-neutral-200 px-4 py-1.5 text-xs text-neutral-500 hover:border-neutral-400"
           >
-            取消
+            {tc('cancel')}
           </button>
         </div>
       </div>
@@ -81,7 +85,7 @@ export function BlockDescription({
           onClick={() => setEditing(true)}
           className="mt-1 text-xs text-neutral-300 hover:text-neutral-600"
         >
-          {description ? '编辑描述' : '+ 添加描述'}
+          {description ? t('editDesc') : t('addDesc')}
         </button>
       )}
     </div>

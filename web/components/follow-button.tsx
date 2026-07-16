@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
+import { useTranslations } from 'next-intl';
 import { followUser, followChannel } from '@/app/actions/follow';
 
 /** 关注/取关按钮（用户或频道）。乐观切换，失败回滚。 */
@@ -11,6 +12,7 @@ export function FollowButton(
 ) {
   const [following, setFollowing] = useState(props.initialFollowing);
   const [isPending, startTransition] = useTransition();
+  const t = useTranslations('Follow');
 
   const toggle = () => {
     const next = !following;
@@ -39,7 +41,7 @@ export function FollowButton(
           : 'bg-neutral-900 text-white hover:bg-neutral-700'
       }`}
     >
-      {following ? '已关注' : '关注'}
+      {following ? t('following') : t('follow')}
     </button>
   );
 }

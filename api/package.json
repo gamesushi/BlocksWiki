@@ -36,6 +36,15 @@
     "node": ">=20.0.0 <=26.x.x",
     "npm": ">=6.0.0"
   },
+  "overrides": {
+    "@strapi/admin": "5.50.0",
+    "@strapi/data-transfer": "5.50.0",
+    "@strapi/logger": "5.50.0",
+    "@strapi/permissions": "5.50.0",
+    "@strapi/types": "5.50.0",
+    "@strapi/typescript-utils": "5.50.0",
+    "@strapi/utils": "5.50.0"
+  },
   "strapi": {
     "uuid": "ff7139fd-eb42-4ac3-8a13-f19196ccb5f6",
     "installId": "8e2db00cf35da64396cb60d8772d39da50ee9081274e2da89ccccf3d8d3a4473"

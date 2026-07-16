@@ -5,7 +5,7 @@
     "singularName": "connection",
     "pluralName": "connections",
     "displayName": "Connection",
-    "description": "图的边：记录 [connector 用户] 在 [createdAt 时间] 把 [block] 连结到 [channel]。Block↔Channel 多对多关系的唯一事实来源。"
+    "description": "图的边：block↔channel（contentChannel 用于频道套频道），以及 block→block 的反链。一条边二选一承载目标——channel 或 targetBlock。唯一事实来源。"
   },
   "options": {
     "draftAndPublish": false
@@ -16,6 +16,12 @@
       "relation": "manyToOne",
       "target": "api::block.block",
       "inversedBy": "connections"
+    },
+    "targetBlock": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::block.block",
+      "inversedBy": "incomingLinks"
     },
     "channel": {
       "type": "relation",
