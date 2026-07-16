@@ -4,14 +4,26 @@ import type { Core } from '@strapi/strapi';
 const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Database => {
   const client = env('DATABASE_CLIENT', 'sqlite');
 
+  // postgres / mysql must use explicit credentials — never fall back to weak defaults
+  if (client === 'postgres' || client === 'mysql') {
+    const missing = ['DATABASE_HOST', 'DATABASE_NAME', 'DATABASE_USERNAME', 'DATABASE_PASSWORD'].filter(
+      (key) => !env(key)
+    );
+    if (missing.length) {
+      throw new Error(
+        `DATABASE_CLIENT=${client} requires these env vars to be set: ${missing.join(', ')}`
+      );
+    }
+  }
+
   const connections = {
     mysql: {
       connection: {
         host: env('DATABASE_HOST', 'localhost'),
         port: env.int('DATABASE_PORT', 3306),
         database: env('DATABASE_NAME', 'strapi'),
-        user: env('DATABASE_USERNAME', 'strapi'),
-        password: env('DATABASE_PASSWORD', 'strapi'),
+        user: env('DATABASE_USERNAME'),
+        password: env('DATABASE_PASSWORD'),
         ssl: env.bool('DATABASE_SSL', false) && {
           key: env('DATABASE_SSL_KEY', undefined),
           cert: env('DATABASE_SSL_CERT', undefined),
@@ -29,8 +41,8 @@ const config = ({ env }: Core.Config.Shared.ConfigParams): Core.Config.Database 
         host: env('DATABASE_HOST', 'localhost'),
         port: env.int('DATABASE_PORT', 5432),
         database: env('DATABASE_NAME', 'strapi'),
-        user: env('DATABASE_USERNAME', 'strapi'),
-        password: env('DATABASE_PASSWORD', 'strapi'),
+        user: env('DATABASE_USERNAME'),
+        password: env('DATABASE_PASSWORD'),
         ssl: env.bool('DATABASE_SSL', false) && {
           key: env('DATABASE_SSL_KEY', undefined),
           cert: env('DATABASE_SSL_CERT', undefined),
